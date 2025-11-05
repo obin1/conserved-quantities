@@ -1,0 +1,23 @@
+.DS_Store
+# Julia
+/Manifest.toml
+/Project.toml
+/.vscode/
+/.idea/
+/.julia/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# macOS
+Icon\r
+
+# Data files
+# *.csv
+
+# other stuff
+*.docx
+*.xlsx
+*.pptx
