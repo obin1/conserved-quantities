@@ -1,0 +1,80 @@
+{ Custom.eqn
+
+Super Fast mechanism based on:
+
+Benjamin Brown-Steiner, Noelle E. Selin, Ronald G. Prinn, Simone Tilmes, Louisa Emmons, Jean-François Lamarque, and Philip Cameron-Smith.
+"Evaluating simplified chemical mechanisms within present-day simulations of the Community Earth System Model version 1.2 with CAM4 (CESM1.2 CAM-chem):
+MOZART-4 vs. Reduced Hydrocarbon vs. Super-Fast chemistry" (2018)
+
+We have removed the hetchem and Sulfur-based reactions to focus on explicitly the gas-phase chemistry 
+Note from Obin Jan 2024: adding hetchem and sulfur back in, as per the supplement
+}
+
+//#include atoms
+
+#DEFVAR
+O3         = IGNORE; {O3; Ozone}
+OH         = IGNORE; {OH; Hydroxyl radical}
+HO2        = IGNORE; {HO2; Hydroperoxyl radical}
+H2O2       = IGNORE; {H2O2; Hydrogen peroxide}
+NO         = IGNORE; {NO; Nitric oxide}
+NO2        = IGNORE; {NO2; Nitrogen dioxide}
+HNO3       = IGNORE; {HNO3; Nitric acid}
+MO2        = IGNORE; {CH3O2; Methylperoxy radical}
+MP         = IGNORE; {CH3OOH; Methylhydroperoxide}
+CO         = IGNORE; {CO; Carbon monoxide}
+CH2O       = IGNORE; {CH2O; Formaldehyde}
+DMS        = IGNORE; {(CH3)2S; Dimethyl sulfide}
+SO2        = IGNORE; {SO2; Sulfur dioxide}
+SO4        = IGNORE; {S04; Sulfate}
+ISOP       = IGNORE; {CH2=C(CH3)CH=CH2; Isoprene}
+
+
+#DEFFIX
+O2         = IGNORE; {O2; Molecular oxygen}
+CH4        = IGNORE; {CH4; Methane}
+H2O        = IGNORE; {H2O; Water vapor}
+
+
+
+#EQUATIONS
+//
+// Gas-phase, sulfur, and hetchem reactions
+//
+O3 + OH = HO2 + O2 :                         GCARR(1.70E-12, 0.0E+00, -940.0);                                  {R1}
+O3 + HO2 = OH + O2 + O2 :                    GCARR(1.00E-14, 0.0E+00, -490.0);                                  {R2}
+OH + HO2 = H2O + O2 :                        GCARR(4.80E-11, 0.0E+00, 250.0);                                   {R3}
+HO2 + HO2 = H2O2 + O2 :                      GC_HO2NO3(3.00E-13, 0.0E+00, 460.0, 2.1E-33, 0.0, 920.0);          {R4}
+OH + H2O2 = H2O + HO2 :                      GCARR(1.80E-12, 0.0E+00, 0.0);                                     {R5}
+O3 + NO = NO2 + O2 :                         GCARR(3.00E-12, 0.0E+00, -1500.0);                                 {R6}
+HO2 + NO = OH + NO2 :                        GCARR(3.30E-12, 0.0E+00, 270.0);                                   {R7}
+NO2 + OH {+M} = HNO3 {+M} :                  GCJPLPR(1.80E-30, 3.0E+00, 0.0, 2.8E-11, 0.0, 0.0, 0.6, 0.0, 0.0); {R8}
+OH + CH4 = MO2 + H2O :                       GCARR(2.45E-12, 0.0E+00, -1775.0);                                 {R9}
+OH + CO = HO2 :                              GC_OHCO(1.50E-13, 0.0E+00, 0.0);                                   {R10 2017/02/22; JPL 15-10; BHH,MJE; simplified; no CO2}
+CH2O + OH = CO + HO2 + H2O :                 GCARR(5.50E-12, 0.0E+00, 125.0);                                   {R11}
+MO2 + HO2 = MP + O2 :                        GCARR(4.10E-13, 0.0E+00, 750.0);                                   {R12}
+MP + OH = MO2 + H2O :                        GCARR(2.66E-12, 0.0E+00, 200.0);                                   {R13a; Kelp2022 used different constants from supplement}
+MP + OH = CH2O + OH + H2O :                  GCARR(1.14E-12, 0.0E+00, 200.0);                                   {R13b; Kelp2022 used different constants from supplement}
+MO2 + NO = CH2O + HO2 + NO2 :                GCARR(2.80E-12, 0.0E+00, 300.0);                                   {R14}
+MO2 + MO2 = 2.000CH2O + 0.800HO2 :           GCARR(9.50E-14, 0.0E+00, 390.0);                                   {R15 two different reactions simplified into one}
+H2O + NO2 = 0.500HNO3 :                      4.00E-24;                                                          {R16}
+DMS + OH = SO2 :                             1.0E-20;                                                           {R17a fake rate}
+DMS + OH = 0.75SO2 :                         1.0E-20;                                                           {R17b fake rate}
+OH + SO2 {+M} = SO4 {+M} :                   1.0E-20;                                                           {R18 fake rate}         
+H2O2 + SO2 = SO4 :                           1.0E-20;                                                           {R19 aqueous fake rate}
+O3 + SO2 = SO4 :                             1.0E-20;                                                           {R20 aqueous fake rate}                            
+ISOP + OH = MO2 + MO2 :                      GCARR(2.7E-11, 0.0E+00, 390.0);                                    {R21a Isoprene chemistry parametrized from UCI for ISOP + OH}
+ISOP + OH = ISOP :                           GCARR(2.7E-11, 0.0E+00, 390.0);                                    {R21b Isoprene chemistry parametrized from UCI for ISOP + OH}
+ISOP + OH = ISOP + 0.500OH :                 GCARR(2.7E-11, 0.0E+00, 390.0);                                    {R21c Isoprene chemistry parametrized from UCI for ISOP + OH}
+ISOP + O3 = 0.870CH2O + 1.860MO2 +
+ 0.060HO2 + 0.050CO :                        GCARR(5.59E-15, 0.0E+00, -1814.0);                                 {R22 Isoprene chemistry parametrized from LLNL-IMPACT for ISOP + O3}
+
+//
+// Photolysis reactions
+//
+O3 + hv = OH + OH :                          PHOTOL(3);      {simplified, includes O1D rxn}
+H2O2 + hv = OH + OH :                        PHOTOL(9);
+NO2 + hv = NO + O3 :                         PHOTOL(11);     {simplified, O -> O3}
+CH2O + hv = HO2 + HO2 + CO :                 PHOTOL(7);      {simplified, H -> HO2}
+CH2O + hv = CO :                             PHOTOL(8);      {simplified, no H2}
+MP + hv = CH2O + HO2 + OH :                  PHOTOL(10);
