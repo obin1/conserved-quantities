@@ -9,7 +9,7 @@ N = [-1  0  1;
       1 -1  0;
       0  1 -1 ]
 
-Γtest = conservationQR(N)
+# Γtest = conservationQR(N)
 # Note that R will be permuted from https://doi.org/10.1093/bioinformatics/bti800
 # The permutations p will also be different
 # This is fine: the same conserved cycles hold
@@ -26,7 +26,7 @@ A_leight =   [0 -1  1;
               1 -1  0;
               0 -1  0]
 
-Γ_leight = conservationQR(A_leight)
+# Γ_leight = conservationQR(A_leight)
 
 
 
@@ -184,3 +184,45 @@ bar(mechanism_names, [num_species-num_conserved num_conserved], label = ["Number
 
 # save fig
 savefig("/Users/psturm/Desktop/Conserved Quantities/SurveyMechanismInvariants.png")
+
+do_mcm = true
+if do_mcm
+    A_mcm = readdlm("/Users/psturm/Desktop/KPP-playground/mcm_v3.3.1/mcm_BiadjacencyMatrix.csv",',',skipstart=26)
+    mcm_spc_names = ["" for i = 1:maximum(A_mcm[:,2])]
+    mcm_spc_names[A_mcm[:,2]] .= A_mcm[:,1]
+    A_mcm = Float64.(A_mcm[:,2:end])
+    A_mcm = sparse(A_mcm[:,1],A_mcm[:,2],A_mcm[:,3])
+    println("getting rank of MCM")
+    N_mcm = rank(A_mcm')
+
+    # load species composition matrix
+    atoms_mcm = readdlm("/Users/psturm/Desktop/KPP-playground/mcm_v3.3.1/mcm_SpeciesCompositionMatrix.csv",',',skipstart=26)
+    atoms_mcm = Float64.(atoms_mcm[:,4:end])
+
+    atoms_mcm_with_SA = atoms_mcm
+    atoms_mcm_with_SA[2,5] = 1.0 # add sulfur atom to SA
+
+    # dot product of A_mcm with atoms_mcm is zero if conserving
+    reaction_conservation = atoms_mcm'*A_mcm  # should be close to zero
+    # sum absolute values of each row
+    conservation_sums = sum(abs.(reaction_conservation); dims=2)
+
+    # calculate nullspace of A_mcm'
+    println("getting nullspace of MCM")
+    N_mcm = nullspace(Matrix(A_mcm)')
+    println("Number of conserved quantities in MCM: ", size(N_mcm)[2])
+
+    # clip all small values less than 0.001% of max value to zero
+    N_mcm = N_mcm .* (abs.(N_mcm) .> 1e-5 .* maximum(abs.(N_mcm); dims=1))
+    N_mcm = - N_mcm ./ maximum(abs.(N_mcm); dims=1)
+
+    # how many are there? 
+    number_of_terms = sum(abs.(N_mcm))
+
+    # get a table of the conserved species: their name and their value
+
+
+    
+
+end
+
