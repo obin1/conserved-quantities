@@ -1,5 +1,8 @@
-#MODEL      small_strato
-#LANGUAGE   Fortran90
+#MODEL small_strato
 #INTEGRATOR rosenbrock
-#DRIVER     general
-#GRAPH      stoic
+#LANGUAGE Fortran90
+#DRIVER none
+#HESSIAN off
+#MEX off
+#STOICMAT on
+#GRAPH edgelist

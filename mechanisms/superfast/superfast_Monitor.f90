@@ -26,34 +26,33 @@
 MODULE superfast_Monitor
 
 
-  CHARACTER(LEN=32), PARAMETER, DIMENSION(19) :: SPC_NAMES = (/ &
-     'HNO3                            ','SO4                             ','POx                             ', & ! index 1 - 3
-     'DMS                             ','CO                              ','H2O2                            ', & ! index 4 - 6
-     'SO2                             ','ISOP                            ','CH2O                            ', & ! index 7 - 9
-     'MP                              ','NO2                             ','MO2                             ', & ! index 10 - 12
-     'NO                              ','O3                              ','OH                              ', & ! index 13 - 15
-     'HO2                             ','O2                              ','CH4                             ', & ! index 16 - 18
-     'H2O                             ' /) ! index up to 19
+  CHARACTER(LEN=32), PARAMETER, DIMENSION(18) :: SPC_NAMES = (/ &
+     'HNO3                            ','SO4                             ','DMS                             ', & ! index 1 - 3
+     'CO                              ','H2O2                            ','SO2                             ', & ! index 4 - 6
+     'ISOP                            ','CH2O                            ','MP                              ', & ! index 7 - 9
+     'NO2                             ','HO2                             ','NO                              ', & ! index 10 - 12
+     'MO2                             ','O3                              ','OH                              ', & ! index 13 - 15
+     'O2                              ','CH4                             ','H2O                             ' /) ! index up to 18
 
   INTEGER, DIMENSION(1) :: LOOKAT
   INTEGER, DIMENSION(1) :: MONITOR
   CHARACTER(LEN=32), DIMENSION(1) :: SMASS
   CHARACTER(LEN=100), PARAMETER, DIMENSION(30) :: EQN_NAMES_0 = (/ &
      '   O3 + OH --> HO2 + O2                                                                             ', & ! index 1
-     '  O3 + HO2 --> OH + 2 O2                                                                            ', & ! index 2
-     '  OH + HO2 --> O2 + H2O                                                                             ', & ! index 3
+     '  HO2 + O3 --> OH + 2 O2                                                                            ', & ! index 2
+     '  HO2 + OH --> O2 + H2O                                                                             ', & ! index 3
      '     2 HO2 --> H2O2 + O2                                                                            ', & ! index 4
      ' H2O2 + OH --> HO2 + H2O                                                                            ', & ! index 5
      '   NO + O3 --> NO2 + O2                                                                             ', & ! index 6
-     '  NO + HO2 --> POx + NO2 + OH                                                                       ', & ! index 7
+     '  HO2 + NO --> NO2 + OH                                                                             ', & ! index 7
      '  NO2 + OH --> HNO3                                                                                 ', & ! index 8
      '  OH + CH4 --> MO2 + H2O                                                                            ', & ! index 9
      '   CO + OH --> HO2                                                                                  ', & ! index 10
      ' CH2O + OH --> CO + HO2 + H2O                                                                       ', & ! index 11
-     ' MO2 + HO2 --> MP + O2                                                                              ', & ! index 12
+     ' HO2 + MO2 --> MP + O2                                                                              ', & ! index 12
      '   MP + OH --> MO2 + H2O                                                                            ', & ! index 13
      '   MP + OH --> CH2O + OH + H2O                                                                      ', & ! index 14
-     '  MO2 + NO --> POx + CH2O + NO2 + HO2                                                               ', & ! index 15
+     '  NO + MO2 --> CH2O + NO2 + HO2                                                                     ', & ! index 15
      '     2 MO2 --> 2 CH2O + 0.8 HO2                                                                     ', & ! index 16
      ' NO2 + H2O --> 0.5 HNO3                                                                             ', & ! index 17
      '  DMS + OH --> SO2                                                                                  ', & ! index 18
@@ -64,20 +63,18 @@ MODULE superfast_Monitor
      ' ISOP + OH --> 2 MO2                                                                                ', & ! index 23
      ' ISOP + OH --> ISOP                                                                                 ', & ! index 24
      ' ISOP + OH --> ISOP + 0.5 OH                                                                        ', & ! index 25
-     ' ISOP + O3 --> 0.05 CO + 0.87 CH2O + 1.86 MO2 + 0.06 HO2                                            ', & ! index 26
+     ' ISOP + O3 --> 0.05 CO + 0.87 CH2O + 0.06 HO2 + 1.86 MO2                                            ', & ! index 26
      '        O3 --> 2 OH                                                                                 ', & ! index 27
      '      H2O2 --> 2 OH                                                                                 ', & ! index 28
      '       NO2 --> NO + O3                                                                              ', & ! index 29
      '      CH2O --> CO + 2 HO2                                                                           ' /) ! index up to 30
   CHARACTER(LEN=100), PARAMETER, DIMENSION(2) :: EQN_NAMES_1 = (/ &
      '      CH2O --> CO                                                                                   ', & ! index 31
-     '        MP --> CH2O + OH + HO2                                                                      ' /) ! index up to 32
+     '        MP --> CH2O + HO2 + OH                                                                      ' /) ! index up to 32
   CHARACTER(LEN=100), PARAMETER, DIMENSION(32) :: EQN_NAMES = (/&
     EQN_NAMES_0, EQN_NAMES_1 /)
 
-  CHARACTER(LEN=32), PARAMETER, DIMENSION(1) :: FAM_NAMES = (/ &
-     'POx                             ' /) ! index up to 1
-
+  CHARACTER(LEN=32), DIMENSION(1) :: FAM_NAMES
 ! Begin inlined code from F90_DATA
 
 ! End inlined code from F90_DATA

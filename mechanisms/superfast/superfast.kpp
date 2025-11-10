@@ -9,7 +9,6 @@
 #INCLUDE superfast.eqn
 
 #FAMILIES
-POx  :  O3 + NO2 + HNO3;
 
 #
 #INLINE F90_RATES

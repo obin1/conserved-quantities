@@ -31,9 +31,9 @@ MODULE superfast_Parameters
 
 
 ! NSPEC - Number of chemical species
-  INTEGER, PARAMETER :: NSPEC = 19 
+  INTEGER, PARAMETER :: NSPEC = 18 
 ! NVAR - Number of Variable species
-  INTEGER, PARAMETER :: NVAR = 16 
+  INTEGER, PARAMETER :: NVAR = 15 
 ! NFAM - Number of Prod/Loss Families
   INTEGER, PARAMETER :: NFAM = 1 
 ! NVARACT - Number of Active species
@@ -45,13 +45,13 @@ MODULE superfast_Parameters
 ! NVARST - Starting of variables in conc. vect.
   INTEGER, PARAMETER :: NVARST = 1 
 ! NFIXST - Starting of fixed in conc. vect.
-  INTEGER, PARAMETER :: NFIXST = 17 
+  INTEGER, PARAMETER :: NFIXST = 16 
 ! NONZERO - Number of nonzero entries in Jacobian
-  INTEGER, PARAMETER :: NONZERO = 89 
+  INTEGER, PARAMETER :: NONZERO = 85 
 ! LU_NONZERO - Number of nonzero entries in LU factoriz. of Jacobian
-  INTEGER, PARAMETER :: LU_NONZERO = 94 
+  INTEGER, PARAMETER :: LU_NONZERO = 90 
 ! CNVAR - (NVAR+1) Number of elements in compressed row format
-  INTEGER, PARAMETER :: CNVAR = 17 
+  INTEGER, PARAMETER :: CNVAR = 16 
 ! CNEQN - (NREACT+1) Number stoicm elements in compressed col format
   INTEGER, PARAMETER :: CNEQN = 33 
 ! NLOOKAT - Number of species to look at
@@ -66,27 +66,26 @@ MODULE superfast_Parameters
 
   INTEGER, PARAMETER :: ind_HNO3 = 1 
   INTEGER, PARAMETER :: ind_SO4 = 2 
-  INTEGER, PARAMETER :: ind_POx = 3 
-  INTEGER, PARAMETER :: ind_DMS = 4 
-  INTEGER, PARAMETER :: ind_CO = 5 
-  INTEGER, PARAMETER :: ind_H2O2 = 6 
-  INTEGER, PARAMETER :: ind_SO2 = 7 
-  INTEGER, PARAMETER :: ind_ISOP = 8 
-  INTEGER, PARAMETER :: ind_CH2O = 9 
-  INTEGER, PARAMETER :: ind_MP = 10 
-  INTEGER, PARAMETER :: ind_NO2 = 11 
-  INTEGER, PARAMETER :: ind_MO2 = 12 
-  INTEGER, PARAMETER :: ind_NO = 13 
+  INTEGER, PARAMETER :: ind_DMS = 3 
+  INTEGER, PARAMETER :: ind_CO = 4 
+  INTEGER, PARAMETER :: ind_H2O2 = 5 
+  INTEGER, PARAMETER :: ind_SO2 = 6 
+  INTEGER, PARAMETER :: ind_ISOP = 7 
+  INTEGER, PARAMETER :: ind_CH2O = 8 
+  INTEGER, PARAMETER :: ind_MP = 9 
+  INTEGER, PARAMETER :: ind_NO2 = 10 
+  INTEGER, PARAMETER :: ind_HO2 = 11 
+  INTEGER, PARAMETER :: ind_NO = 12 
+  INTEGER, PARAMETER :: ind_MO2 = 13 
   INTEGER, PARAMETER :: ind_O3 = 14 
   INTEGER, PARAMETER :: ind_OH = 15 
-  INTEGER, PARAMETER :: ind_HO2 = 16 
 
 ! Index declaration for fixed species in C
 !   C(ind_spc)
 
-  INTEGER, PARAMETER :: ind_O2 = 17 
-  INTEGER, PARAMETER :: ind_CH4 = 18 
-  INTEGER, PARAMETER :: ind_H2O = 19 
+  INTEGER, PARAMETER :: ind_O2 = 16 
+  INTEGER, PARAMETER :: ind_CH4 = 17 
+  INTEGER, PARAMETER :: ind_H2O = 18 
 
 ! Index declaration for fixed species in FIX
 !    FIX(indf_spc) = C(ind_spc) = C(NVAR+indf_spc)
@@ -99,7 +98,7 @@ MODULE superfast_Parameters
   INTEGER, PARAMETER :: NJVRP = 54 
 
 ! NSTOICM - Length of Sparse Stoichiometric Matrix
-  INTEGER, PARAMETER :: NSTOICM = 94 
+  INTEGER, PARAMETER :: NSTOICM = 92 
 
 END MODULE superfast_Parameters
 

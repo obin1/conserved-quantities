@@ -6,6 +6,7 @@
 #STOICMAT ON
 #JACOBIAN SPARSE_ROW
 #CHECK O; N;                    { Check Mass Balance of oxygen & nitrogen }
+#GRAPH edgelist
 
 #INITVALUES                     { Set initial values of species           }
   CFACTOR = 1.    ;             { and set units conversion factor to 1    }

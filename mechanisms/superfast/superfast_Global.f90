@@ -87,16 +87,6 @@ MODULE superfast_Global
 
 ! Begin inlined code from F90_GLOBAL
 
-      REAL(kind=dp) :: HET(NSPEC,7), PHOTOL(1000)
-      REAL(kind=dp) :: NUMDEN, H2O, PRESS
-
-!-----------------------------------------------------------------------
-! NOTE: The following variables need to be declared THREADPRIVATE
-! because they get written to within an OpenMP parallel loop
-!-----------------------------------------------------------------------
-!$OMP THREADPRIVATE( C,       VAR, FIX,    RCONST, TIME, TEMP  )
-!$OMP THREADPRIVATE( CFACTOR, HET, PHOTOL, NUMDEN, H2O,  PRESS )
-
 ! End inlined code from F90_GLOBAL
 
 

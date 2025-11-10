@@ -46,9 +46,9 @@
 ### Parameters ----------------------------------------
 
 ! NSPEC - Number of chemical species
-  INTEGER, PARAMETER :: NSPEC = 19 
+  INTEGER, PARAMETER :: NSPEC = 18 
 ! NVAR - Number of Variable species
-  INTEGER, PARAMETER :: NVAR = 16 
+  INTEGER, PARAMETER :: NVAR = 15 
 ! NVARACT - Number of Active species
   INTEGER, PARAMETER :: NVARACT = 13 
 ! NFIX - Number of Fixed species
@@ -58,17 +58,17 @@
 ! NVARST - Starting of variables in conc. vect.
   INTEGER, PARAMETER :: NVARST = 1 
 ! NFIXST - Starting of fixed in conc. vect.
-  INTEGER, PARAMETER :: NFIXST = 17 
+  INTEGER, PARAMETER :: NFIXST = 16 
 
 ### Species -------------------------------------------
 
 Variable species
-   1 = HNO3 (n)                  7 = SO2 (r)                  13 = NO (r)                 
-   2 = SO4 (n)                   8 = ISOP (r)                 14 = O3 (r)                 
-   3 = POx (n)                   9 = CH2O (r)                 15 = OH (r)                 
-   4 = DMS (r)                  10 = MP (r)                   16 = HO2 (r)                
-   5 = CO (r)                   11 = NO2 (r)                
-   6 = H2O2 (r)                 12 = MO2 (r)                
+   1 = HNO3 (n)                  7 = ISOP (r)                 13 = MO2 (r)                
+   2 = SO4 (n)                   8 = CH2O (r)                 14 = O3 (r)                 
+   3 = DMS (r)                   9 = MP (r)                   15 = OH (r)                 
+   4 = CO (r)                   10 = NO2 (r)                
+   5 = H2O2 (r)                 11 = HO2 (r)                
+   6 = SO2 (r)                  12 = NO (r)                 
 
 Fixed species
    1 = O2 (n)                    3 = H2O (r)                
