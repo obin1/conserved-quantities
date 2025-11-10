@@ -1,7 +1,7 @@
 #%%
 
 import pandas as pd
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, s_linalg2
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
 
 #%%
 
