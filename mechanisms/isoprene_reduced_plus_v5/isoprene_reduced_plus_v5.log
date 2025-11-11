@@ -40,7 +40,7 @@
 #REORDER      - ON
 #STOCHASTIC   - OFF
 #STOICMAT     - ON
-#GRAPH        - edgelist
+#GRAPH        - stoic
 #UPPERCASEF90 - OFF
 
 ### Parameters ----------------------------------------

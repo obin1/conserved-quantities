@@ -1,0 +1,8 @@
+#MODEL saprc99
+#INTEGRATOR rosenbrock
+#LANGUAGE Fortran90
+#DRIVER none
+#HESSIAN off
+#MEX off
+#STOICMAT on
+#GRAPH edgelist

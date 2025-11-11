@@ -104,13 +104,13 @@ N_mt1 = nullspace(Matrix(A_mt1)')
 
 # Application to SAPRC99
 # From WRF github: https://github.com/wrf-model/WRF/tree/master/chem/KPP/mechanisms/saprc99
-# A_sap = readdlm("/Users/psturm/Desktop/KPP-playground/saprc99/saprc99_BiadjacencyMatrix.csv",',',skipstart=26)
-# sap_spc_names = ["" for i = 1:maximum(A_sap[:,2])]
-# sap_spc_names[A_sap[:,2]] .= A_sap[:,1]
-# A_sap = Float64.(A_sap[:,2:end])
-# A_sap = sparse(A_sap[:,1],A_sap[:,2],A_sap[:,3])
-# Γ_sap = conservationQR(A_sap)
-# print_conserved_cycles(sap_spc_names,Γ_sap)
+A_sap = readdlm("/Users/psturm/Desktop/Conserved Quantities/mechanisms/saprc99/saprc99_BiadjacencyMatrix.csv",',',skipstart=26)
+sap_spc_names = ["" for i = 1:maximum(A_sap[:,2])]
+sap_spc_names[A_sap[:,2]] .= A_sap[:,1]
+A_sap = Float64.(A_sap[:,2:end])
+A_sap = sparse(A_sap[:,1],A_sap[:,2],A_sap[:,3])
+N_sap = nullspace(Matrix(A_sap)')
+
 
 # Application to CB05-TUCl, EPA
 # Found here: https://mbees.med.uni-augsburg.de/gitlab/mbees/boxmox/-/tree/master/examples
@@ -124,12 +124,20 @@ N_cb05 = nullspace(Matrix(A_cb05)')
 # Application to Caltech Isoprene Mechanism, Reduced Plus
 # From here: https://data.caltech.edu/records/x88rk-wca37
 # Reduced Plus ran after renaming CH2O to HCHO in 3 places
-A_iso = readdlm("/Users/psturm/Desktop/KPP-playground/ReducedPlus/isoprene_reduced_plus_v5_BiadjacencyMatrix.csv",',',skipstart=26)
+A_iso = readdlm("/Users/psturm/Desktop/Conserved Quantities/mechanisms/isoprene_reduced_plus_v5/isoprene_reduced_plus_v5_BiadjacencyMatrix.csv",',',skipstart=26)
 iso_spc_names = ["" for i = 1:maximum(A_iso[:,2])]
 iso_spc_names[A_iso[:,2]] .= A_iso[:,1]
 A_iso = Float64.(A_iso[:,2:end])
 A_iso = sparse(A_iso[:,1],A_iso[:,2],A_iso[:,3])
 N_iso = nullspace(Matrix(A_iso)')
+
+# application to caltech isoprene full v5
+A_isofull = readdlm("/Users/psturm/Desktop/Conserved Quantities/mechanisms/isoprene_full_v5/isoprene_full_v5_BiadjacencyMatrix.csv",',',skipstart=26)
+isofull_spc_names = ["" for i = 1:maximum(A_isofull[:,2])]
+isofull_spc_names[A_isofull[:,2]] .= A_isofull[:,1]
+A_isofull = Float64.(A_isofull[:,2:end])
+A_isofull = sparse(A_isofull[:,1],A_isofull[:,2],A_isofull[:,3])
+N_isofull = nullspace(Matrix(A_isofull)')
 
 # Application to GEOS-Chem v14.0
 A_gc = readdlm("/Users/psturm/Desktop/Twilight_KPP/CheckKPPStandalone/gckpp_BiadjacencyMatrix.csv",',',skipstart=26)
