@@ -1,0 +1,25 @@
+import pandas as pd
+import numpy as np
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+
+edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_135species_EdgeList.csv", comment="!")
+
+print("creating sparse matrices...")
+Sr_sparse_amore, Sp_sparse_amore, Svv_sparse_amore = create_sparse(edge_list_amore)
+print("computing dimension of nullspace...")
+stoichiometric_invariants_amore = len(Svv_sparse_amore.T.nullspace())
+Svv_amore_np = np.array(Svv_sparse_amore, dtype=float)
+rank_Svv_amore_np = np.linalg.matrix_rank(Svv_amore_np)
+dim_leftnull_amore = Svv_sparse_amore.shape[0] - rank_Svv_amore_np
+
+if stoichiometric_invariants_amore == dim_leftnull_amore:
+    print("identifying coproduction columns...")
+    coproduction_cols_amore = create_coproduction(Sr_sparse_amore)
+    print("creating symbolic dictionary...")
+    symbol_dict_amore = create_symbols(coproduction_cols_amore)
+    print("merging coproduction columns...")
+    S_merge_amore = merge_coprod(Sr_sparse_amore, Sp_sparse_amore, symbol_dict_amore, coproduction_cols_amore, Svv_sparse_amore)
+    print("performing linear algebra...")
+    del_l_amore, del_r_amore, del_c_amore = s_linalg(Svv_sparse_amore, S_merge_amore, stoichiometric_invariants_amore)
+else:
+    print("Error: numpy vs sympy disparity")
