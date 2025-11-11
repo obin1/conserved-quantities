@@ -108,7 +108,6 @@ def merge_coprod(Sr, Sp, symbol_dict, coproduction_cols, Svv_sparse):
 
 def s_linalg(Svv_sparse, S_merge, stoich_invariants):
     l_vv = stoich_invariants
-    print("getting dim of nullspace of S_merge...")
     l_merge = len(S_merge.T.nullspace())
     del_l = l_merge - l_vv
 

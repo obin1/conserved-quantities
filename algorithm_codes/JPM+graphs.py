@@ -414,7 +414,7 @@ plt.savefig("singular_value_&_atom_deviations.png")
 import pandas as pd
 import numpy as np
 import sympy as sp
-from general_algo import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
 
 # I removed the -2 for O2, rxn3 only in Svv and Sr 
 Svv = sp.Matrix([
@@ -481,7 +481,7 @@ S_merge = merge_coprod(Sr_sparse, Sp_sparse, symbol_dict, coproduction_cols, Svv
 
 S_merge[15, 2] = -2*symbol_dict[3]
 
-del_l, del_r, del_c = s_linalg(Svv_sparse, S_merge)
+del_l, del_r, del_c = s_linalg(Svv_sparse, S_merge, stoichiometric_invariants)
 
 # %%
 
@@ -561,5 +561,5 @@ S_merge = merge_coprod(Sr_sparse, Sp_sparse, symbol_dict, coproduction_cols, Svv
 S_merge[15, 2] = -2*symbol_dict[3]
 
 # expect del_r = -2, del_l = 1, del_c = 1
-del_l, del_r, del_c = s_linalg(Svv_sparse, S_merge)
+del_l, del_r, del_c = s_linalg(Svv_sparse, S_merge, stoichiometric_invariants)
 # %%
