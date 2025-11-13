@@ -18,7 +18,7 @@ if stoichiometric_invariants_iso_red == dim_leftnull_iso_red:
     print("creating symbolic dictionary...")
     symbol_dict_iso_red = create_symbols(coproduction_cols_iso_red)
     print("merging coproduction columns...")
-    S_merge_iso_red = merge_coprod(Sr_sparse_iso_red, Sp_sparse_iso_red, symbol_dict_iso_red, coproduction_cols_iso_red, Svv_sparse_iso_red)
+    S_merge_iso_red, col_del = merge_coprod(Sr_sparse_iso_red, Sp_sparse_iso_red, symbol_dict_iso_red, coproduction_cols_iso_red, Svv_sparse_iso_red)
     print("performing linear algebra...")
     rank_iso_red = S_merge_iso_red.rank()
     dim_null_iso_red = S_merge_iso_red.shape[0] - rank_iso_red

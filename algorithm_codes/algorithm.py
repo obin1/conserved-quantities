@@ -94,16 +94,19 @@ def merge_coprod(Sr, Sp, symbol_dict, coproduction_cols, Svv_sparse):
             S_merge[:, indices[0]] = sum_col
         
         # drop columns with only 0, avoid shifting of indices by reversing range
+        col_del = []
         for j in reversed(range(S_merge.shape[1])):
             if all(S_merge[i, j] == 0 for i in range(S_merge.shape[0])):
                 S_merge.col_del(j)
+                col_del.append(j)
 
         S_merge = S_merge.applyfunc(sp.simplify)
 
     else:
         S_merge = Svv_sparse
+        col_del = []
 
-    return S_merge
+    return S_merge, col_del
 
 
 def s_linalg(Svv_sparse, S_merge, stoich_invariants):
