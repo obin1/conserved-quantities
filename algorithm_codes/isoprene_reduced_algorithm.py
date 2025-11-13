@@ -20,6 +20,11 @@ if stoichiometric_invariants_iso_red == dim_leftnull_iso_red:
     print("merging coproduction columns...")
     S_merge_iso_red = merge_coprod(Sr_sparse_iso_red, Sp_sparse_iso_red, symbol_dict_iso_red, coproduction_cols_iso_red, Svv_sparse_iso_red)
     print("performing linear algebra...")
-    del_l_iso_red, del_r_iso_red, del_c_iso_red = s_linalg(Svv_sparse_iso_red, S_merge_iso_red, stoichiometric_invariants_iso_red)
+    rank_iso_red = S_merge_iso_red.rank()
+    dim_null_iso_red = S_merge_iso_red.shape[0] - rank_iso_red
+    del_l_iso_red = dim_null_iso_red - stoichiometric_invariants_iso_red
+    del_r_iso_red = S_merge_iso_red.shape[1] - Svv_sparse_iso_red.shape[1]
+    del_c_iso_red = -del_r_iso_red - del_l_iso_red
+    # del_l_iso_red, del_r_iso_red, del_c_iso_red = s_linalg(Svv_sparse_iso_red, S_merge_iso_red, stoichiometric_invariants_iso_red)
 else:
     print("Error: numpy vs sympy disparity")
