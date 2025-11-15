@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import sympy as sp
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 # no Oxygen tracked
 Svv_JPM = sp.Matrix([
@@ -73,9 +73,12 @@ if stoichiometric_invariants_JPM == dim_leftnull_JPM:
     print("creating symbolic dictionary...")
     symbol_dict_JPM = create_symbols(coproduction_cols_JPM)
     print("merging coproduction columns...")
-    S_merge_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
+    S_merge_JPM, col_del_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
     S_merge_JPM[15, 2] = -2*symbol_dict_JPM[3]
     print("performing linear algebra...")
     del_l_JPM, del_r_JPM, del_c_JPM = s_linalg(Svv_sparse_JPM, S_merge_JPM, stoichiometric_invariants_JPM)
+    
+    # rank_list_JPM = linalg_experiment(S_merge_JPM)
+    # del_l = S_merge_JPM.shape[0] - rank - stoich_invariants
 else:
     print("Error: numpy vs sympy disparity")

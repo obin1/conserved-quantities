@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 edge_list_superfast = pd.read_csv("../mechanisms/superfast/superfast_EdgeList.csv", comment="!")
 
@@ -18,8 +18,10 @@ if stoichiometric_invariants_superfast == dim_leftnull_superfast:
     print("creating symbolic dictionary...")
     symbol_dict_superfast = create_symbols(coproduction_cols_superfast)
     print("merging coproduction columns...")
-    S_merge_superfast = merge_coprod(Sr_sparse_superfast, Sp_sparse_superfast, symbol_dict_superfast, coproduction_cols_superfast, Svv_sparse_superfast)
+    S_merge_superfast, col_del_supefast = merge_coprod(Sr_sparse_superfast, Sp_sparse_superfast, symbol_dict_superfast, coproduction_cols_superfast, Svv_sparse_superfast)
     print("performing linear algebra...")
     del_l_superfast, del_r_superfast, del_c_superfast = s_linalg(Svv_sparse_superfast, S_merge_superfast, stoichiometric_invariants_superfast)
+    # rank_list_superfast = linalg_experiment(S_merge_superfast)
+    # del_l = S_merge_superfast.shape[0] - rank - stoich_invariants
 else:
     print("Error: numpy vs sympy disparity")

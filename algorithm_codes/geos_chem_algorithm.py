@@ -2,7 +2,7 @@
 
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 #%%
 
@@ -23,26 +23,39 @@ if stoichiometric_invariants_gc == dim_leftnull_gc:
     print("creating symbolic dictionary...")
     symbol_dict_gc = create_symbols(coproduction_cols_gc)
     print("merging coproduction columns...")
-    S_merge_gc = merge_coprod(Sr_sparse_gc, Sp_sparse_gc, symbol_dict_gc, coproduction_cols_gc, Svv_sparse_gc)
+    S_merge_gc, col_del_gc = merge_coprod(Sr_sparse_gc, Sp_sparse_gc, symbol_dict_gc, coproduction_cols_gc, Svv_sparse_gc)
     print("performing linear algebra...")
-    rank_gc = S_merge_gc.rank()
-    dim_null_gc = S_merge_gc.shape[0] - rank_gc
-    del_l_gc = dim_null_gc - stoichiometric_invariants_gc
+    # rank_gc = S_merge_gc.rank()
+    # dim_null_gc = S_merge_gc.shape[0] - rank_gc
+    # del_l_gc = dim_null_gc - stoichiometric_invariants_gc
     del_r_gc = S_merge_gc.shape[1] - Svv_sparse_gc.shape[1]
-    del_c_gc = -del_r_gc - del_l_gc
+    # del_c_gc = -del_r_gc - del_l_gc
+
+    rank_list_gc = linalg_experiment(S_merge_gc)
+    # del_l = S_merge_gc.shape[0] - rank - stoich_invariants
+    # del_c_gc = -del_r_gc - del_l
+
     # del_l_gc, del_r_gc, del_c_gc = s_linalg(Svv_sparse_gc, S_merge_gc, stoichiometric_invariants_gc)
 else:
     print("Error: numpy vs sympy disparity")
 
-# %%
-# check a few random reactions in each edge list with 
-# the corresponding .eqn file (or the .m file in the 
-# Amore case, the stoic values are defined as changes 
-# to the formation rate). Do they match? They should 
-# if my parser programs are running correctly, so far 
-# I've only fixed everything that I've caught 
+#%%
 
-# Get stoic invariants, emergent invariants, and 
-# coproduction indices for each mechanism.  
-# Save CRI for last (or let it run overnight) 
-# as that's bigger than the rest
+print("identifying coproduction columns...")
+coproduction_cols_gc = create_coproduction(Sr_sparse_gc)
+print("creating symbolic dictionary...")
+symbol_dict_gc = create_symbols(coproduction_cols_gc)
+print("merging coproduction columns...")
+S_merge_gc, col_del_gc = merge_coprod(Sr_sparse_gc, Sp_sparse_gc, symbol_dict_gc, coproduction_cols_gc, Svv_sparse_gc)
+print("performing linear algebra...")
+rank_gc = S_merge_gc.rank()
+dim_null_gc = S_merge_gc.shape[0] - rank_gc
+del_l_gc = dim_null_gc - stoichiometric_invariants_gc
+del_r_gc = S_merge_gc.shape[1] - Svv_sparse_gc.shape[1]
+del_c_gc = -del_r_gc - del_l_gc
+
+rank_list_gc = linalg_experiment(S_merge_gc)
+# %%
+
+
+# rank is 277, why does merged rank jump to 280

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_135species_EdgeList.csv", comment="!")
 
@@ -18,13 +18,18 @@ if stoichiometric_invariants_amore == dim_leftnull_amore:
     print("creating symbolic dictionary...")
     symbol_dict_amore = create_symbols(coproduction_cols_amore)
     print("merging coproduction columns...")
-    S_merge_amore = merge_coprod(Sr_sparse_amore, Sp_sparse_amore, symbol_dict_amore, coproduction_cols_amore, Svv_sparse_amore)
+    S_merge_amore, col_del_amore = merge_coprod(Sr_sparse_amore, Sp_sparse_amore, symbol_dict_amore, coproduction_cols_amore, Svv_sparse_amore)
     print("performing linear algebra...")
-    rank_amore = S_merge_amore.rank()
-    dim_null_amore = S_merge_amore.shape[0] - rank_amore
-    del_l_amore = dim_null_amore - stoichiometric_invariants_amore
+    # rank_amore = S_merge_amore.rank()
+    # dim_null_amore = S_merge_amore.shape[0] - rank_amore
+    # del_l_amore = dim_null_amore - stoichiometric_invariants_amore
     del_r_amore = S_merge_amore.shape[1] - Svv_sparse_amore.shape[1]
-    del_c_amore = -del_r_amore - del_l_amore
+    # del_c_amore = -del_r_amore - del_l_amore
+
+    rank_list_amore = linalg_experiment(S_merge_amore)
+    # del_l = S_merge_amore.shape[0] - rank - stoich_invariants
+    # del_c_amore = -del_r_amore - del_l_amore
+
     # del_l_amore, del_r_amore, del_c_amore = s_linalg(Svv_sparse_amore, S_merge_amore, stoichiometric_invariants_amore)
 else:
     print("Error: numpy vs sympy disparity")

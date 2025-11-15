@@ -123,3 +123,23 @@ def s_linalg(Svv_sparse, S_merge, stoich_invariants):
     return del_l, del_r, del_c
 
 
+def linalg_experiment(S_merge):
+    rank_list = []
+    for i in range(10):
+        subs_dict = {}
+        for key in S_merge.free_symbols:
+            subs_dict[key] = np.random.uniform(1, 10)
+        subs_matrix = S_merge.subs(subs_dict)
+        rank_list.append(subs_matrix.rank())
+    return rank_list
+
+# to check if all lost reactions result from coproduction merging 
+# (not weird reactions like rxn 61 in SAPRC99)
+def check_merge(coproduction_cols):
+    x = [i for i in coproduction_cols if i!= 0]
+    y = set([i for i in coproduction_cols if i!= 0])
+    del_r = -(len(x) - len(y))
+    return del_r
+
+# to check EdgeList vs .eqn vs sparse matrix
+# np.where(np.array(Svv_sparse[:, n]) != 0)

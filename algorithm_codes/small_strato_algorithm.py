@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg
+from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 edge_list_small_strato = pd.read_csv("../mechanisms/small_strato/small_strato_EdgeList.csv", comment="!")
 
@@ -18,8 +18,10 @@ if stoichiometric_invariants_small_strato == dim_leftnull_small_strato:
     print("creating symbolic dictionary...")
     symbol_dict_small_strato = create_symbols(coproduction_cols_small_strato)
     print("merging coproduction columns...")
-    S_merge_small_strato = merge_coprod(Sr_sparse_small_strato, Sp_sparse_small_strato, symbol_dict_small_strato, coproduction_cols_small_strato, Svv_sparse_small_strato)
+    S_merge_small_strato, col_del_small_strato = merge_coprod(Sr_sparse_small_strato, Sp_sparse_small_strato, symbol_dict_small_strato, coproduction_cols_small_strato, Svv_sparse_small_strato)
     print("performing linear algebra...")
     del_l_small_strato, del_r_small_strato, del_c_small_strato = s_linalg(Svv_sparse_small_strato, S_merge_small_strato, stoichiometric_invariants_small_strato)
+    # rank_list_small_strato = linalg_experiment(S_merge_small_strato)
+    # del_l = S_merge_small_strato.shape[0] - rank - stoich_invariants
 else:
     print("Error: numpy vs sympy disparity")
