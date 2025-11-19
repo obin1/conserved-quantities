@@ -143,3 +143,11 @@ def check_merge(coproduction_cols):
 
 # to check EdgeList vs .eqn vs sparse matrix
 # np.where(np.array(Svv_sparse[:, n]) != 0)
+
+# check if nullspace of Svv still in nullspace of Smerge
+# for v in Svv_sparse.T.nullspace():
+    # w = (subs_matrix.T * v).applyfunc(sp.simplify)
+    # if not w.is_zero_matrix:
+    #     print("False")
+    # else: 
+    #     print("True")

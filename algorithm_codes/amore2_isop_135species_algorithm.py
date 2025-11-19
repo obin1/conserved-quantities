@@ -1,11 +1,23 @@
 import pandas as pd
 import numpy as np
+from sympy import S
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_135species_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
 Sr_sparse_amore, Sp_sparse_amore, Svv_sparse_amore = create_sparse(edge_list_amore)
+
+zero_rows_indices = []
+for i in range(Svv_sparse_amore.rows):
+    row = Svv_sparse_amore.row(i)
+    if all(element == S.Zero for element in row):
+        zero_rows_indices.append(i)
+for i in reversed(zero_rows_indices):
+    Svv_sparse_amore.row_del(i)
+    Sr_sparse_amore.row_del(i)
+    Sp_sparse_amore.row_del(i)
+
 print("computing dimension of nullspace...")
 stoichiometric_invariants_amore = len(Svv_sparse_amore.T.nullspace())
 Svv_amore_np = np.array(Svv_sparse_amore, dtype=float)
@@ -33,3 +45,5 @@ if stoichiometric_invariants_amore == dim_leftnull_amore:
     # del_l_amore, del_r_amore, del_c_amore = s_linalg(Svv_sparse_amore, S_merge_amore, stoichiometric_invariants_amore)
 else:
     print("Error: numpy vs sympy disparity")
+
+# %%
