@@ -129,8 +129,9 @@ def linalg_experiment(S_merge):
         subs_dict = {}
         for key in S_merge.free_symbols:
             subs_dict[key] = np.random.uniform(1, 10)
-        subs_matrix = S_merge.subs(subs_dict)
-        rank_list.append(subs_matrix.rank())
+        subs_matrix = S_merge.subs(subs_dict).evalf()
+        subs_matrix_np = np.array(subs_matrix.tolist(), dtype=float)
+        rank_list.append(np.linalg.matrix_rank(subs_matrix_np))
     return rank_list
 
 # to check if all lost reactions result from coproduction merging 
