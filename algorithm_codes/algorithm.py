@@ -123,9 +123,9 @@ def s_linalg(Svv_sparse, S_merge, stoich_invariants):
     return del_l, del_r, del_c
 
 
-def linalg_experiment(S_merge):
+def linalg_experiment(S_merge, num_experiments):
     rank_list = []
-    for i in range(10):
+    for i in range(num_experiments):
         subs_dict = {}
         for key in S_merge.free_symbols:
             subs_dict[key] = np.random.uniform(1, 10)

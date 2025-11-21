@@ -3,6 +3,11 @@ import numpy as np
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 from scipy.linalg import null_space
 
+SEED = 42
+np.random.seed(SEED)
+
+num_experiments = 10
+
 edge_list_cri = pd.read_csv("../mechanisms/cri-v2.2/cri_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
@@ -53,7 +58,7 @@ print("performing linear algebra...")
 del_r_cri = S_merge_cri.shape[1] - Svv_sparse_cri.shape[1]
 # del_c_cri = -del_r_cri - del_l_cri
 
-rank_list_cri = linalg_experiment(S_merge_cri)
+rank_list_cri = linalg_experiment(S_merge_cri, num_experiments)
 # del_l = S_merge_cri.shape[0] - rank - stoich_invariants
 # del_c_cri = -del_r_cri - del_l_cri
 # %%

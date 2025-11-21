@@ -3,6 +3,11 @@ import numpy as np
 import sympy as sp
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+SEED = 42
+np.random.seed(SEED)
+
+num_experiments = 10
+
 # no Oxygen tracked
 Svv_JPM = sp.Matrix([
                [1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -78,7 +83,7 @@ if stoichiometric_invariants_JPM == dim_leftnull_JPM:
     print("performing linear algebra...")
     del_l_JPM, del_r_JPM, del_c_JPM = s_linalg(Svv_sparse_JPM, S_merge_JPM, stoichiometric_invariants_JPM)
     
-    # rank_list_JPM = linalg_experiment(S_merge_JPM)
+    # rank_list_JPM = linalg_experiment(S_merge_JPM, num_experiments)
     # del_l = S_merge_JPM.shape[0] - rank - stoich_invariants
 else:
     print("Error: numpy vs sympy disparity")

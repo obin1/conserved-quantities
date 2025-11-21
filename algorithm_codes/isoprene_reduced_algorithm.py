@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+SEED = 42
+np.random.seed(SEED)
+
+num_experiments = 10
+
 edge_list_iso_red = pd.read_csv("../mechanisms/isoprene_reduced_plus_v5/isoprene_reduced_plus_v5_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
@@ -26,7 +31,7 @@ if stoichiometric_invariants_iso_red == dim_leftnull_iso_red:
     del_r_iso_red = S_merge_iso_red.shape[1] - Svv_sparse_iso_red.shape[1]
     # del_c_iso_red = -del_r_iso_red - del_l_iso_red
 
-    rank_list_iso_red = linalg_experiment(S_merge_iso_red)
+    rank_list_iso_red = linalg_experiment(S_merge_iso_red, num_experiments)
     # del_l = S_merge_iso_red.shape[0] - rank - stoich_invariants
 
     # del_l_iso_red, del_r_iso_red, del_c_iso_red = s_linalg(Svv_sparse_iso_red, S_merge_iso_red, stoichiometric_invariants_iso_red)

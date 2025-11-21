@@ -4,6 +4,12 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 from scipy.linalg import null_space
+
+SEED = 42
+np.random.seed(SEED)
+
+num_experiments = 10
+
 #%%
 
 edge_list_gc = pd.read_csv("../mechanisms/geos-chem-v14/gckpp_EdgeList.csv", comment="!")
@@ -33,7 +39,7 @@ if stoichiometric_invariants_gc == dim_leftnull_gc:
     del_r_gc = S_merge_gc.shape[1] - Svv_sparse_gc.shape[1]
     # del_c_gc = -del_r_gc - del_l_gc
 
-    rank_list_gc = linalg_experiment(S_merge_gc)
+    rank_list_gc = linalg_experiment(S_merge_gc, num_experiments)
     # del_l = S_merge_gc.shape[0] - rank - stoich_invariants
     # del_c_gc = -del_r_gc - del_l
 
@@ -56,7 +62,7 @@ print("performing linear algebra...")
 del_r_gc = S_merge_gc.shape[1] - Svv_sparse_gc.shape[1]
 # del_c_gc = -del_r_gc - del_l_gc
 
-rank_list_gc = linalg_experiment(S_merge_gc)
+rank_list_gc = linalg_experiment(S_merge_gc, num_experiments)
 # del_l_gc = S_merge_gc.shape[0] - rank - stoich_invariants
 # del_c_gc = -del_r_gc - del_l_gc
 # %%

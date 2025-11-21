@@ -3,6 +3,11 @@ import numpy as np
 from sympy import S
 from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+SEED = 42
+np.random.seed(SEED)
+
+num_experiments = 10
+
 edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_135species_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
@@ -38,7 +43,7 @@ if stoichiometric_invariants_amore == dim_leftnull_amore:
     del_r_amore = S_merge_amore.shape[1] - Svv_sparse_amore.shape[1]
     # del_c_amore = -del_r_amore - del_l_amore
 
-    rank_list_amore = linalg_experiment(S_merge_amore)
+    rank_list_amore = linalg_experiment(S_merge_amore, num_experiments)
     # del_l = S_merge_amore.shape[0] - rank - stoich_invariants
     # del_c_amore = -del_r_amore - del_l_amore
 
