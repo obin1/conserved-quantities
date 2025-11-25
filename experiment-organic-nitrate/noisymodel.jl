@@ -22,7 +22,7 @@ function barber2024!(du, u, p, t)
     j1, k8, R, X5a = p
     
     # Define the ODEs
-    du[1] = -j1 * A  - k8 * A    # dA/dt  /\/\/ONO, n-pentyl nitrite precursor colored purple
+    du[1] = -j1 * A  - k8 * A    # dA/dt  /\/\/ONO, n-pentyl nitrite precursor colored brown
     du[2] = k8 * A               # dB/dt  C5H12O, colored green
     du[3] = R/(R+1)*j1*A         # dD/dt  C5H10O, colored goldenrod
     du[4] = X5a*(1/(R+1))*j1*A   # dG/dt  C5H11NO4, colored blue 
@@ -65,13 +65,13 @@ prob_aqueous = ODEProblem(barber2024!, u0, tspan, p_aqueous)
 sol_aqueous = solve(prob_aqueous, solver, saveat=dt)
 
 # plot a stacked subplot for the three experiments
-# colors: A - purple, B - green, D - goldenrod, G - blue, I+J - red
+# colors: A - brown, B - green, D - goldenrod, G - blue, I+J - red
 using Plots
 p = plot(layout = (3, 1), size=(500, 700), grid=false)
 
 
 # gas phase on subplot 1
-plot!(p[1], sol_gas.t, sol_gas[1, :], label="PN precursor", color=:purple)
+plot!(p[1], sol_gas.t, sol_gas[1, :], label="PN precursor", color=:brown)
 plot!(p[1], sol_gas.t, sol_gas[2, :], label="\$C_5H_{12}O\$", color=:green)
 plot!(p[1], sol_gas.t, sol_gas[3, :], label="\$C_5H_{10}O\$", color=:goldenrod)
 plot!(p[1], sol_gas.t, sol_gas[4, :], label="\$C_5H_{11}NO_4\$", color=:blue)
@@ -81,7 +81,7 @@ xlabel!(p[1], "Time (s)")
 ylabel!(p[1], "Concentration")
 
 # organic phase on subplot 2
-plot!(p[2], sol_organic.t, sol_organic[1, :], label="PN precursor", color=:purple)
+plot!(p[2], sol_organic.t, sol_organic[1, :], label="PN precursor", color=:brown)
 plot!(p[2], sol_organic.t, sol_organic[2, :], label="\$C_5H_{12}O\$", color=:green)
 plot!(p[2], sol_organic.t, sol_organic[3, :], label="\$C_5H_{10}O\$", color=:goldenrod)
 plot!(p[2], sol_organic.t, sol_organic[4, :], label="\$C_5H_{11}NO_4\$", color=:blue)
@@ -91,7 +91,7 @@ xlabel!(p[2], "Time (s)")
 ylabel!(p[2], "Concentration")  
 
 # aqueous phase on subplot 3
-plot!(p[3], sol_aqueous.t, sol_aqueous[1, :], label="PN precursor", color=:purple)
+plot!(p[3], sol_aqueous.t, sol_aqueous[1, :], label="PN precursor", color=:brown)
 plot!(p[3], sol_aqueous.t, sol_aqueous[2, :], label="\$C_5H_{12}O\$", color=:green)
 plot!(p[3], sol_aqueous.t, sol_aqueous[3, :], label="\$C_5H_{10}O\$", color=:goldenrod)
 plot!(p[3], sol_aqueous.t, sol_aqueous[4, :], label="\$C_5H_{11}NO_4\$", color=:blue)
@@ -135,22 +135,25 @@ noisy_data_organic = smooth_data(noisy_data_organic, window_size)
 noisy_data_aqueous = smooth_data(noisy_data_aqueous, window_size)
 
 # add noisy points to the first plot p[1], p[2], p[3]
-plot!(p[1], sol_gas.t, noisy_data_gas[:,1], seriestype=:scatter,label=false, color=:purple, markerstrokecolor=:purple, markersize=0.5, alpha=0.8)
+plot!(p[1], sol_gas.t, noisy_data_gas[:,1], seriestype=:scatter,label=false, color=:brown, markerstrokecolor=:brown, markersize=0.5, alpha=0.8)
 plot!(p[1], sol_gas.t, noisy_data_gas[:,2], seriestype=:scatter, label=false, color=:green, markerstrokecolor=:green, markersize=0.5, alpha=0.8)
 plot!(p[1], sol_gas.t, noisy_data_gas[:,3], seriestype=:scatter, label=false, color=:goldenrod, markerstrokecolor=:goldenrod, markersize=0.5, alpha=0.8)
 plot!(p[1], sol_gas.t, noisy_data_gas[:,4], seriestype=:scatter, label=false, color=:blue, markerstrokecolor=:blue, markersize=0.5, alpha=0.8)
 plot!(p[1], sol_gas.t, noisy_data_gas[:,5], seriestype=:scatter, label=false, color=:red, markerstrokecolor=:red, markersize=0.5, alpha=0.8)
-plot!(p[2], sol_organic.t, noisy_data_organic[:,1], seriestype=:scatter,label=false, color=:purple, markerstrokecolor=:purple, markersize=0.5, alpha=0.8)
+plot!(p[2], sol_organic.t, noisy_data_organic[:,1], seriestype=:scatter,label=false, color=:brown, markerstrokecolor=:brown, markersize=0.5, alpha=0.8)
 plot!(p[2], sol_organic.t, noisy_data_organic[:,2], seriestype=:scatter, label=false, color=:green, markerstrokecolor=:green, markersize=0.5, alpha=0.8)
 plot!(p[2], sol_organic.t, noisy_data_organic[:,3], seriestype=:scatter, label=false, color=:goldenrod, markerstrokecolor=:goldenrod, markersize=0.5, alpha=0.8)
 plot!(p[2], sol_organic.t, noisy_data_organic[:,4], seriestype=:scatter, label=false, color=:blue, markerstrokecolor=:blue, markersize=0.5, alpha=0.8)
 plot!(p[2], sol_organic.t, noisy_data_organic[:,5], seriestype=:scatter, label=false, color=:red, markerstrokecolor=:red, markersize=0.5, alpha=0.8)
-plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,1], seriestype=:scatter,label=false, color=:purple, markerstrokecolor=:purple, markersize=0.5, alpha=0.8)
+plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,1], seriestype=:scatter,label=false, color=:brown, markerstrokecolor=:brown, markersize=0.5, alpha=0.8)
 plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,2], seriestype=:scatter, label=false, color=:green, markerstrokecolor=:green, markersize=0.5, alpha=0.8)
 plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,3], seriestype=:scatter, label=false, color=:goldenrod, markerstrokecolor=:goldenrod, markersize=0.5, alpha=0.8)
 plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,4], seriestype=:scatter, label=false, color=:blue, markerstrokecolor=:blue, markersize=0.5, alpha=0.8)
 plot!(p[3], sol_aqueous.t, noisy_data_aqueous[:,5], seriestype=:scatter, label=false, color=:red, markerstrokecolor=:red, markersize=0.5, alpha=0.8)
 display(p)
+
+# save figure as high resolution png
+savefig(p, "./experiment-organic-nitrate/noisymodel.pdf")
 
 # # run PCA on each solution, plot all 5 principal components for each phase in a single plot
 using MultivariateStats
@@ -167,6 +170,8 @@ xlabel!(p2, "Principal Component")
 ylabel!(p2, "Eigenvalue")
 display(p2)
 
+# save figure as png 
+# png(p2, "figure2_eigenvalues.png")
 
 
 eigvecs(Mgas)[:,1]/(-eigvecs(Mgas)[1,1])
