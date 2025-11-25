@@ -5,7 +5,7 @@ from algorithm import create_sparse, create_coproduction, create_symbols, merge_
 SEED = 42
 np.random.seed(SEED)
 
-num_experiments = 1
+num_experiments = 10
 
 edge_list_gc12_8_0 = pd.read_csv("../mechanisms/geoschem-12.8.0/gckpp_EdgeList.csv", comment="!")
 
