@@ -1,7 +1,7 @@
 import numpy as np
 import sympy as sp
-from sympy.matrices.normalforms import DomainMatrix
-from sympy.polys.domains import QQ
+# from sympy.matrices.normalforms import DomainMatrix
+# from sympy.polys.domains import QQ
 
 def create_sparse(edge_list):
     consumed = edge_list[edge_list[" directed stoichiometric value"]<0]
@@ -49,6 +49,37 @@ def create_coproduction(Sr):
             coproduction_cols[idx] = 0
 
     return coproduction_cols
+
+# ------------------------------------
+# Create coproduction function for MCM 
+# ------------------------------------
+from collections import defaultdict
+
+def create_coproduction_2(Sr):
+    n_rows, n_cols = Sr.shape
+
+    groups = defaultdict(list)
+
+    for j in range(n_cols):
+        # Get nonzero structure of column j
+        col_entries = Sr[:, j].todok()
+
+        # Canonical, hashable signature
+        signature = tuple(sorted(col_entries.items()))
+        # each item is (row_index, symbolic_value)
+
+        groups[signature].append(j)
+
+    coproduction_cols = [0] * n_cols
+
+    for group in groups.values():
+        if len(group) > 1:
+            rep = min(group) + 1
+            for j in group:
+                coproduction_cols[j] = rep
+
+    return coproduction_cols
+# ------------------------------------
 
 
 def create_symbols(coproduction_cols):
@@ -133,6 +164,75 @@ def linalg_experiment(S_merge, num_experiments):
         subs_matrix_np = np.array(subs_matrix.tolist(), dtype=float)
         rank_list.append(np.linalg.matrix_rank(subs_matrix_np))
     return rank_list
+
+
+# ---------------------------------
+# Linear algebra function for MCM 
+# ---------------------------------
+def linalg_experiment_fast(A, num_experiments, proj_dim):
+    n_rows, n_cols = A.shape
+    rank_list = []
+
+    for _ in range(num_experiments):
+    
+        # 2. Random projection
+        R = np.random.randn(n_cols, proj_dim)
+        AR = A @ R   # shape: (n_rows, proj_dim)
+
+        # 3. Rank of small matrix
+        rank = np.linalg.matrix_rank(AR, tol=1e-8)
+        rank_list.append(rank)
+
+    return rank_list
+# ---------------------------------
+
+
+# --------------------------------------------------------------
+# Create sparse matrix for faster rank solving function for MCM 
+# --------------------------------------------------------------
+import scipy
+import sympy as sp
+import numpy as np
+from scipy.sparse import csc_matrix
+
+def numeric_sparse_matrix_fast_combined(S, seed=None):
+    """
+    Convert a large symbolic SymPy sparse matrix S into a numeric SciPy CSC sparse matrix quickly.
+    Combines:
+      1. Precomputed DOK entries
+      2. Vectorized substitution via lambdify
+      3. Bulk float conversion
+    """
+    if seed is not None:
+        np.random.seed(seed)
+
+    print("Precompute DOK entries")
+    dok = S.todok()
+    keys = list(dok.keys())         # list of (i,j)
+    values = list(dok.values())     # list of sympy expressions
+
+    if not values:
+        return csc_matrix(S.shape)
+
+    print("Get all free symbols in order")
+    free_syms = sorted(list(S.free_symbols), key=lambda s: s.name)
+
+    print("Create fast numeric function using lambdify")
+    f = sp.lambdify(free_syms, values, modules='numpy')
+
+    print("Sample random values for symbols")
+    vals = np.random.uniform(1.0, 10.0, size=len(free_syms))
+
+    print("Evaluate all nonzero entries at once (vectorized)")
+    data = np.array(f(*vals), dtype=np.float64)
+
+    print("Extract row and column indices")
+    rows, cols = zip(*keys)
+
+    print("Build CSC sparse matrix")
+    return csc_matrix((data, (rows, cols)), shape=S.shape)
+# ------------------------------------
+
 
 # to check if all lost reactions result from coproduction merging 
 # (not weird reactions like rxn 61 in SAPRC99)
