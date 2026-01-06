@@ -1,0 +1,49 @@
+#include atoms
+
+{ from the following publication:
+Vajda, S., Valko, P. and Turányi, T. (1985), 
+Principal component analysis of kinetic models. 
+Int. J. Chem. Kinet., 17: 55-81. 
+https://doi.org/10.1002/kin.550170107
+}
+
+#DEFVAR
+HCO  = H + C + O;
+O2   = O + O;         { Molecular oxygen }
+HO2  = H + O + O;     { HO2; Hydroperoxyl radical }
+CO   = C + O;         { Carbon monoxide }
+CH2O = C + H + H + O; { Formaldehyde }
+H2O2 = H + H + O + O; { Hydrogen peroxide }
+OH   = O + H;         { Hydroxyl radical }
+H2O  = O + H + H;     { Water }
+H    = H;             { Hydrogen atom }
+CO2  = C + O + O;     { Carbon dioxide }
+H2   = H + H;         { Diatomic hydrogen }
+O    = O;             { Ground state atomic oxygen }
+
+#EQUATIONS 
+<R1>  HCO + O2    = HO2 + CO :        1.0E-13;
+<R2>  HO2 + CH2O  = H2O2 + HCO :      5.7E-14;
+<R3>  H2O2 {+M}   = 2OH {+M} :        6.66E-18;
+<R4>  OH + CH2O   = H2O + HCO :       1.6E-10;
+<R5>  OH + H2O2   = H2O + HO2 :       5.1E-12;
+<R6>  H2O2        = PROD :            1.05E+2;
+<R7>  HO2         = PROD :            1.05E+1;
+<R8>  HO2 + HO2   = H2O2 + O2 :       3.00E-12;
+<R9>  OH + CO     = CO2 + H :         3.3E-13;
+<R10> HO2 + CO    = CO2 + OH :        1.2E-15;
+<R11> H + CH2O    = H2 + HCO :        2.7E-12;
+<R12> H + O2      = OH + O :          5.51E-14;
+<R13> H + O2 {+M} = HO2 {+M} :        1.0E-32;
+<R14> HO2 {+M}    = H + O2 {+M} :     4.7E-19;
+<R15> O + H2      = OH + H :          3.02E-13;
+<R16> O + CH2O    = OH + HCO :        1.0E-10;
+<R17> H + H2O2    = HO2 + H2 :        1.3E-12;
+<R18> H + H2O2    = H2O + OH :        5.9E-12;
+<R19> O + H2O2    = OH + HO2 :        1.0E-13;
+<R20> HCO         = H + CO :          4.6E-13;
+<R21> OH + H2     = H2O + H :         1.0E-11;
+<R22> CH2O + O2   = HCO + HO2 :       2.9E-20;
+<R23> H + HO2     = OH + OH :         5.0E-12;
+<R24> H + HO2     = H2O + O :         5.0E-11;
+<R25> H + HO2     = H2 + O2 :         4.5E-11;

@@ -1,0 +1,57 @@
+
+#include atoms
+{from the following publication: 
+Verwer, J. G. (1994). 
+Gauss–Seidel iteration for stiff ODEs from chemical kinetics. 
+SIAM Journal on Scientific Computing, 15(5), 1243-1250.
+https://doi.org/10.1137/0915076
+}
+
+#DEFVAR
+NO2   = N + O + O;
+NO    = N + O;
+O3P   = O;                 { O(3P), ground state atomic oxygen }
+O3    = O + O + O;         { Ozone }
+HO2   = H + O + O;         { Hydroperoxyl radical }
+OH    = O + H;             { Hydroxyl radical }
+HCHO  = C + H + H + O;     { Formaldehyde }
+CO    = C + O;             { Carbon monoxide }
+ALD   = 2C + 4H + O;       { Acetaldehyde }
+MEO2  = C + 3H + 2O;       { Methylperoxy radical }
+C2O3  = 2C + 3H + 3O;      { Peroxyacetyl radical }
+PAN   = 2C + N + 3H + 5O;  { Peroxyacetyl nitrate }
+CH3O  = C + 3H + O;        { Methoxy radical }
+HNO3  = H + N + O + O + O; { Nitric acid }
+O1D   = O;                 { O(1D), excited state atomic oxygen }
+SO2   = S + O + O;
+SO4   = S + 4O;
+NO3   = N + 3O;
+N2O5  = 2N + 5O;           { Dinitrogen pentoxide }
+CO2   = C + O + O;
+
+#EQUATIONS
+<R1>  NO2         = NO + O3P :           0.350E+00;
+<R2>  NO + O3     = NO2 :                0.266E+02;
+<R3>  HO2 + NO    = NO2 + OH :           0.120E+05;
+<R4>  HCHO        = 2HO2 + CO :          0.860E-03;
+<R5>  HCHO        = CO :                 0.820E-03;
+<R6>  HCHO + OH   = HO2 + CO :           0.150E+05;
+<R7>  ALD         = MEO2 + HO2 + CO :    0.130E-03;
+<R8>  ALD + OH    = C2O3 :               0.240E+05;
+<R9>  C2O3 + NO   = NO2 + MEO2 + CO2 :   0.165E+05;
+<R10> C2O3 + NO2  = PAN :                0.900E+04;
+<R11> PAN         = C2O3 + NO2 :         0.220E-01;
+<R12> MEO2 + NO   = CH3O + NO2 :         0.120E+05;
+<R13> CH3O        = HCHO + HO2 :         0.188E+01;
+<R14> NO2 + OH    = HNO3 :               0.163E+05;
+<R15> O3P         = O3 :                 0.480E+07;
+<R16> O3          = O1D :                0.350E-03;
+<R17> O3          = O3P :                0.175E-01;
+<R18> O1D         = 2OH :                0.100E+09;
+<R19> O1D         = O3P :                0.444E+12;
+<R20> SO2 + OH    = SO4 + HO2 :          0.124E+04;
+<R21> NO3         = NO :                 0.210E+01;
+<R22> NO3         = NO2 + O3P :          0.578E+01;
+<R23> NO2 + O3    = NO3 :                0.474E-01;
+<R24> NO3 + NO2   = N2O5 :               0.178E+04;
+<R25> N2O5        = NO3 + NO2 :          0.312E+01;
