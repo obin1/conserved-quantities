@@ -1,0 +1,272 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: Set here the F90 compiler and options
+#       Pedefined compilers: INTEL, PGF, HPUX, LAHEY
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Pick a default compiler if not supplied
+ifndef COMPILER
+#COMPILER = LAHEY
+#COMPILER = INTEL
+#COMPILER = PGF
+#COMPILER = HPUX
+COMPILER = GFORTRAN
+endif
+
+FC_LAHEY   = lf95
+# More aggressive for production runs:
+#FOPT_LAHEY = -Cpp --pca -O
+# More checking for debugging:
+FOPT_LAHEY = -Cpp --chk a,e,s,u --pca --ap -O0 -g --trap --trace --chkglobal
+
+FC_INTEL   = ifort
+# More aggressive for production runs:
+#FOPT_INTEL = -cpp -O -fp-model precise -pc80 -prec_div
+# More checking for debugging:
+FOPT_INTEL = -cpp -O0 -fp-model strict -implicitnone -ftrapuv \
+              -debug all -check all -warn all -g
+
+FC_PGF     = pgf90
+# More aggressive for production runs:
+FOPT_PGF   = -Mpreprocess -O -fast -pc 80 -Kieee
+# More checking for debugging:
+#FOPT_PGF   = -Mpreprocess -O0 -Mbounds -Mchkfpstk -Mchkptr -Mchkstk \
+#             -Ktrap=fp -pc 80 -Kieee
+
+FC_HPUX    = f90
+FOPT_HPUX  = -O -u +Oall +check=on
+
+FC_GFORTRAN     = gfortran
+FOPT_GFORTRAN   = -cpp -O -g -frecursive
+
+# define FULL_ALGEBRA for non-sparse integration
+FC   = $(FC_$(COMPILER))
+FOPT = $(FOPT_$(COMPILER)) # -DFULL_ALGEBRA
+
+LIBS =
+#LIBS = -llapack -lblas
+
+#############################################################################
+# Test if various files are found on disk or not
+# so that we can include/exclude them from the Make process
+#############################################################################
+
+# JacobianSP
+HAS_JAC_SP =0
+ifeq ($(shell test -f CBMZ_JacobianSP.f90 && echo y),y)
+  HAS_JAC_SP =1
+endif
+
+# Jacobian
+HAS_JAC = 0
+ifeq ($(shell test -f CBMZ_Jacobian.f90 && echo y),y)
+  HAS_JAC = 1
+endif
+
+# HessianSP
+HAS_HES_SP = 0
+ifeq ($(shell test -f CBMZ_HessianSP.f90 && echo y),y)
+  HAS_HES_SP = 1
+endif
+
+# Hessian
+HAS_HES=0
+ifeq ($(shell test -f CBMZ_Hessian.f90 && echo y),y)
+  HAS_HES = 1
+endif
+
+# StoichiomSP
+HAS_STM_SP = 0
+ifeq ($(shell test -f  CBMZ_StoichiomSP.f90 && echo y),y)
+  HAS_STM_SP=1
+endif
+
+# Stoichiom
+HAS_STM = 0
+ifeq ($(shell test -f  CBMZ_Stoichiom.f90 && echo y),y)
+  HAS_STM=1
+endif
+
+# If an external rates module has been supplied,
+# also define the correspoinding object file
+ifdef EXTERNAL_RATES_F90
+  EXTERNAL_RATES_OBJ := $(EXTERNAL_RATES_F90:.f90=.o)
+  EXTERNAL_RATES_OBJ := $(EXTERNAL_RATES_OBJ:.F90=.o)
+endif
+
+#############################################################################
+# Construct lists of objects and sources
+#############################################################################
+
+# Command to create Matlab mex gateway routines
+# Note: use $(FC) as the mex Fortran compiler
+MEX  = mex
+
+# NOTE: Allow for an external module to be USE-d by F90_Rates
+# by specifying the relevant environment variables.
+GENSRC = CBMZ_Precision.f90  CBMZ_Parameters.f90  \
+         CBMZ_Global.f90     $(EXTERNAL_RATES_F90)
+GENOBJ = CBMZ_Precision.o    CBMZ_Parameters.o    \
+         CBMZ_Global.o       $(EXTERNAL_RATES_OBJ)
+
+FUNSRC = CBMZ_Function.f90
+FUNOBJ = CBMZ_Function.o
+
+JACSRC   =
+JACOBJ   =
+JACSPOBJ =
+ifeq ($(HAS_JAC_SP),1)
+  JACSRC   += CBMZ_JacobianSP.f90
+  JACOBJ   += CBMZ_JacobianSP.o
+  JACSPOBJ += CBMZ_JacobianSP.o
+endif
+ifeq ($(HAS_JAC),1)
+  JACSRC   += CBMZ_Jacobian.f90
+  JACOBJ   += CBMZ_Jacobian.o
+endif
+
+HESSRC   =
+HESOBJ   =
+HESSPOBJ =
+ifeq ($(HAS_HES_SP),1)
+  HESSRC   += CBMZ_HessianSP.f90
+  HESOBJ   += CBMZ_HessianSP.o
+  HESSPOBJ += CBMZ_HessianSP.o
+endif
+ifeq ($(HAS_HES),1)
+  HESSRC   += CBMZ_Hessian.f90
+  HESOBJ   += CBMZ_Hessian.o
+endif
+
+STMSRC   =
+STMOBJ   =
+STMSPOBJ =
+ifeq ($(HAS_STM_SP),1)
+  STMSRC   += CBMZ_StoichiomSP.f90
+  STMOBJ   += CBMZ_StoichiomSP.o
+  STMSPOBJ += CBMZ_StoichiomSP.o
+endif
+ifeq ($(HAS_HES),1)
+  HESSRC   += CBMZ_Stoichiom.f90
+  HESOBJ   += CBMZ_Stoichiom.o
+endif
+
+UTLSRC = CBMZ_Rates.f90 CBMZ_Util.f90 CBMZ_Monitor.f90
+UTLOBJ = CBMZ_Rates.o   CBMZ_Util.o   CBMZ_Monitor.o
+
+LASRC  = CBMZ_LinearAlgebra.f90
+LAOBJ  = CBMZ_LinearAlgebra.o
+
+STOCHSRC = CBMZ_Stochastic.f90
+STOCHOBJ = CBMZ_Stochastic.o
+
+MAINSRC = CBMZ_Main.f90        CBMZ_Initialize.f90 \
+          CBMZ_Integrator.f90  CBMZ_Model.f90
+MAINOBJ = CBMZ_Main.o          CBMZ_Initialize.o   \
+          CBMZ_Integrator.o    CBMZ_Model.o
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: modify the line below to include only the
+#       objects needed by your application
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ALLOBJ = $(GENOBJ) $(FUNOBJ) $(JACOBJ) $(HESOBJ) $(STMOBJ) \
+	 $(UTLOBJ) $(LAOBJ)
+
+#############################################################################
+# Makefile targets and rules
+#############################################################################
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: modify the line below to include only the
+#       executables needed by your application
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+all:    exe
+
+exe:	$(ALLOBJ) $(MAINOBJ)
+	$(FC) $(FOPT) $(ALLOBJ) $(MAINOBJ) $(LIBS) -o CBMZ.exe
+
+stochastic:$(ALLOBJ) $(STOCHOBJ) $(MAINOBJ)
+	$(FC) $(FOPT) $(ALLOBJ) $(STOCHOBJ) $(MAINOBJ) $(LIBS) \
+	-o CBMZ_stochastic.exe
+
+mex:    $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O CBMZ_mex_Fun.f90     $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O CBMZ_mex_Jac_SP.f90  $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O CBMZ_mex_Hessian.f90 $(ALLOBJ)
+
+clean:
+	rm -f *.o *.mod \
+	CBMZ*.dat CBMZ.exe CBMZ*.mexglx \
+	CBMZ.log
+
+distclean:
+	rm -f *.o *.mod \
+	CBMZ*.dat CBMZ.exe CBMZ.log \
+	CBMZ_*.f90 CBMZ_*.f90 CBMZ_*.mexglx \
+	results*.m *.dat
+
+CBMZ_Precision.o: CBMZ_Precision.f90
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Parameters.o: CBMZ_Parameters.f90 CBMZ_Precision.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Monitor.o: CBMZ_Monitor.f90 CBMZ_Precision.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Global.o: CBMZ_Global.f90 CBMZ_Parameters.o CBMZ_Precision.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Initialize.o: CBMZ_Initialize.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Function.o: CBMZ_Function.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Stochastic.o: CBMZ_Stochastic.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_JacobianSP.o: CBMZ_JacobianSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Jacobian.o: CBMZ_Jacobian.f90 $(GENOBJ) $(JACSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_LinearAlgebra.o: CBMZ_LinearAlgebra.f90 $(GENOBJ) $(JACSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Rates.o: CBMZ_Rates.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_HessianSP.o: CBMZ_HessianSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Hessian.o:  CBMZ_Hessian.f90 $(GENOBJ) $(HESSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_StoichiomSP.o: CBMZ_StoichiomSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Stoichiom.o: CBMZ_Stoichiom.f90 $(GENOBJ) $(STMSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Util.o: CBMZ_Util.f90 $(GENOBJ) CBMZ_Monitor.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Main.o: CBMZ_Main.f90  $(ALLOBJ) \
+                 CBMZ_Initialize.o CBMZ_Model.o CBMZ_Integrator.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Model.o: CBMZ_Model.f90 $(ALLOBJ) CBMZ_Integrator.o
+	$(FC) $(FOPT) -c $<
+
+CBMZ_Integrator.o: CBMZ_Integrator.f90 $(ALLOBJ)
+	$(FC) $(FOPT) -c $<
+
+# Define rule for a user-defined module that gets USE-d by F90_Rates.
+# This rule is only applied if both variables are not blank.
+ifdef EXTERNAL_RATES_F90
+ifdef EXTERNAL_RATES_OBJ
+$(EXTERNAL_RATES_OBJ): $(EXTERNAL_RATES_F90) CBMZ_Precision.o CBMZ_Global.o CBMZ_Parameters.o
+	$(FC) $(FOPT) -c $<
+endif
+endif

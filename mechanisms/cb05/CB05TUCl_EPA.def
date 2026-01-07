@@ -1,0 +1,196 @@
+#include atoms
+#include CB05TUCl_EPA.spc
+#include CB05TUCl_EPA.eqn
+
+// #include ../boxmox/wrapper
+
+#LOOKATALL
+
+#INLINE F90_INIT
+
+RFACTOR_SQU = 1.0
+RFACTOR     = 1.0
+
+CALC_RCONST = .TRUE.
+
+  ! 1E-03 * (1.0/28.97) * 6.022e23 * air density
+  c_m    = 2.078702e+19 * 1.25
+
+  ! probably the same...
+  COEFF_FALLOFF = c_m
+
+#ENDINLINE
+
+#INLINE F90_RATES
+    REAL(8) FUNCTION ARRI( A0,B0,C0, TEMP )
+      REAL(8) :: TEMP
+      REAL(8) A0,B0,C0
+      ARRI =  A0 * EXP( B0 /TEMP ) * (TEMP/300._dp)**C0
+    END FUNCTION ARRI
+
+   REAL(8) FUNCTION ARR2I( A0,B0, TEMP )
+      REAL(8) :: TEMP
+      REAL(8) A0,B0
+      ARR2I = A0 * EXP( B0 /TEMP )
+   END FUNCTION ARR2I
+
+REAL(kind=dp) FUNCTION FALL_OFF ( A0,B0,C0,A1,B1,C1,CE,CF)
+  IMPLICIT NONE
+  REAL(kind=dp), INTENT( IN ) :: A0,B0,C0,A1,B1,C1,CE,CF
+  REAL(kind=dp) K0, K1, KEND
+
+  K0 = A0 * COEFF_FALLOFF * DEXP(B0/TEMP)* (TEMP/300.0_dp)**C0
+  K1 = A1 * DEXP(B1/TEMP) * (TEMP/300.0_dp)**C1
+  KEND = ( ( 1.0_dp + ( ( 1.0_dp / CE ) * DLOG10( K0 / K1 ) ) ** 2.0_dp ) )
+  KEND = 1.0_dp / KEND
+  FALL_OFF = ( K0 / ( 1.0_dp + K0/K1 ) ) * CF ** KEND
+END FUNCTION FALL_OFF
+#ENDINLINE
+
+#INLINE F90_GLOBAL
+
+  ! air/water concentration (molecules/cm3)
+  REAL(KIND=dp)      :: c_m, c_h2o
+
+REAL(dp)            :: RFACTOR_SQU   ! Convertor cm^6/(molec^2*sec) to 1/(ppm^2*min)
+REAL(dp)            :: RFACTOR       ! Convertor cm^3/(molec*sec) to 1/(ppm*min)
+REAL(dp)            :: COEFF_FALLOFF ! Factor in pressure limiting rate constants, [molec/cm^3]
+LOGICAL             :: CALC_RCONST        ! compute temp and dens dependent rate constants
+
+REAL(dp)  :: RKI_RXN_R5               ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R6               ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R18              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R21              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R24              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R28              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R31              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R32              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R42              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R88              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R89              ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R103             ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R104             ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R121             ! rate constant for stated reaction label
+REAL(dp)  :: RKI_RXN_R169             ! rate constant for stated reaction label
+
+! pointers and names to specific photolysis rates
+!INTEGER, PARAMETER  :: IJ_NO2_SAPRC99      =   1
+!INTEGER, PARAMETER  :: IJ_O3_O3P_IUPAC04   =   2
+!INTEGER, PARAMETER  :: IJ_O3_O1D_IUPAC04   =   3
+!INTEGER, PARAMETER  :: IJ_NO3NO2_SAPRC99   =   4
+!INTEGER, PARAMETER  :: IJ_NO3NO_SAPRC99    =   5
+!INTEGER, PARAMETER  :: IJ_HONO_IUPAC04     =   6
+!INTEGER, PARAMETER  :: IJ_H2O2_SAPRC99     =   7
+!INTEGER, PARAMETER  :: IJ_HO2NO2_IUPAC04   =   8
+!INTEGER, PARAMETER  :: IJ_HNO3_IUPAC04     =   9
+!INTEGER, PARAMETER  :: IJ_N2O5_IUPAC04     =  10
+!INTEGER, PARAMETER  :: IJ_NTR_IUPAC04      =  11
+!INTEGER, PARAMETER  :: IJ_COOH_SAPRC99     =  12
+!INTEGER, PARAMETER  :: IJ_HCHO_R_SAPRC99   =  13
+!INTEGER, PARAMETER  :: IJ_HCHO_M_SAPRC99   =  14
+!INTEGER, PARAMETER  :: IJ_CCHO_R_SAPRC99   =  15
+!INTEGER, PARAMETER  :: IJ_PAN_IUPAC04      =  16
+!INTEGER, PARAMETER  :: IJ_PACD_CB05        =  17
+!INTEGER, PARAMETER  :: IJ_C2CHO_SAPRC99    =  18
+!INTEGER, PARAMETER  :: IJ_MGLY_IUPAC04     =  19
+!INTEGER, PARAMETER  :: IJ_ACROLEIN_SAPRC99 =  20
+!INTEGER, PARAMETER  :: IJ_CL2_IUPAC04      =  21
+!INTEGER, PARAMETER  :: IJ_HOCL_IUPAC04     =  22
+!INTEGER, PARAMETER  :: IJ_FMCL_IUPAC04     =  23
+!DATA PHOTAB(  1 ) / 'NO2_SAPRC99     ' /
+!DATA PHOTAB(  2 ) / 'O3_O3P_IUPAC04  ' /
+!DATA PHOTAB(  3 ) / 'O3_O1D_IUPAC04  ' /
+!DATA PHOTAB(  4 ) / 'NO3NO2_SAPRC99  ' /
+!DATA PHOTAB(  5 ) / 'NO3NO_SAPRC99   ' /
+!DATA PHOTAB(  6 ) / 'HONO_IUPAC04    ' /
+!DATA PHOTAB(  7 ) / 'H2O2_SAPRC99    ' /
+!DATA PHOTAB(  8 ) / 'HO2NO2_IUPAC04  ' /
+!DATA PHOTAB(  9 ) / 'HNO3_IUPAC04    ' /
+!DATA PHOTAB( 10 ) / 'N2O5_IUPAC04    ' /
+!DATA PHOTAB( 11 ) / 'NTR_IUPAC04     ' /
+!DATA PHOTAB( 12 ) / 'COOH_SAPRC99    ' /
+!DATA PHOTAB( 13 ) / 'HCHO_R_SAPRC99  ' /
+!DATA PHOTAB( 14 ) / 'HCHO_M_SAPRC99  ' /
+!DATA PHOTAB( 15 ) / 'CCHO_R_SAPRC99  ' /
+!DATA PHOTAB( 16 ) / 'PAN_IUPAC04     ' /
+!DATA PHOTAB( 17 ) / 'PACD_CB05       ' /
+!DATA PHOTAB( 18 ) / 'C2CHO_SAPRC99   ' /
+!DATA PHOTAB( 19 ) / 'MGLY_IUPAC04    ' /
+!DATA PHOTAB( 20 ) / 'ACROLEIN_SAPRC99' /
+!DATA PHOTAB( 21 ) / 'CL2_IUPAC04     ' /
+!DATA PHOTAB( 22 ) / 'HOCL_IUPAC04    ' /
+!DATA PHOTAB( 23 ) / 'FMCL_IUPAC04    ' /
+#ENDINLINE
+
+#INLINE F90_UTIL
+SUBROUTINE SPECIAL_RATES( N, Y)
+!Purpose: calculate special rate operators and update
+!         appropriate rate constants
+
+!USE mech_cb05tucl_ae6_aq_Global
+  IMPLICIT NONE
+
+!Arguments:
+
+   INTEGER,       INTENT( IN ) :: N      ! number of species
+   REAL(kind=dp), INTENT( IN ) :: Y( N ) ! species concs
+
+
+RETURN
+END SUBROUTINE SPECIAL_RATES
+#ENDINLINE
+
+#INLINE F90_RCONST
+!If( .Not. CALC_RCONST )Then
+!   Return
+!Else
+!   CALC_RCONST = .False.
+!End If
+! Rate Constant Units produce reaction rates in ppm/min
+RKI_RXN_R5                = FALL_OFF(   2.5000D-31,   0.0000D+00,  &
+ & -1.8000D+00,   2.2000D-11,   0.0000D+00,  -7.0000D-01,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R6                = FALL_OFF(   9.0000D-32,   0.0000D+00,  &
+ & -1.5000D+00,   3.0000D-11,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R18               = FALL_OFF(   2.0000D-30,   0.0000D+00,  &
+ & -4.4000D+00,   1.4000D-12,   0.0000D+00,  -7.0000D-01,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R21               = FALL_OFF(   1.0000D-03,  -1.1000D+04,  &
+ & -3.5000D+00,   9.7000D+14,  -1.1080D+04,   1.0000D-01,   1.0000D+00,  &
+ &  4.5000D-01 )
+RKI_RXN_R24               = FALL_OFF(   7.0000D-31,   0.0000D+00,  &
+ & -2.6000D+00,   3.6000D-11,   0.0000D+00,  -1.0000D-01,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R28               = FALL_OFF(   2.0000D-30,   0.0000D+00,  &
+ & -3.0000D+00,   2.5000D-11,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R31               = FALL_OFF(   1.8000D-31,   0.0000D+00,  &
+ & -3.2000D+00,   4.7000D-12,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R32               = FALL_OFF(   4.1000D-05,  -1.0650D+04,  &
+ &  0.0000D+00,   4.8000D+15,  -1.1170D+04,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R42               = FALL_OFF(   6.9000D-31,   0.0000D+00,  &
+ & -1.0000D+00,   2.6000D-11,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R88               = FALL_OFF(   2.7000D-28,   0.0000D+00,  &
+ & -7.1000D+00,   1.2000D-11,   0.0000D+00,  -9.0000D-01,   1.0000D+00,  &
+ &  3.0000D-01 )
+RKI_RXN_R89               = FALL_OFF(   4.9000D-03,  -1.2100D+04,  &
+ &  0.0000D+00,   5.4000D+16,  -1.3830D+04,   0.0000D+00,   1.0000D+00,  &
+ &  3.0000D-01 )
+RKI_RXN_R103              = FALL_OFF(   2.7000D-28,   0.0000D+00,  &
+ & -7.1000D+00,   1.2000D-11,   0.0000D+00,  -9.0000D-01,   1.0000D+00,  &
+ &  3.0000D-01 )
+RKI_RXN_R104              = FALL_OFF(   4.9000D-03,  -1.2100D+04,  &
+ &  0.0000D+00,   5.4000D+16,  -1.3830D+04,   0.0000D+00,   1.0000D+00,  &
+ &  3.0000D-01 )
+RKI_RXN_R121              = FALL_OFF(   1.0000D-28,   0.0000D+00,  &
+ & -8.0000D-01,   8.8000D-12,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+RKI_RXN_R169              = FALL_OFF(   3.3000D-31,   0.0000D+00,  &
+ & -4.3000D+00,   1.6000D-12,   0.0000D+00,   0.0000D+00,   1.0000D+00,  &
+ &  6.0000D-01 )
+#ENDINLINE
+

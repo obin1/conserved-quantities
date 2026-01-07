@@ -1,0 +1,54 @@
+#include atoms
+#include RADM2.spc
+#include RADM2.eqn
+
+// #include ../boxmox/wrapper
+
+#LOOKATALL
+
+#INLINE F90_GLOBAL
+
+  ! global variables used by special rate constants of this mechanism
+
+  ! air/water concentration (molecules/cm3)
+  REAL(KIND=dp)      :: c_m, c_h2o
+  ! relative humidity
+  REAL(KIND=dp)      :: rh
+
+  REAL(KIND=dp)      :: rc_n2o5
+
+#ENDINLINE
+
+#INLINE F90_INIT
+
+  ! 1E-03 * (1.0/28.97) * 6.022e23 * air density
+  c_m    = 2.078702e+19 * 1.25
+
+  ! 1E-03 * (1.0/18.02) * 6.022e23 * air density, then times kg(water)/kg(air)
+  c_h2o  = 3.341842e+19 * 1.25 * 0.010
+
+  ! relative humidity (not really used...)
+  rh = 0.5
+
+  ! n2o5 rate const
+  rc_n2o5 = 1e-30
+
+#ENDINLINE
+
+#INLINE F90_RATES
+REAL(KIND=dp) FUNCTION k46( TEMP, C_M )
+    REAL(KIND=dp), INTENT(IN) :: temp, c_m
+    REAL(KIND=dp) :: k0, k2, k3
+
+   k0=7.2E-15_dp * EXP(785._dp/TEMP)
+   k2=4.1E-16_dp * EXP(1440._dp/TEMP)
+   k3=1.9E-33_dp * EXP(725._dp/TEMP)  * C_M
+
+   k46=k0+k3/(1+k3/k2)
+
+
+END FUNCTION k46
+
+
+
+#ENDINLINE
