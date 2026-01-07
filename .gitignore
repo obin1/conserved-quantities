@@ -16,6 +16,7 @@ Icon\r
 
 # Data files
 # *.csv
+experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv
 
 # other stuff
 *.docx
