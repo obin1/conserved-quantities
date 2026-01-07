@@ -1,0 +1,9 @@
+#MODEL      mech 
+#LANGUAGE   Fortran90 
+#DOUBLE     ON
+#INTEGRATOR rosenbrock
+#DRIVER     none
+#JACOBIAN   SPARSE_LU_ROW 
+#HESSIAN    OFF 
+#STOICMAT   on
+#GRAPH      edgelist
