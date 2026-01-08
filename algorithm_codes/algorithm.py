@@ -252,3 +252,9 @@ def check_merge(coproduction_cols):
     #     print("False")
     # else: 
     #     print("True")
+
+
+# a) len(col_del)
+# b) len(set(coproduction_cols))
+# c) len([x for x in coproduction_cols if x > 0])
+# c) - b) + 1 = a)
