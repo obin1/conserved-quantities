@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 from scipy.linalg import null_space
 
 SEED = 42
@@ -15,6 +15,7 @@ edge_list_pact1d = pd.read_csv("../mechanisms/pact1d/mech_EdgeList.csv", comment
 
 print("creating sparse matrices...")
 Sr_sparse_pact1d, Sp_sparse_pact1d, Svv_sparse_pact1d = create_sparse(edge_list_pact1d)
+Svv_sparse_pact1d, init_col_del_pact1d = del_zero_col(Svv_sparse_pact1d)
 print("computing dimension of nullspace...")
 # pact1d_null = Svv_sparse_pact1d.T.nullspace()
 # stoichiometric_invariants_pact1d = len(pact1d_null)

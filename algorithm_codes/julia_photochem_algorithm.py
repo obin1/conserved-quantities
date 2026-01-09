@@ -81,9 +81,16 @@ if stoichiometric_invariants_JPM == dim_leftnull_JPM:
     S_merge_JPM, col_del_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
     S_merge_JPM[15, 2] = -2*symbol_dict_JPM[3]
     print("performing linear algebra...")
-    del_l_JPM, del_r_JPM, del_c_JPM = s_linalg(Svv_sparse_JPM, S_merge_JPM, stoichiometric_invariants_JPM)
-    
-    # rank_list_JPM = linalg_experiment(S_merge_JPM, num_experiments)
-    # del_l = S_merge_JPM.shape[0] - rank - stoich_invariants
+    # rank_jpm = S_merge_jpm.rank()
+    # dim_null_jpm = S_merge_jpm.shape[0] - rank_jpm
+    # del_l_jpm = dim_null_jpm - stoichiometric_invariants_jpm
+    del_r_jpm = S_merge_JPM.shape[1] - Svv_sparse_JPM.shape[1]
+    # del_c_jpm = -del_r_jpm - del_l_jpm
+
+    rank_list_jpm = linalg_experiment(S_merge_JPM, num_experiments)
+    # del_l = S_merge_jpm.shape[0] - rank - stoich_invariants
+    # del_c_jpm = -del_r_jpm - del_l_jpm
+
+    # del_l_jpm, del_r_jpm, del_c_jpm = s_linalg(Svv_sparse_jpm, S_merge_jpm, stoichiometric_invariants_jpm)
 else:
     print("Error: numpy vs sympy disparity")

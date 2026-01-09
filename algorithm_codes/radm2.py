@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -11,6 +11,7 @@ edge_list_radm2 = pd.read_csv("../mechanisms/radm2/RADM2_EdgeList.csv", comment=
 
 print("creating sparse matrices...")
 Sr_sparse_radm2, Sp_sparse_radm2, Svv_sparse_radm2 = create_sparse(edge_list_radm2)
+Svv_sparse_radm2, init_col_del_radm2 = del_zero_col(Svv_sparse_radm2)
 print("computing dimension of nullspace...")
 stoichiometric_invariants_radm2 = len(Svv_sparse_radm2.T.nullspace())
 Svv_radm2_np = np.array(Svv_sparse_radm2, dtype=float)

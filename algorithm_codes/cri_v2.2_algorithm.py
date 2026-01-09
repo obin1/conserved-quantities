@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 from scipy.linalg import null_space
 
 SEED = 42
@@ -12,6 +12,7 @@ edge_list_cri = pd.read_csv("../mechanisms/cri-v2.2/cri_EdgeList.csv", comment="
 
 print("creating sparse matrices...")
 Sr_sparse_cri, Sp_sparse_cri, Svv_sparse_cri = create_sparse(edge_list_cri)
+Svv_sparse_cri, init_col_del_cri = del_zero_col(Svv_sparse_cri)
 print("computing dimension of nullspace...")
 # cri_null = Svv_sparse_cri.T.nullspace()
 # stoichiometric_invariants_cri = len(cri_null)

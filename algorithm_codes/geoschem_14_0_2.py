@@ -2,7 +2,7 @@
 
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 from scipy.linalg import null_space
 
 SEED = 42
@@ -16,6 +16,7 @@ edge_list_gc = pd.read_csv("../mechanisms/geos-chem-v14/gckpp_EdgeList.csv", com
 
 print("creating sparse matrices...")
 Sr_sparse_gc, Sp_sparse_gc, Svv_sparse_gc = create_sparse(edge_list_gc)
+Svv_sparse_gc, init_col_del_gc = del_zero_col(Svv_sparse_gc)
 print("computing dimension of nullspace...")
 gc_null = Svv_sparse_gc.T.nullspace()
 stoichiometric_invariants_gc = len(gc_null)

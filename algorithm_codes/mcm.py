@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, create_coproduction_2, linalg_experiment_fast, numeric_sparse_matrix_fast_combined
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, create_coproduction_2, linalg_experiment_fast, numeric_sparse_matrix_fast_combined
 
 SEED = 42
 np.random.seed(SEED)
@@ -10,6 +10,7 @@ num_experiments = 1
 edge_list_mcm = pd.read_csv("../mechanisms/mcm_v3.3.1/mcm_EdgeList.csv", comment="!")
 print("creating sparse matrices...")
 Sr_sparse_mcm, Sp_sparse_mcm, Svv_sparse_mcm = create_sparse(edge_list_mcm)
+Svv_sparse_mcm, init_col_del_mcm = del_zero_col(Svv_sparse_mcm)
 print("computing dimension of nullspace...")
 Svv_mcm_np = np.array(Svv_sparse_mcm, dtype=float)
 rank_Svv_mcm_np = np.linalg.matrix_rank(Svv_mcm_np)

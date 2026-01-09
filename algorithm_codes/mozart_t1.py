@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -11,6 +11,7 @@ edge_list_mozart_t1 = pd.read_csv("../mechanisms/mozart-t1/MOZART_T1_EdgeList.cs
 
 print("creating sparse matrices...")
 Sr_sparse_mozart_t1, Sp_sparse_mozart_t1, Svv_sparse_mozart_t1 = create_sparse(edge_list_mozart_t1)
+Svv_sparse_mozart_t1, init_col_del_mozart_t1 = del_zero_col(Svv_sparse_mozart_t1)
 print("computing dimension of nullspace...")
 stoichiometric_invariants_mozart_t1 = len(Svv_sparse_mozart_t1.T.nullspace())
 Svv_mozart_t1_np = np.array(Svv_sparse_mozart_t1, dtype=float)

@@ -1,7 +1,7 @@
 "/Users/psturm/Desktop/KPP-playground/caaba_4.6.0/mecca/eqn/jam"
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -12,6 +12,7 @@ edge_list_jam = pd.read_csv("/Users/psturm/Desktop/KPP-playground/caaba_4.6.0/me
 
 print("creating sparse matrices...")
 Sr_sparse_jam, Sp_sparse_jam, Svv_sparse_jam = create_sparse(edge_list_jam)
+Svv_sparse_jam, init_col_del_jam = del_zero_col(Svv_sparse_jam)
 print("computing dimension of nullspace...")
 # stoichiometric_invariants_jam = len(Svv_sparse_jam.T.nullspace())
 Svv_jam_np = np.array(Svv_sparse_jam, dtype=float)

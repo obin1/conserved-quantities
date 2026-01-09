@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -11,6 +11,7 @@ edge_list_cb05 = pd.read_csv("../mechanisms/cb05/CB05TUCl_EPA_EdgeList.csv", com
 
 print("creating sparse matrices...")
 Sr_sparse_cb05, Sp_sparse_cb05, Svv_sparse_cb05 = create_sparse(edge_list_cb05)
+Svv_sparse_cb05, init_col_del_cb05 = del_zero_col(Svv_sparse_cb05)
 print("computing dimension of nullspace...")
 stoichiometric_invariants_cb05 = len(Svv_sparse_cb05.T.nullspace())
 Svv_cb05_np = np.array(Svv_sparse_cb05, dtype=float)

@@ -32,6 +32,16 @@ def create_sparse(edge_list):
     return Sr_sparse, Sp_sparse, Svv_sparse
 
 
+def del_zero_col(Svv):
+    col_del = []
+    for j in reversed(range(Svv.shape[1])):
+        if all(Svv[i, j] == 0 for i in range(Svv.shape[0])):
+            Svv.col_del(j)
+            col_del.append(j)
+    return Svv, col_del
+
+
+
 def create_coproduction(Sr):
     n_cols = Sr.shape[1]
     coproduction_cols = list(range(1, n_cols + 1))
@@ -253,8 +263,3 @@ def check_merge(coproduction_cols):
     # else: 
     #     print("True")
 
-
-# a) len(col_del)
-# b) len(set(coproduction_cols))
-# c) len([x for x in coproduction_cols if x > 0])
-# c) - b) + 1 = a)

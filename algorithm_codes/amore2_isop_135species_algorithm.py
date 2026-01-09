@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sympy import S
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -12,6 +12,7 @@ edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_
 
 print("creating sparse matrices...")
 Sr_sparse_amore, Sp_sparse_amore, Svv_sparse_amore = create_sparse(edge_list_amore)
+Svv_sparse_amore, init_col_del_amore = del_zero_col(Svv_sparse_amore)
 
 zero_rows_indices = []
 for i in range(Svv_sparse_amore.rows):

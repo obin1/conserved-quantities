@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -11,6 +11,7 @@ edge_list_iso_full = pd.read_csv("../mechanisms/isoprene_full_v5_nofixedspc/isop
 
 print("creating sparse matrices...")
 Sr_sparse_iso_full, Sp_sparse_iso_full, Svv_sparse_iso_full = create_sparse(edge_list_iso_full)
+Svv_sparse_iso_full, init_col_del_iso_full = del_zero_col(Svv_sparse_iso_full)
 print("computing dimension of nullspace...")
 stoichiometric_invariants_iso_full = len(Svv_sparse_iso_full.T.nullspace())
 Svv_iso_full_np = np.array(Svv_sparse_iso_full, dtype=float)
