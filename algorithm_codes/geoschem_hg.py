@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
 SEED = 42
 np.random.seed(SEED)
@@ -10,6 +10,7 @@ num_experiments = 10
 edge_list_gchg= pd.read_csv("../mechanisms/geoschem-hg/Hg_EdgeList.csv", comment="!")
 print("creating sparse matrices...")
 Sr_sparse_gchg, Sp_sparse_gchg, Svv_sparse_gchg= create_sparse(edge_list_gchg)
+Svv_sparse_gchg, init_col_del_gchg = del_zero_col(Svv_sparse_gchg)
 print("computing dimension of nullspace...")
 # stoichiometric_invariants_gchg= len(Svv_sparse_gchg.T.nullspace())
 Svv_gchg_np = np.array(Svv_sparse_gchg, dtype=float)
