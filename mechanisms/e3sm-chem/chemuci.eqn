@@ -1,0 +1,259 @@
+#INCLUDE chemuci.spc
+
+
+#EQUATIONS {note: no rate constants are real, this is just used for mechanism connectivity}
+
+
+//
+// Photolysis
+//
+
+O3   = O3 : 1.0E-20 ; {jo1dU,jo3_a}
+// Production rate of O(1D), this rate is null so as to not lose O3.
+
+O2   = 2O3 : 1.0E-20 ; {jo2_b}
+//  [jo2]       O2   -> 2*O3
+
+H2O2   = 2OH : 1.0E-20 ; {jh2o2}
+
+CH2O   = CO + 2HO2 : 1.0E-20 ; {jch2o_a}
+
+CH2O   = CO + H2 : 1.0E-20 ; {jch2o_b}
+
+CH3OOH   = CH2O + HO2 + OH : 1.0E-20 ; {jch3ooh}
+
+C2H5OOH   = CH3CHO + HO2 + OH : 1.0E-20 ; {jc2h5ooh}
+//  [jc2h5ooh]  C2H5OOH   -> CH3CHO + HO2 + OH
+
+NO2   = NO + O3 : 1.0E-20 ; {jno2}
+
+NO3   = NO2 + O3 : 1.0E-20 ; {jno3_a}
+
+NO3   = NO : 1.0E-20 ; {jno3_b}
+//  [jno3]      NO3   -> 0.114*NO + 0.886*NO2 + 0.886*O3
+
+N2O5   = NO2 + NO3 : 1.0E-20 ; {jn2o5_a}
+
+N2O5   = NO + O3 + NO3 : 1.0E-20 ; {jn2o5_b}
+//  [jn2o5]     N2O5   -> NO2 + NO3
+
+HNO3   = NO2 + OH : 1.0E-20 ; {jhno3}
+
+HO2NO2   = OH + NO3 : 1.0E-20 ; {jho2no2_a}
+
+HO2NO2   = NO2 + HO2 : 1.0E-20 ; {jho2no2_b}
+//  [jho2no2]   HO2NO2   -> 0.67*NO2 + 0.67*HO2 + 0.33*OH + 0.33*NO3
+
+CH3CHO   = CH3O2 + HO2 + CO : 1.0E-20 ; {jch3cho}
+
+PAN   = CH3CO3 + NO2 : 1.0E-20 ; {jpan}
+
+CH3COCH3   = 0.67*CH3CO3 + 1.33*CH3O2 + 0.33*CO : 1.0E-20 ; {jacet}
+//        with Fast-J update to include [jacet_b]= 1/2[jacet_a]  CH3COCH3   -> 2*CH3O2 + CO
+//            = 2/3[CH3CO3 + CH3O2] + 1/3[2*CH3O2 + CO]
+
+MVKMACR   = 2.0*CH2O + 1.5*CO + 0.5*CH3O2 + 0.5*HO2 : 1.0E-20 ; {jmvk}
+//        with Fast-J update to merge values w/[jmacr] = 1/3[jmvk] ?
+//             MACR +hv -> CH2O + 2.0*CO + CH3O2 + HO2
+//             MVK   -> 3*CH2O + CO    **final products estimated
+
+soa_a1   = PROD  : 1.0E-20 ; {jsoa_a1}
+soa_a2   = PROD : 1.0E-20 ; {jsoa_a2}
+soa_a3   = PROD : 1.0E-20 ; {jsoa_a3}
+
+// End Photolysis
+
+
+//
+// Reactions
+//
+
+O3 + H2O = 2*OH : 1.0E-20 ; {uci1}
+//   fix typo, exp(-B/T), B=60 (JPL15)
+
+O3 + H2 = OH + HO2 : 1.0E-20 ; {uci2}
+
+O3 + CH4LNZ = OH + CH3O2 : 1.0E-20 ; {uci3}
+//  These 3 rates for O(1D) rxt w/ H2O, H2, CH4 are scaled with jo1d and divided
+//     by the key quenching rates are: N2 = 3.30e-11 exp(55/T), O2 = 2.15e-11 exp(110/T)
+//     and H2O = 1.63e-10 exp(60/T), and then multiplied by the rates above.
+//  effectively k[uci1] = J(jo1d)*1.63e-10*exp(60/T) /
+//     (1.63e-10*exp(60/T)*[H2O] + 3.30e-11*exp(55/T)*[N2] + 2.15e-11*exp(110/T)*[O2])
+//  and rxt[uci1] = k[uci1]*[O3]*[H2O]
+
+CO + OH = H : 1.0E-20 ; {lco_h}
+
+CO + OH + M = HO2 + M : 1.0E-20 ; {lco_ho2}
+
+H2 + OH = HO2 + H2O : 1.0E-20 ; {lh2_ho2}
+
+CH4LNZ + OH = CH3O2 + H2O : 1.0E-20 ; {lch4}
+
+C2H6 + OH = C2H5O2 : 1.0E-20 ; {lc2h6}
+
+C3H8 + OH = HO2 + 0.80*CH3COCH3 + 0.20*CH3CHO : 1.0E-20 ; {lc3h8}
+
+C2H4 + OH + M = ROHO2 : 1.0E-20 ; {lc2h4_oh}
+
+C2H4 + O3 = CH2O + CO + 0.5*CH3CHO : 1.0E-20 ; {lc2h4_o3}
+
+ISOP + O3 = MVKMACR + CH2O + OH : 1.0E-20 ; {lisop_o3}
+
+ISOP + OH = ISOPO2 : 1.0E-20 ; {lisop_oh}
+
+CH2O + OH = CO + H2O + HO2 : 1.0E-20 ; {lch2o}
+
+OH + O3 = HO2 + O2 : 1.0E-20 ; {lo3_oh}
+
+OH + OH = O3 + H2O : 1.0E-20 ; {po3_oh}
+
+HO2 + O3 = 2*O2 + OH : 1.0E-20 ; {lo3_ho2}
+
+HO2 + OH = H2O + O2 : 1.0E-20 ; {lho2_oh}
+
+HO2 + HO2 + M = H2O2 + M : 1.0E-20 ; {uci4}
+//     k[uci4] -> k[uci4] * (1 + 1.4e-21*exp(2200/T)*[H2O])
+
+HO2 + HO2 = H2O2 : 1.0E-20 ; {uci5}
+//     k[uci5] -> k[uci5] * (1 + 1.4e-21*exp(2200/T)*[H2O])
+
+OH + OH + M = H2O2 + M : 1.0E-20 ; {ph2o2}
+
+H2O2 + OH = H2O + HO2 : 1.0E-20 ; {lh2o2}
+
+NO + O3 = NO2 + O2 : 1.0E-20 ; {lo3_no}
+
+NO + HO2 = NO2 + OH : 1.0E-20 ; {lno_ho2}
+
+NO2 + O3 = NO3 + O2 : 1.0E-20 ; {lo3_no2}
+
+OH + NO3 = HO2 + NO2 : 1.0E-20 ; {lno3_oh}
+
+NO + NO3 = 2*NO2 : 1.0E-20 ; {lno3_no}
+
+HO2NO2 + OH = NO2 + H2O + O2 : 1.0E-20 ; {lhno4}
+
+HNO3 + OH = NO3 + H2O : 1.0E-20 ; {lhno3}
+//   fix needed to add this bimolec rate, missing from the one below
+
+HNO3 + OH = NO3 + H2O : 1.0E-20 ; {uci6}
+// uci6 coefficients needs to be non-blank to avoid issues with debug-build
+// Model actually uses customized coefficients calculated in llnl_O1D_to_2OH_adj.F90
+//    k[uci6] = (k2*k3*[M])/(k2 + k3*[M])  k2=2.7e-17*exp(2199/T)  k3=6.5e-34*exp(1335/T)*[M]
+
+NO2 + OH + M = HNO3 + M : 1.0E-20 ; {lno2_oh}
+
+NO2 + HO2 + M = HO2NO2 + M : 1.0E-20 ; {HO2NO2f}
+
+NO2 + NO3 + M = N2O5 + M : 1.0E-20 ; {N2O5f}
+
+CH3CO3 + NO2 + M = PAN + M : 1.0E-20 ; {PANf}
+
+HO2NO2 + M = HO2 + NO2 + M : 1.0E-20 ; {uci7}
+//     k[uci7] -> k[HO2NO2] / k[uci7]
+
+N2O5 + M = NO2 + NO3 + M : 1.0E-20 ; {uci8}
+//     k[uci8] -> k[N2O5] / k[uci8]
+
+PAN + M = CH3CO3 + NO2 + M : 1.0E-20 ; {uci9}
+//     k[uci9] -> k[PAN] / k[uci9]
+
+CH3O2 + HO2 = CH3OOH + O2 : 1.0E-20 ; {lch3o2_ho2}
+
+CH3O2 + NO = CH2O + HO2 + NO2 : 1.0E-20 ; {lch3o2_no}
+
+CH3O2 + CH3O2 = 2*CH2O + 2*HO2 : 1.0E-20 ; {lch3o2}
+
+CH3OOH + OH = 0.7*CH3O2 + 0.3*CH2O + 0.3*OH : 1.0E-20 ; {lch3ooh}
+
+C2H5O2 + NO = CH3CHO + HO2 + NO2 : 1.0E-20 ; {lc2h5o2_no}
+
+C2H5O2 + C2H5O2 = 2*CH3CHO + 2*HO2 : 1.0E-20 ; {lc2h5o2}
+
+C2H5O2 + CH3O2 = CH3CHO + CH2O + 2*HO2 : 1.0E-20 ; {lc2h5o2_ch3}
+
+C2H5O2 + HO2 = C2H5OOH : 1.0E-20 ; {lc2h5o2_ho2}
+
+C2H5OOH + OH = C2H5O2 : 1.0E-20 ; {lc2h5ooh_a}
+
+C2H5OOH + OH = CH3CHO + OH : 1.0E-20 ; {lc2h5ooh_b}
+
+CH3CHO + OH = 0.5*CH3CO3 + 0.5*CH3O2 + 0.5*CO : 1.0E-20 ; {lch3cho_oh}
+
+CH3CHO + NO3 = CH3CO3 + HNO3 : 1.0E-20 ; {lch3cho_no3}
+
+CH3CO3 + NO = CH3O2 + NO2 : 1.0E-20 ; {lch3co3_no}
+
+CH3CO3 + CH3O2 = CH2O + CH3O2 + HO2 : 1.0E-20 ; {lch3co3_ch3}
+
+CH3CO3 + CH3CO3 = 2*CH3O2 : 1.0E-20 ; {lch3co3}
+
+CH3COCH3 + OH = CH3CO3 + CH2O : 1.0E-20 ; {lch3coch3_a}
+
+CH3COCH3 + OH = CH3CO3 + CH2O : 1.0E-20 ; {lch3coch3_b}
+
+ROHO2 + NO = CH3CHO + CH2O + NO2 : 1.0E-20 ; {lroho2_no}
+
+ROHO2 + HO2 = CH3CHO + CH2O + OH : 1.0E-20 ; {lroho2_ho2}
+
+ROHO2 + CH3O2 = CH3CO + 2*CH2O + HO2 : 1.0E-20 ; {lroho2_ch3o2}
+
+ISOPO2 + NO = MVKMACR + CH2O + NO2 : 1.0E-20 ; {lisopo2_no}
+
+ISOPO2 + HO2 = C2H5OOH + 2*CO : 1.0E-20 ; {lisopo2_ho2}
+
+ISOPO2 + CH3O2 = MVKMACR + 2*CH2O + 2*HO2 : 1.0E-20 ; {lisopo2_ch3}
+
+MVKMACR + O3 = 0.5*CH3CO3 + CH2O + CH3O2 : 1.0E-20 ; {lmvkmacr_o3}
+
+MVKMACR + OH = MVKO2 : 1.0E-20 ; {lmvkmacr_oh}
+
+MVKO2 + NO = 0.5*CH3CO3 + CH2O + NO2 : 1.0E-20 ; {lmvko2_no}
+
+MVKO2 + HO2 = C2H5OOH + CO : 1.0E-20 ; {lmvko2_ho2}
+
+// UCI heterogeneous reactions has problems with E3SM MAM4 aerosols
+// comment out for now. To be fixed with the aerosol team.
+//[ucih1]  N2O5  -> 2*HNO3                          ; 0.05E+00
+//[ucih2]  NO3   -> HNO3                            ; 0.03E+00
+//[ucih3]  HO2   ->                                 ; 0.10E+00
+
+E90 = PROD : 1.0E-20 ; {usr_e90}
+
+// MAM4 chemistry below
+DMS + OH = SO2 : 1.0E-20 ; {ldms_oh}
+
+DMS + OH = 0.5*SO2 + 0.5*HO2 : 1.0E-20 ; {usr_DMS_OH}
+
+SO2 + OH = H2SO4 : 1.0E-20 ; {usr_SO2_OH}
+
+DMS + NO3 = SO2 + HNO3 : 1.0E-20 ; {ldms_no3}
+
+// VBS SOAG reactions
+SOAG0 + prsd_OH = 1.15*SOAG15 : 1.0E-20 ; {vsoag0_oh}
+
+SOAG15 + prsd_OH = 1.15*SOAG24 : 1.0E-20 ; {vsoag15_oh}
+
+SOAG24 + prsd_OH = 0.46*SOAG33 + 0.5*SOAG35 : 1.0E-20 ; {vsoag24_oh}
+
+ISOP_VBS + prsd_OH = 0.00272*SOAG32 + 0.00981*SOAG33 + 0.00218*SOAG34 : 1.0E-20 ; {visop_oh}
+
+C10H16 + prsd_OH = 0.14986*SOAG32 + 0.05450*SOAG33 + 0.09264*SOAG34 : 1.0E-20 ; {vc10h16_oh}
+
+ISOP_VBS + prsd_O3 = 0.00327*SOAG33 : 1.0E-20 ; {visop_o3}
+
+C10H16 + prsd_O3 = 0.04360*SOAG31 + 0.01035*SOAG32 + 0.09809*SOAG33 + 0.01635*SOAG34 : 1.0E-20 ; {vc10h16_o3}
+
+ISOP_VBS + prsd_NO3 = 0.00027*SOAG32 + 0.04060*SOAG33 + 0.06458*SOAG34 : 1.0E-20 ; {visop_no3}
+
+C10H16 + prsd_NO3 = 0.17493*SOAG33 + 0.59019*SOAG34 : 1.0E-20 ; {vc10h16_no3}
+
+SOAG35 + prsd_OH = 0.46*SOAG34 + 0.5*SOAG35 : 1.0E-20 ; {vsoag35_oh}
+
+SOAG34 + prsd_OH = 0.46*SOAG33 + 0.5*SOAG35 : 1.0E-20 ; {vsoag34_oh}
+
+SOAG33 + prsd_OH = 0.46*SOAG32 + 0.5*SOAG35 : 1.0E-20 ; {vsoag33_oh}
+
+SOAG32 + prsd_OH = 0.46*SOAG31 + 0.5*SOAG35 : 1.0E-20 ; {vsoag32_oh}
+
+// End Reactions

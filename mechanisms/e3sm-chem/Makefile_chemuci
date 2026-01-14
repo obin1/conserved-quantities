@@ -1,0 +1,272 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: Set here the F90 compiler and options
+#       Pedefined compilers: INTEL, PGF, HPUX, LAHEY
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Pick a default compiler if not supplied
+ifndef COMPILER
+#COMPILER = LAHEY
+#COMPILER = INTEL
+#COMPILER = PGF
+#COMPILER = HPUX
+COMPILER = GFORTRAN
+endif
+
+FC_LAHEY   = lf95
+# More aggressive for production runs:
+#FOPT_LAHEY = -Cpp --pca -O
+# More checking for debugging:
+FOPT_LAHEY = -Cpp --chk a,e,s,u --pca --ap -O0 -g --trap --trace --chkglobal
+
+FC_INTEL   = ifort
+# More aggressive for production runs:
+#FOPT_INTEL = -cpp -O -fp-model precise -pc80 -prec_div
+# More checking for debugging:
+FOPT_INTEL = -cpp -O0 -fp-model strict -implicitnone -ftrapuv \
+              -debug all -check all -warn all -g
+
+FC_PGF     = pgf90
+# More aggressive for production runs:
+FOPT_PGF   = -Mpreprocess -O -fast -pc 80 -Kieee
+# More checking for debugging:
+#FOPT_PGF   = -Mpreprocess -O0 -Mbounds -Mchkfpstk -Mchkptr -Mchkstk \
+#             -Ktrap=fp -pc 80 -Kieee
+
+FC_HPUX    = f90
+FOPT_HPUX  = -O -u +Oall +check=on
+
+FC_GFORTRAN     = gfortran
+FOPT_GFORTRAN   = -cpp -O -g -frecursive
+
+# define FULL_ALGEBRA for non-sparse integration
+FC   = $(FC_$(COMPILER))
+FOPT = $(FOPT_$(COMPILER)) # -DFULL_ALGEBRA
+
+LIBS =
+#LIBS = -llapack -lblas
+
+#############################################################################
+# Test if various files are found on disk or not
+# so that we can include/exclude them from the Make process
+#############################################################################
+
+# JacobianSP
+HAS_JAC_SP =0
+ifeq ($(shell test -f chemuci_JacobianSP.f90 && echo y),y)
+  HAS_JAC_SP =1
+endif
+
+# Jacobian
+HAS_JAC = 0
+ifeq ($(shell test -f chemuci_Jacobian.f90 && echo y),y)
+  HAS_JAC = 1
+endif
+
+# HessianSP
+HAS_HES_SP = 0
+ifeq ($(shell test -f chemuci_HessianSP.f90 && echo y),y)
+  HAS_HES_SP = 1
+endif
+
+# Hessian
+HAS_HES=0
+ifeq ($(shell test -f chemuci_Hessian.f90 && echo y),y)
+  HAS_HES = 1
+endif
+
+# StoichiomSP
+HAS_STM_SP = 0
+ifeq ($(shell test -f  chemuci_StoichiomSP.f90 && echo y),y)
+  HAS_STM_SP=1
+endif
+
+# Stoichiom
+HAS_STM = 0
+ifeq ($(shell test -f  chemuci_Stoichiom.f90 && echo y),y)
+  HAS_STM=1
+endif
+
+# If an external rates module has been supplied,
+# also define the correspoinding object file
+ifdef EXTERNAL_RATES_F90
+  EXTERNAL_RATES_OBJ := $(EXTERNAL_RATES_F90:.f90=.o)
+  EXTERNAL_RATES_OBJ := $(EXTERNAL_RATES_OBJ:.F90=.o)
+endif
+
+#############################################################################
+# Construct lists of objects and sources
+#############################################################################
+
+# Command to create Matlab mex gateway routines
+# Note: use $(FC) as the mex Fortran compiler
+MEX  = mex
+
+# NOTE: Allow for an external module to be USE-d by F90_Rates
+# by specifying the relevant environment variables.
+GENSRC = chemuci_Precision.f90  chemuci_Parameters.f90  \
+         chemuci_Global.f90     $(EXTERNAL_RATES_F90)
+GENOBJ = chemuci_Precision.o    chemuci_Parameters.o    \
+         chemuci_Global.o       $(EXTERNAL_RATES_OBJ)
+
+FUNSRC = chemuci_Function.f90
+FUNOBJ = chemuci_Function.o
+
+JACSRC   =
+JACOBJ   =
+JACSPOBJ =
+ifeq ($(HAS_JAC_SP),1)
+  JACSRC   += chemuci_JacobianSP.f90
+  JACOBJ   += chemuci_JacobianSP.o
+  JACSPOBJ += chemuci_JacobianSP.o
+endif
+ifeq ($(HAS_JAC),1)
+  JACSRC   += chemuci_Jacobian.f90
+  JACOBJ   += chemuci_Jacobian.o
+endif
+
+HESSRC   =
+HESOBJ   =
+HESSPOBJ =
+ifeq ($(HAS_HES_SP),1)
+  HESSRC   += chemuci_HessianSP.f90
+  HESOBJ   += chemuci_HessianSP.o
+  HESSPOBJ += chemuci_HessianSP.o
+endif
+ifeq ($(HAS_HES),1)
+  HESSRC   += chemuci_Hessian.f90
+  HESOBJ   += chemuci_Hessian.o
+endif
+
+STMSRC   =
+STMOBJ   =
+STMSPOBJ =
+ifeq ($(HAS_STM_SP),1)
+  STMSRC   += chemuci_StoichiomSP.f90
+  STMOBJ   += chemuci_StoichiomSP.o
+  STMSPOBJ += chemuci_StoichiomSP.o
+endif
+ifeq ($(HAS_HES),1)
+  HESSRC   += chemuci_Stoichiom.f90
+  HESOBJ   += chemuci_Stoichiom.o
+endif
+
+UTLSRC = chemuci_Rates.f90 chemuci_Util.f90 chemuci_Monitor.f90
+UTLOBJ = chemuci_Rates.o   chemuci_Util.o   chemuci_Monitor.o
+
+LASRC  = chemuci_LinearAlgebra.f90
+LAOBJ  = chemuci_LinearAlgebra.o
+
+STOCHSRC = chemuci_Stochastic.f90
+STOCHOBJ = chemuci_Stochastic.o
+
+MAINSRC = chemuci_Main.f90        chemuci_Initialize.f90 \
+          chemuci_Integrator.f90  chemuci_Model.f90
+MAINOBJ = chemuci_Main.o          chemuci_Initialize.o   \
+          chemuci_Integrator.o    chemuci_Model.o
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: modify the line below to include only the
+#       objects needed by your application
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ALLOBJ = $(GENOBJ) $(FUNOBJ) $(JACOBJ) $(HESOBJ) $(STMOBJ) \
+	 $(UTLOBJ) $(LAOBJ)
+
+#############################################################################
+# Makefile targets and rules
+#############################################################################
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# User: modify the line below to include only the
+#       executables needed by your application
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+all:    exe
+
+exe:	$(ALLOBJ) $(MAINOBJ)
+	$(FC) $(FOPT) $(ALLOBJ) $(MAINOBJ) $(LIBS) -o chemuci.exe
+
+stochastic:$(ALLOBJ) $(STOCHOBJ) $(MAINOBJ)
+	$(FC) $(FOPT) $(ALLOBJ) $(STOCHOBJ) $(MAINOBJ) $(LIBS) \
+	-o chemuci_stochastic.exe
+
+mex:    $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O chemuci_mex_Fun.f90     $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O chemuci_mex_Jac_SP.f90  $(ALLOBJ)
+	$(MEX) FC#$(FC) -fortran -O chemuci_mex_Hessian.f90 $(ALLOBJ)
+
+clean:
+	rm -f *.o *.mod \
+	chemuci*.dat chemuci.exe chemuci*.mexglx \
+	chemuci.log
+
+distclean:
+	rm -f *.o *.mod \
+	chemuci*.dat chemuci.exe chemuci.log \
+	chemuci_*.f90 chemuci_*.f90 chemuci_*.mexglx \
+	results*.m *.dat
+
+chemuci_Precision.o: chemuci_Precision.f90
+	$(FC) $(FOPT) -c $<
+
+chemuci_Parameters.o: chemuci_Parameters.f90 chemuci_Precision.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Monitor.o: chemuci_Monitor.f90 chemuci_Precision.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Global.o: chemuci_Global.f90 chemuci_Parameters.o chemuci_Precision.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Initialize.o: chemuci_Initialize.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Function.o: chemuci_Function.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Stochastic.o: chemuci_Stochastic.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_JacobianSP.o: chemuci_JacobianSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Jacobian.o: chemuci_Jacobian.f90 $(GENOBJ) $(JACSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_LinearAlgebra.o: chemuci_LinearAlgebra.f90 $(GENOBJ) $(JACSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Rates.o: chemuci_Rates.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_HessianSP.o: chemuci_HessianSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Hessian.o:  chemuci_Hessian.f90 $(GENOBJ) $(HESSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_StoichiomSP.o: chemuci_StoichiomSP.f90 $(GENOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Stoichiom.o: chemuci_Stoichiom.f90 $(GENOBJ) $(STMSPOBJ)
+	$(FC) $(FOPT) -c $<
+
+chemuci_Util.o: chemuci_Util.f90 $(GENOBJ) chemuci_Monitor.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Main.o: chemuci_Main.f90  $(ALLOBJ) \
+                 chemuci_Initialize.o chemuci_Model.o chemuci_Integrator.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Model.o: chemuci_Model.f90 $(ALLOBJ) chemuci_Integrator.o
+	$(FC) $(FOPT) -c $<
+
+chemuci_Integrator.o: chemuci_Integrator.f90 $(ALLOBJ)
+	$(FC) $(FOPT) -c $<
+
+# Define rule for a user-defined module that gets USE-d by F90_Rates.
+# This rule is only applied if both variables are not blank.
+ifdef EXTERNAL_RATES_F90
+ifdef EXTERNAL_RATES_OBJ
+$(EXTERNAL_RATES_OBJ): $(EXTERNAL_RATES_F90) chemuci_Precision.o chemuci_Global.o chemuci_Parameters.o
+	$(FC) $(FOPT) -c $<
+endif
+endif
