@@ -9,9 +9,11 @@ np.random.seed(SEED)
 
 num_experiments = 10
 
+# oxygen zeroed out
+
 Svv_d = sp.Matrix([
     [-1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # PhCH2CHO
-    [-2, -1,  0,  0, -1,  1, -1,  1,  1,  0], # O2
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O2
     [ 1, -2, -2,  0,  0, -1,  0, -2,  0,  0], # PhCH2O2
     [ 1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # CO
     [ 1,  2,  0,  0,  1, -1,  1,  0, -2,  0], # HO2
@@ -27,7 +29,7 @@ Svv_sparse_d = sp.SparseMatrix(Svv_d)
 
 Sr_d = sp.Matrix([
     [-1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # PhCH2CHO
-    [-2, -1,  0,  0, -1,  0, -1,  0,  0,  0], # O2
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O2
     [ 0, -2, -2,  0,  0, -1,  0, -2,  0,  0], # PhCH2O2
     [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # CO
     [ 0,  0,  0,  0,  0, -1,  0,  0, -2,  0], # HO2
@@ -43,7 +45,7 @@ Sr_sparse_d = sp.SparseMatrix(Sr_d)
 
 Sp_d = sp.Matrix([
     [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # PhCH2CHO
-    [ 0,  0,  0,  0,  0,  1,  0,  1,  1,  0], # O2
+    [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O2
     [ 1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # PhCH2O2
     [ 1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # CO
     [ 1,  2,  0,  0,  1,  0,  1,  0,  0,  0], # HO2
@@ -63,9 +65,9 @@ Sp_sparse_d = sp.SparseMatrix(Sp_d)
 # cycle = Svv_d.nullspace()
 #       = [0, 1, 0, 0, 0, -2, -2, 0, 1, 1]
 # stoich invariants:
+#   [ 0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
 #   [ 1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0]
-#   [ 3, -2,  0,  0, -1,  0,  0,  0, -1,  1,  2,  0]
-#   [-1,  2,  1,  0,  2,  0,  2,  1,  3,  1,  0,  2]
+#   [ 2,  0,  1,  0,  1,  0,  2,  1,  1,  1,  1,  1]
 # kinetic invariant:
 #   a*[ 0,  2,  0,  1,  1,  0,  0,  0,  1, -1, -2,  0]
 #   [0, 0, 0, 0, 0, 0, (1-a), 0, (1-a), 0, -a, 0]
@@ -94,3 +96,20 @@ rank_list_d = linalg_experiment(S_merge_d, num_experiments)
 # del_c_d = -del_r_d - del_l_d
 
 # del_l_d, del_r_d, del_c_d = s_linalg(Svv_sparse_d, S_merge_d, stoichiometric_invariants_d)
+
+
+M = np.array([
+    # C   H   O
+    [ 8,  8,  1], # PhCH2CHO
+    [ 0,  0,  0], # O2
+    [ 7,  7,  2], # PhCH2O2
+    [ 1,  0,  1], # CO
+    [ 0,  1,  2], # HO2
+    [ 7,  6,  1], # PhCHO
+    [ 7,  8,  1], # PhCH2OH
+    [ 0,  1,  1], # OH
+    [ 0,  2,  1], # H2O
+    [ 7,  8,  2], # PhCH2OOH
+    [14, 14,  2], # PhCH2O2CH2Ph
+    [ 0,  2,  2], # H2O2
+])
