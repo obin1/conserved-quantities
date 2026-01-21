@@ -71,13 +71,8 @@ def create_coproduction_2(Sr):
     groups = defaultdict(list)
 
     for j in range(n_cols):
-        # Get nonzero structure of column j
         col_entries = Sr[:, j].todok()
-
-        # Canonical, hashable signature
         signature = tuple(sorted(col_entries.items()))
-        # each item is (row_index, symbolic_value)
-
         groups[signature].append(j)
 
     coproduction_cols = [0] * n_cols
