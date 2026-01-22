@@ -56,7 +56,7 @@ for key, value in d.items():
         line2 = [spc[p], key[1:], key, p, c2]
         l.append(line2)
 
-df2 = pd.DataFrame(l, columns=["# species_index (starts from 1)","reaction_index (starts from 1)","from","to", "directed stoichiometric value"
+df2 = pd.DataFrame(l, columns=["# species_index (starts from 1)","reaction_index (starts from 1)","from","to", " directed stoichiometric value"
 ])
 
 filename = "cracmm2_EdgeList.csv"
