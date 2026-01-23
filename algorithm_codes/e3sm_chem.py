@@ -24,30 +24,6 @@ rank_Svv_chemuci_np = np.linalg.matrix_rank(Svv_chemuci_np)
 dim_leftnull_chemuci = Svv_sparse_chemuci.shape[0] - rank_Svv_chemuci_np
 chemuci_null_np = null_space(Svv_chemuci_np.T)
 
-# if stoichiometric_invariants_chemuci == dim_leftnull_chemuci:
-#     print("identifying coproduction columns...")
-#     coproduction_cols_chemuci = create_coproduction(Sr_sparse_chemuci)
-#     print("creating symbolic dictionary...")
-#     symbol_dict_chemuci = create_symbols(coproduction_cols_chemuci)
-#     print("merging coproduction columns...")
-#     S_merge_chemuci, col_del_chemuci = merge_coprod(Sr_sparse_chemuci, Sp_sparse_chemuci, symbol_dict_chemuci, coproduction_cols_chemuci, Svv_sparse_chemuci)
-#     print("performing linear algebra...")
-#     # rank_chemuci = S_merge_chemuci.rank()
-#     # dim_null_chemuci = S_merge_chemuci.shape[0] - rank_chemuci
-#     # del_l_chemuci = dim_null_chemuci - stoichiometric_invariants_chemuci
-#     del_r_chemuci = S_merge_chemuci.shape[1] - Svv_sparse_chemuci.shape[1]
-#     # del_c_chemuci = -del_r_chemuci - del_l_chemuci
-
-#     rank_list_chemuci = linalg_experiment(S_merge_chemuci)
-#     # del_l = S_merge_chemuci.shape[0] - rank - stoich_invariants
-#     # del_c_chemuci = -del_r_chemuci - del_l_chemuci
-
-#     # del_l_chemuci, del_r_chemuci, del_c_chemuci = s_linalg(Svv_sparse_chemuci, S_merge_chemuci, stoichiometric_invariants_chemuci)
-# else:
-#     print("Error: numpy vs sympy disparity")
-
-#%%
-
 print("identifying coproduction columns...")
 coproduction_cols_chemuci = create_coproduction(Sr_sparse_chemuci)
 print("creating symbolic dictionary...")

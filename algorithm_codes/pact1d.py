@@ -25,30 +25,6 @@ rank_Svv_pact1d_np = np.linalg.matrix_rank(Svv_pact1d_np)
 dim_leftnull_pact1d = Svv_sparse_pact1d.shape[0] - rank_Svv_pact1d_np
 pact1d_null_np = null_space(Svv_pact1d_np.T)
 
-# if stoichiometric_invariants_pact1d == dim_leftnull_pact1d:
-#     print("identifying coproduction columns...")
-#     coproduction_cols_pact1d = create_coproduction(Sr_sparse_pact1d)
-#     print("creating symbolic dictionary...")
-#     symbol_dict_pact1d = create_symbols(coproduction_cols_pact1d)
-#     print("merging coproduction columns...")
-#     S_merge_pact1d, col_del_pact1d = merge_coprod(Sr_sparse_pact1d, Sp_sparse_pact1d, symbol_dict_pact1d, coproduction_cols_pact1d, Svv_sparse_pact1d)
-#     print("performing linear algebra...")
-#     # rank_pact1d = S_merge_pact1d.rank()
-#     # dim_null_pact1d = S_merge_pact1d.shape[0] - rank_pact1d
-#     # del_l_pact1d = dim_null_pact1d - stoichiometric_invariants_pact1d
-#     del_r_pact1d = S_merge_pact1d.shape[1] - Svv_sparse_pact1d.shape[1]
-#     # del_c_pact1d = -del_r_pact1d - del_l_pact1d
-
-#     rank_list_pact1d = linalg_experiment(S_merge_pact1d)
-#     # del_l = S_merge_pact1d.shape[0] - rank - stoich_invariants
-#     # del_c_pact1d = -del_r_pact1d - del_l_pact1d
-
-#     # del_l_pact1d, del_r_pact1d, del_c_pact1d = s_linalg(Svv_sparse_pact1d, S_merge_pact1d, stoichiometric_invariants_pact1d)
-# else:
-#     print("Error: numpy vs sympy disparity")
-
-#%%
-
 print("identifying coproduction columns...")
 coproduction_cols_pact1d = create_coproduction(Sr_sparse_pact1d)
 print("creating symbolic dictionary...")
