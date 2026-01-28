@@ -35,7 +35,7 @@ print("performing linear algebra...")
 # dim_null_cracmm = S_merge_cracmm.shape[0] - rank_cracmm
 # del_l_cracmm = dim_null_cracmm - stoichiometric_invariants_cracmm
 del_r_cracmm = S_merge_cracmm.shape[1] - Svv_sparse_cracmm.shape[1]
-# del_c_cb05 = -del_r_cb05 - del_l_cb05
+# del_c_cracmm = -del_r_cracmm - del_l_cracmm
     
 rank_list_cracmm = linalg_experiment(S_merge_cracmm, num_experiments)
 # del_l_cracmm = S_merge_cracmm.shape[0] - rank - stoich_invariants
