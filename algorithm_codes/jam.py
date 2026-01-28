@@ -1,4 +1,3 @@
-"/Users/psturm/Desktop/KPP-playground/caaba_4.6.0/mecca/eqn/jam"
 import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
@@ -6,9 +5,9 @@ from algorithm import create_sparse, del_zero_col, create_coproduction, create_s
 SEED = 42
 np.random.seed(SEED)
 
-num_experiments = 1
+num_experiments = 10
 
-edge_list_jam = pd.read_csv("/Users/psturm/Desktop/KPP-playground/caaba_4.6.0/mecca/eqn/jam/jam_EdgeList.csv", comment="!")
+edge_list_jam = pd.read_csv("../mechanisms/jam/jam_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
 Sr_sparse_jam, Sp_sparse_jam, Svv_sparse_jam = create_sparse(edge_list_jam)

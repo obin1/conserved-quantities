@@ -7,7 +7,7 @@ np.random.seed(SEED)
 
 num_experiments = 10
 
-edge_list_cracmm = pd.read_csv("../mechanisms/cracmm/cracmm2_EdgeList.csv", comment="!")
+edge_list_cracmm = pd.read_csv("../mechanisms/cracmm2/cracmm2_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
 Sr_sparse_cracmm, Sp_sparse_cracmm, Svv_sparse_cracmm = create_sparse(edge_list_cracmm)
