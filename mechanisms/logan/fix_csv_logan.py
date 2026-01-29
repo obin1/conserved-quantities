@@ -73,6 +73,22 @@ df3 = pd.concat([react, prod])
 sorted_df = df3.sort_values(by='index')
 sorted_df["R_idx"] = sorted_df["R_ID"].str.replace("R", "", regex=False)
 
+x = list(sorted_df["R_idx"])
+ordered_x = []
+for item in x:
+    if item not in ordered_x:
+        ordered_x.append(item)
+
+r_dict = {}
+for index, r in enumerate(ordered_x):
+    r_dict[r] = index + 1
+
+r_int = []
+for r in x:
+    r_int.append(r_dict[r])
+
+sorted_df["R_idx"] = r_int
+
 # reorder columns
 new_order = ["index", "R_ID", "spc_idx","R_idx", "from", "to", "stoichiometry"]
 df4 = sorted_df[new_order]

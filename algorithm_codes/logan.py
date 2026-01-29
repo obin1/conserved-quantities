@@ -7,7 +7,7 @@ np.random.seed(SEED)
 
 num_experiments = 10
 
-edge_list_logan = pd.read_csv("../mechanisms/logan/logan_EdgeList.csv", comment="!")
+edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList.csv", comment="!")
 
 print("creating sparse matrices...")
 Sr_sparse_logan, Sp_sparse_logan, Svv_sparse_logan = create_sparse(edge_list_logan)
