@@ -31,4 +31,31 @@ print("performing linear algebra...")
 del_r_logan = S_merge_logan.shape[1] - Svv_sparse_logan.shape[1]
     
 rank_list_logan = linalg_experiment(S_merge_logan, num_experiments)
+N = S_merge_logan.T.nullspace()
 
+# for loop over edgelist to get a species index mapping dict. species can either be in from or to columns
+# if it begins with "R" then it is a reaction, else it is a species
+species_index = {}
+for index, row in edge_list_logan.iterrows():
+    from_node = row['from']
+    to_node = row['to']
+    if not from_node.startswith("R"):
+        if from_node not in species_index:
+            species_index[row["# species_index (starts from 1)"]] = from_node
+    if not to_node.startswith("R"):
+        if to_node not in species_index:
+            species_index[row["# species_index (starts from 1)"]] = to_node
+
+def get_species_in_null_vector(null_vector, species_index):
+    species_involved = []
+    for i in range(len(null_vector)):
+        if abs(null_vector[i]) != 0: 
+            species_name = species_index.get(i + 1, None)  
+            if species_name:
+                coeff = null_vector[i]
+                species_involved.append(f"{coeff}*{species_name}")
+    equation = " + ".join(species_involved)
+    return equation
+first_null_vector = N[1]
+species_in_first_null_vector = get_species_in_null_vector(first_null_vector, species_index)
+print(species_in_first_null_vector)
