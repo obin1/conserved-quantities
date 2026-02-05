@@ -225,14 +225,14 @@ HNO2,R50a,1
 HNO3,R50a,1
 HO2NO2,R50a,1
 H2CO,R50a,1
-CH3COOH,R50a,1
+CH3OOH,R50a,1
 R50a,precip_loss_lowaltitude,1
 H2O2,R50b,1
 HNO2,R50b,1
 HNO3,R50b,1
 HO2NO2,R50b,1
 H2CO,R50b,1
-CH3COOH,R50b,1
+CH3OOH,R50b,1
 R50b,precip_loss_highaltitude,1
 H2O2,R51,1
 aerosol,R51,1

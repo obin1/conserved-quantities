@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+#%%
 SEED = 42
 np.random.seed(SEED)
 
@@ -33,6 +34,7 @@ del_r_logan = S_merge_logan.shape[1] - Svv_sparse_logan.shape[1]
 rank_list_logan = linalg_experiment(S_merge_logan, num_experiments)
 N = S_merge_logan.T.nullspace()
 
+#%%
 # for loop over edgelist to get a species index mapping dict. species can either be in from or to columns
 # if it begins with "R" then it is a reaction, else it is a species
 species_index = {}
