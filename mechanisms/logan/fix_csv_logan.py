@@ -5,7 +5,8 @@ df = pd.read_csv("../mechanisms/logan/Logan1981_edgelist.csv")
 
 df_list = []
 r_id = []
-spc_delete = ["aerosol","precip_loss_highaltitude","precip_loss_lowaltitude","M","N2","O2","hv","products_R25","H2O2_aerosol_loss"]
+# spc_delete = ["aerosol","precip_loss_highaltitude","precip_loss_lowaltitude","M","N2","O2","hv","products_R25","H2O2_aerosol_loss"]
+spc_delete = ["aerosol","precip_loss_highaltitude","precip_loss_lowaltitude","M","O2","hv","products_R25","H2O2_aerosol_loss"]
 
 # if reactant multiply coefficient of stoich by -1
 # take note of reaction IDs
@@ -108,5 +109,5 @@ df4 = df4.reset_index()
 df4 = df4.drop(columns=["index", "level_0"])
 
 
-filename = "log81_EdgeList.csv"
+filename = "log81_EdgeList_withN2.csv"
 df4.to_csv(filename, index=False)

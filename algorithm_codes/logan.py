@@ -1,3 +1,4 @@
+#%% 
 import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
@@ -9,7 +10,8 @@ np.random.seed(SEED)
 num_experiments = 10
 
 pd.set_option('display.max_columns', None)
-edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList.csv", comment="!")
+# edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList.csv", comment="!")
+edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withN2.csv", comment="!")
 
 print("creating sparse matrices...")
 Sr_sparse_logan, Sp_sparse_logan, Svv_sparse_logan = create_sparse(edge_list_logan)
