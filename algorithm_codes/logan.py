@@ -10,6 +10,7 @@ np.random.seed(SEED)
 num_experiments = 10
 
 pd.set_option('display.max_columns', None)
+# edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withloss.csv", comment="!")
 # edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList.csv", comment="!")
 edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withN2.csv", comment="!")
 

@@ -7,7 +7,7 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 survey = {
-    "Mechanism": ["JPMv0.2", "JPM1.1", "SmallStrato", "Superfast", "Form 1985", "POLLU", "GC-Hg", "E3SM", "CBM-Z", "SAPRC99", "CB05", "RACM", "RADM2", "MOZART", "MOZART-T1", "AMORE", "PACT-1D", "RCIM", "CIM", "CIM-var", "JAM", "GCv12.0", "GCv12.7", "GCv12.8", "GCv12.9", "GCv13.3", "GCv13.4", "GCv14.6", "CRI", "MECCA", "MCM", "Toluene", "Log81", "CRACMM2", "CRACMM3"],
+    "Mechanism": ["JPMv0.2", "JPM1.1", "SmallStrato", "Superfast", "Form 1985", "POLLU", "GC-Hg", "E3SM", "CBM-Z", "SAPRC99", "CB05", "RACM", "RADM2", "MOZART", "MOZART-T1", "AMORE", "PACT-1D", "RCIM", "CIM", "CIM-var", "JAM", "GCv12.0", "GCv12.7", "GCv12.8", "GCv12.9", "GCv13.3", "GCv13.4", "GCv14.6", "CRI", "MECCA", "MCM", "Toluene", "Logan81", "CRACMM2", "CRACMM3"],
     "#Species": [11, 16, 5, 15, 12, 20, 32, 47, 67, 74, 82, 82, 59, 81, 155, 133, 167,145, 386, 394, 245, 235, 243, 258, 262, 287, 287, 353, 442, 733, 5832, 12, 38, 196, 226],
     "#Reactions": [10,13, 10, 32, 25, 25, 94, 104, 142, 211, 205, 250, 156, 196, 360, 330, 513, 379, 886, 886, 702, 725, 750, 825, 850, 903, 913, 1058, 1258, 2323, 13140, 10, 57, 531, 614],
     "Stoichiometric Invariants": [2, 5, 1, 0, 1, 3, 2, 1, 7, 1, 7, 1, 2, 0, 0, 0, 9, 0, 0, 2, 4, 6, 6, 6, 8, 10, 10, 9, 2, 9, 1, 3, 10, 4, 5],
@@ -60,13 +60,13 @@ fig.add_trace(
         name="Mechanisms w/o Kinetic Invariants"))
 
 # specific labels, positions, sizes per mechanism
-label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Log81"} 
+label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
 labels2 = ["" if name in label_mechs2 else name
     for name in mech_survey2["Mechanism"]]
 positions1 = ["top center" if name in {"E3SM"} 
               else "bottom center" if name in {"CIM"}
               else "middle right" for name in mech_survey2["Mechanism"]]
-sizes1 = [13 if name in {"Log81", "Superfast", "GC-Hg", "JPM1.1", "JPMv0.2"}
+sizes1 = [13 if name in {"Logan81", "Superfast", "GC-Hg", "JPM1.1", "JPMv0.2"}
           else 25 for name in mech_survey2["Mechanism"]]
 
 # Scatter: mech_survey2 (stars), main plot
@@ -126,7 +126,7 @@ fig.update_xaxes(range=[0, 800])
 fig.update_yaxes(range=[0, 800])
 
 # filter only mechanisms in crowded bottom left corner
-mech_survey4 = mech_survey[mech_survey["Mechanism"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Log81"])]
+mech_survey4 = mech_survey[mech_survey["Mechanism"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
 mech_survey5 = mech_survey[mech_survey["Mechanism"].isin(["SmallStrato", "Form 1985", "POLLU"])]
 fig1 = go.Figure()
 
@@ -134,7 +134,7 @@ fig1 = go.Figure()
 positions2 = [
     "middle right" if name in {"GC-Hg", "JPM1.1"} 
     else "top center" if name in {"Superfast"}
-    else "middle left" if name in {"Log81"}
+    else "middle left" if name in {"Logan81"}
     else "bottom center" 
     for name in mech_survey4["Mechanism"]]
 
