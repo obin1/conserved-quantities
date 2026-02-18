@@ -181,6 +181,9 @@ def linalg_experiment_fast(A, num_experiments, proj_dim):
     for _ in range(num_experiments):
     
         # 2. Random projection
+        # num_col > num_row, so rank is restricted by num_row
+        # create a projection of original matrix into lower dimensional space, num_row
+        # easier to compute rank of smaller matrix
         R = np.random.randn(n_cols, proj_dim)
         AR = A @ R   # shape: (n_rows, proj_dim)
 
