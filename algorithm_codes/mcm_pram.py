@@ -7,33 +7,33 @@ np.random.seed(SEED)
 
 num_experiments = 1
 
-edge_list_mcm = pd.read_csv("../mechanisms/mcm-pram/mcm_EdgeList.csv", comment="!")
+edge_list_pram = pd.read_csv("../mechanisms/mcm-pram/mcm_EdgeList.csv", comment="!")
 print("creating sparse matrices...")
-Sr_sparse_mcm, Sp_sparse_mcm, Svv_sparse_mcm = create_sparse(edge_list_mcm)
-Svv_sparse_mcm, init_col_del_mcm = del_zero_col(Svv_sparse_mcm)
+Sr_sparse_pram, Sp_sparse_pram, Svv_sparse_pram = create_sparse(edge_list_pram)
+Svv_sparse_pram, init_col_del_pram = del_zero_col(Svv_sparse_pram)
 print("computing dimension of nullspace...")
-Svv_mcm_np = np.array(Svv_sparse_mcm, dtype=float)
-rank_Svv_mcm_np = np.linalg.matrix_rank(Svv_mcm_np)
-dim_leftnull_mcm = Svv_sparse_mcm.shape[0] - rank_Svv_mcm_np
-print("rank_Svv_mcm_np:", rank_Svv_mcm_np)
+Svv_pram_np = np.array(Svv_sparse_pram, dtype=float)
+rank_Svv_pram_np = np.linalg.matrix_rank(Svv_pram_np)
+dim_leftnull_pram = Svv_sparse_pram.shape[0] - rank_Svv_pram_np
+print("rank_Svv_pram_np:", rank_Svv_pram_np)
 
 print("identifying coproduction columns...")
-# coproduction_cols_mcm = create_coproduction(Sr_sparse_mcm)
-coproduction_cols_mcm = create_coproduction_2(Sr_sparse_mcm)
+# coproduction_cols_pram = create_coproduction(Sr_sparse_pram)
+coproduction_cols_pram = create_coproduction_2(Sr_sparse_pram)
 print("creating symbolic dictionary...")
-symbol_dict_mcm = create_symbols(coproduction_cols_mcm)
+symbol_dict_pram = create_symbols(coproduction_cols_pram)
 print("merging coproduction columns...")
-S_merge_mcm, col_del_mcm = merge_coprod(Sr_sparse_mcm, Sp_sparse_mcm, symbol_dict_mcm, coproduction_cols_mcm, Svv_sparse_mcm)
+S_merge_pram, col_del_pram = merge_coprod(Sr_sparse_pram, Sp_sparse_pram, symbol_dict_pram, coproduction_cols_pram, Svv_sparse_pram)
 print("performing linear algebra...")
 
-del_r_mcm = S_merge_mcm.shape[1] - Svv_sparse_mcm.shape[1]
+del_r_pram = S_merge_pram.shape[1] - Svv_sparse_pram.shape[1]
     
-# rank_list_mcm = linalg_experiment(S_merge_mcm, num_experiments)
-# rank_list_mcm = linalg_experiment_fast(S_merge_mcm, num_experiments, proj_dim=300)
+# rank_list_pram = linalg_experiment(S_merge_pram, num_experiments)
+# rank_list_pram = linalg_experiment_fast(S_merge_pram, num_experiments, proj_dim=300)
 
-A = numeric_sparse_matrix_fast_combined(S_merge_mcm)
-rank_list_mcm = linalg_experiment_fast(A, num_experiments, A.shape[0])
-print("rank_list_mcm:", rank_list_mcm)
-# del_l = S_merge_mcm.shape[0] - rank - stoich_invariants
-# del_c_mcm = -del_r_mcm - del_l_mcm
+A = numeric_sparse_matrix_fast_combined(S_merge_pram)
+rank_list_pram = linalg_experiment_fast(A, num_experiments, A.shape[0])
+print("rank_list_pram:", rank_list_pram)
+# del_l = S_merge_pram.shape[0] - rank - stoich_invariants
+# del_c_pram = -del_r_pram - del_l_pram
 
