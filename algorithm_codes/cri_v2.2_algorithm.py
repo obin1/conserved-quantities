@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 from scipy.linalg import null_space
 
 SEED = 42
@@ -62,4 +62,7 @@ del_r_cri = S_merge_cri.shape[1] - Svv_sparse_cri.shape[1]
 rank_list_cri = linalg_experiment(S_merge_cri, num_experiments)
 # del_l = S_merge_cri.shape[0] - rank - stoich_invariants
 # del_c_cri = -del_r_cri - del_l_cri
+
+A = numeric_sparse_matrix_fast_combined(S_merge_cri)
+rank_list_cri_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])
 # %%

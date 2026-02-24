@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
 SEED = 42
 np.random.seed(SEED)
@@ -46,3 +46,6 @@ rank_list_cb05 = linalg_experiment(S_merge_cb05, num_experiments)
 #     S_merge_cb05,
 #     stoichiometric_invariants_cb05
 # )
+
+A = numeric_sparse_matrix_fast_combined(S_merge_cb05)
+rank_list_cb05_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])

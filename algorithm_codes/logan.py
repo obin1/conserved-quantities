@@ -1,7 +1,7 @@
 #%% 
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
 #%%
 SEED = 42
@@ -36,6 +36,10 @@ del_r_logan = S_merge_logan.shape[1] - Svv_sparse_logan.shape[1]
     
 rank_list_logan = linalg_experiment(S_merge_logan, num_experiments)
 N = S_merge_logan.T.nullspace()
+
+A = numeric_sparse_matrix_fast_combined(S_merge_logan)
+rank_list_logan_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])
+
 
 #%%
 # for loop over edgelist to get a species index mapping dict. species can either be in from or to columns

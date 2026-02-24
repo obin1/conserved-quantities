@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
 SEED = 42
 np.random.seed(SEED)
@@ -31,3 +31,5 @@ del_r_gc13_3_0 = S_merge_gc13_3_0.shape[1] - Svv_sparse_gc13_3_0.shape[1]
     
 rank_list_gc13_3_0 = linalg_experiment(S_merge_gc13_3_0, num_experiments)
 
+A = numeric_sparse_matrix_fast_combined(S_merge_gc13_3_0)
+rank_list_gc13_3_0_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])

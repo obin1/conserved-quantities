@@ -203,6 +203,8 @@ M_L_alpha_sub = M_L_alpha.subs({a:0.598546359448017})
 
 
 # Check PCA on D data
+SEED = 42
+np.random.seed(SEED)
 
 df, C, D, C_active = load_data(file= 'experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv') #replace with your path
 x_train,y_train, x_test, y_test, C_test = createIO(C,D,C_active)
@@ -249,7 +251,7 @@ x_train,y_train, x_test, y_test, C_test = createIO(C,D,C_active)
 # plt.show()
 
 # no reduction to check which components vanish
-pca2 = PCA(n_components=16, svd_solver="full")   
+pca2 = PCA(n_components=16, svd_solver="full", random_state=18)   
 X_pca_2 = pca2.fit_transform(D)
 pca2.singular_values_
 y = pca2.singular_values_
