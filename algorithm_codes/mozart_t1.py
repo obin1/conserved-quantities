@@ -24,28 +24,11 @@ if stoichiometric_invariants_mozart_t1 == dim_leftnull_mozart_t1:
     print("creating symbolic dictionary...")
     symbol_dict_mozart_t1 = create_symbols(coproduction_cols_mozart_t1)
     print("merging coproduction columns...")
-    S_merge_mozart_t1, col_del_mozart_t1 = merge_coprod(
-        Sr_sparse_mozart_t1,
-        Sp_sparse_mozart_t1,
-        symbol_dict_mozart_t1,
-        coproduction_cols_mozart_t1,
-        Svv_sparse_mozart_t1
-    )
+    S_merge_mozart_t1, col_del_mozart_t1 = merge_coprod(Sr_sparse_mozart_t1,Sp_sparse_mozart_t1, symbol_dict_mozart_t1, coproduction_cols_mozart_t1, Svv_sparse_mozart_t1)
     print("performing linear algebra...")
-    # rank_mozart_t1 = S_merge_mozart_t1.rank()
-    # dim_null_mozart_t1 = S_merge_mozart_t1.shape[0] - rank_mozart_t1
-    # del_l_mozart_t1 = dim_null_mozart_t1 - stoichiometric_invariants_mozart_t1
     del_r_mozart_t1 = S_merge_mozart_t1.shape[1] - Svv_sparse_mozart_t1.shape[1]
-    # del_c_mozart_t1 = -del_r_mozart_t1 - del_l_mozart_t1
     
     rank_list_mozart_t1 = linalg_experiment(S_merge_mozart_t1, num_experiments)
-    # del_l_mozart_t1 = S_merge_mozart_t1.shape[0] - rank - stoich_invariants
-    # del_c_mozart_t1 = -del_r_mozart_t1 - del_l_mozart_t1
 
-    # del_l_mozart_t1, del_r_mozart_t1, del_c_mozart_t1 = s_linalg(
-    #     Svv_sparse_mozart_t1,
-    #     S_merge_mozart_t1,
-    #     stoichiometric_invariants_mozart_t1
-    # )
 else:
     print("Error: numpy vs sympy disparity")

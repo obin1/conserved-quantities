@@ -57,19 +57,6 @@ Sp_d = sp.Matrix([
 ])
 Sp_sparse_d = sp.SparseMatrix(Sp_d)
 
-# rank = s - l = r - c
-# 9 = 12 - 3 = 10 - 1
-# 8 = 12 - 4 = 9 - 1
-# cycle = Svv_d.nullspace()
-#       = [0, 1, 0, 0, 0, -2, -2, 0, 1, 1]
-# stoich invariants:
-#   [ 1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0]
-#   [ 3, -2,  0,  0, -1,  0,  0,  0, -1,  1,  2,  0]
-#   [-1,  2,  1,  0,  2,  0,  2,  1,  3,  1,  0,  2]
-# kinetic invariant:
-#   a*[ 0,  2,  0,  1,  1,  0,  0,  0,  1, -1, -2,  0]
-#   [0, 0, 0, 0, 0, 0, (1-a), 0, (1-a), 0, -a, 0]
-
 print("computing dimension of nullspace...")
 stoichiometric_invariants_d = len(Svv_sparse_d.T.nullspace())
 Svv_d_np = np.array(Svv_sparse_d, dtype=float)
@@ -83,14 +70,6 @@ symbol_dict_d = create_symbols(coproduction_cols_d)
 print("merging coproduction columns...")
 S_merge_d, col_del_d = merge_coprod(Sr_sparse_d, Sp_sparse_d, symbol_dict_d, coproduction_cols_d, Svv_sparse_d)
 print("performing linear algebra...")
-# rank_d = S_merge_d.rank()
-# dim_null_d = S_merge_d.shape[0] - rank_d
-# del_l_d = dim_null_d - stoichiometric_invariants_d
 del_r_d = S_merge_d.shape[1] - Svv_sparse_d.shape[1]
-# del_c_d = -del_r_d - del_l_d
 
 rank_list_d = linalg_experiment(S_merge_d, num_experiments)
-# del_l = S_merge_d.shape[0] - rank - stoich_invariants
-# del_c_d = -del_r_d - del_l_d
-
-# del_l_d, del_r_d, del_c_d = s_linalg(Svv_sparse_d, S_merge_d, stoichiometric_invariants_d)

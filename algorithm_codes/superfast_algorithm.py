@@ -26,16 +26,9 @@ if stoichiometric_invariants_superfast == dim_leftnull_superfast:
     print("merging coproduction columns...")
     S_merge_superfast, col_del_supefast = merge_coprod(Sr_sparse_superfast, Sp_sparse_superfast, symbol_dict_superfast, coproduction_cols_superfast, Svv_sparse_superfast)
     print("performing linear algebra...")
-    # rank_superfast = S_merge_superfast.rank()
-    # dim_null_superfast = S_merge_superfast.shape[0] - rank_superfast
-    # del_l_superfast = dim_null_superfast - stoichiometric_invariants_superfast
     del_r_superfast = S_merge_superfast.shape[1] - Svv_sparse_superfast.shape[1]
-    # del_c_superfast = -del_r_superfast - del_l_superfast
 
     rank_list_superfast = linalg_experiment(S_merge_superfast, num_experiments)
-    # del_l = S_merge_superfast.shape[0] - rank - stoich_invariants
-    # del_c_superfast = -del_r_superfast - del_l_superfast
 
-    # del_l_superfast, del_r_superfast, del_c_superfast = s_linalg(Svv_sparse_superfast, S_merge_superfast, stoichiometric_invariants_superfast)
 else:
     print("Error: numpy vs sympy disparity")

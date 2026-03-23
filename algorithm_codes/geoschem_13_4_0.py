@@ -13,7 +13,6 @@ print("creating sparse matrices...")
 Sr_sparse_gc13_4_0, Sp_sparse_gc13_4_0, Svv_sparse_gc13_4_0 = create_sparse(edge_list_gc13_4_0)
 Svv_sparse_gc13_4_0, init_col_del_gc13_4_0 = del_zero_col(Svv_sparse_gc13_4_0)
 print("computing dimension of nullspace...")
-# stoichiometric_invariants_gc13_4_0 = len(Svv_sparse_gc13_4_0.T.nullspace())
 Svv_gc13_4_0_np = np.array(Svv_sparse_gc13_4_0, dtype=float)
 rank_Svv_gc13_4_0_np = np.linalg.matrix_rank(Svv_gc13_4_0_np)
 dim_leftnull_gc13_4_0 = Svv_sparse_gc13_4_0.shape[0] - rank_Svv_gc13_4_0_np

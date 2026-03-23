@@ -26,20 +26,9 @@ if stoichiometric_invariants_racm == dim_leftnull_racm:
     print("merging coproduction columns...")
     S_merge_racm, col_del_racm = merge_coprod(Sr_sparse_racm, Sp_sparse_racm, symbol_dict_racm, coproduction_cols_racm, Svv_sparse_racm)
     print("performing linear algebra...")
-    # rank_racm = S_merge_racm.rank()
-    # dim_null_racm = S_merge_racm.shape[0] - rank_racm
-    # del_l_racm = dim_null_racm - stoichiometric_invariants_racm
     del_r_racm = S_merge_racm.shape[1] - Svv_sparse_racm.shape[1]
-    # del_c_racm = -del_r_racm - del_l_racm
     
     rank_list_racm = linalg_experiment(S_merge_racm, num_experiments)
-    # del_l_racm = S_merge_racm.shape[0] - rank - stoich_invariants
-    # del_c_racm = -del_r_racm - del_l_racm
 
-    # del_l_racm, del_r_racm, del_c_racm = s_linalg(
-    #     Svv_sparse_racm,
-    #     S_merge_racm,
-    #     stoichiometric_invariants_racm
-    # )
 else:
     print("Error: numpy vs sympy disparity")

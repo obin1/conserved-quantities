@@ -18,22 +18,15 @@ dim_leftnull_pram = Svv_sparse_pram.shape[0] - rank_Svv_pram_np
 print("rank_Svv_pram_np:", rank_Svv_pram_np)
 
 print("identifying coproduction columns...")
-# coproduction_cols_pram = create_coproduction(Sr_sparse_pram)
 coproduction_cols_pram = create_coproduction_2(Sr_sparse_pram)
 print("creating symbolic dictionary...")
 symbol_dict_pram = create_symbols(coproduction_cols_pram)
 print("merging coproduction columns...")
 S_merge_pram, col_del_pram = merge_coprod(Sr_sparse_pram, Sp_sparse_pram, symbol_dict_pram, coproduction_cols_pram, Svv_sparse_pram)
 print("performing linear algebra...")
-
 del_r_pram = S_merge_pram.shape[1] - Svv_sparse_pram.shape[1]
     
-# rank_list_pram = linalg_experiment(S_merge_pram, num_experiments)
-# rank_list_pram = linalg_experiment_fast(S_merge_pram, num_experiments, proj_dim=300)
-
 A = numeric_sparse_matrix_fast_combined(S_merge_pram)
 rank_list_pram = linalg_experiment_fast(A, num_experiments, A.shape[0])
 print("rank_list_pram:", rank_list_pram)
-# del_l = S_merge_pram.shape[0] - rank - stoich_invariants
-# del_c_pram = -del_r_pram - del_l_pram
 

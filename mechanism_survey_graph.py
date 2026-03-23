@@ -225,8 +225,9 @@ fig.update_layout(
         showgrid=False),
     legend=dict(
         xanchor='right',
-        yanchor='top'))
-
+        yanchor='top'),
+    width=800, height=800)
+fig.update_layout(autosize=False)
 # Copy every trace from fig1 into fig inset
 for tr in fig1.data:
     fig.add_trace(tr, row=None, col=None)
@@ -273,7 +274,7 @@ fig.add_shape(
     line=dict(color="black", width=2.5),
     opacity=1)
 
-
+pio.write_image(fig, 'survey_mechanisms.pdf', width=800, height=800) 
 fig.show()
 
 #%%

@@ -8,24 +8,24 @@ np.random.seed(SEED)
 
 num_experiments = 10
 
-# no Oxygen tracked
+# no Oxygen tracked in reaction 3
 Svv_JPM = sp.Matrix([
-               [1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [1, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
-               [-1, 1, 0, 0, 0, 1, -1, 0, 0, 0, 0, -1, 1],
-               [0, 0, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 2, 0, 1, -1, 0, 0, 1, 0, 1, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0],
-               [0, 0, 0, 0, -1, 1, -1, 2, -1, -1, 0, 0, 0], 
-               [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-               [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, -1, 1],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1],
-               [0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
-               [-1, 1, 0, 0, -1, 0, 0, 0, 0, -1, -2, 0, 0]])
+               [ 1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O₃
+               [ 1, -1,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0], # NO
+               [-1,  1,  0,  0,  0,  1, -1,  0,  0,  0,  0, -1,  1], # NO₂
+               [ 0,  0, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0], # HCHO 
+               [ 0,  0,  2,  0,  1, -1,  0,  0,  1,  0,  1,  0,  0], # HO₂  
+               [ 0,  0,  0,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0], # H₂O₂
+               [ 0,  0,  0,  0, -1,  1, -1,  2, -1, -1,  0,  0,  0], # OH
+               [ 0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0], # HNO₃
+               [ 0,  0,  1,  1,  1,  0,  0,  0,  0,  0,  1,  0,  0], # CO   
+               [ 0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0], # H₂   
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0], # ALD2
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0], # MGLY
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1, -1,  1], # MCO₃
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, -1], # PAN
+               [ 0,  0,  0,  0,  1,  0,  0,  0,  1,  1,  0,  0,  0], # H₂O
+               [-1,  1,  0,  0, -1,  0,  0,  0,  0, -1, -2,  0,  0]])# O₂  
 Svv_sparse_JPM = sp.SparseMatrix(Svv_JPM)
 
 Sp_JPM = sp.Matrix([
@@ -48,22 +48,22 @@ Sp_JPM = sp.Matrix([
 Sp_sparse_JPM = sp.SparseMatrix(Sp_JPM)
 
 Sr_JPM = sp.Matrix([
-               [0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
-               [-1, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, -1, 0],
-               [0, 0, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, -1, -1, 0, 0, 0, 0],
-               [0, 0, 0, 0, -1, 0, -1, 0, -1, -1, 0, 0, 0], 
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1],
-               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               [-1, 0, 0, 0, -1, 0, 0, 0, 0, -1, -2, 0, 0]])
+               [ 0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+               [ 0, -1,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0],
+               [-1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0, -1,  0],
+               [ 0,  0, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0],
+               [ 0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0],
+               [ 0,  0,  0,  0, -1,  0, -1,  0, -1, -1,  0,  0,  0], 
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1,  0],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1],
+               [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+               [-1,  0,  0,  0, -1,  0,  0,  0,  0, -1, -2,  0,  0]])
 Sr_sparse_JPM = sp.SparseMatrix(Sr_JPM)
 
 print("computing dimension of nullspace...")
@@ -72,25 +72,14 @@ Svv_np_JPM = np.array(Svv_sparse_JPM, dtype=float)
 rank_Svv_JPM_np = np.linalg.matrix_rank(Svv_np_JPM)
 dim_leftnull_JPM = Svv_sparse_JPM.shape[0] - rank_Svv_JPM_np
 
-if stoichiometric_invariants_JPM == dim_leftnull_JPM:
-    print("identifying coproduction columns...")
-    coproduction_cols_JPM = create_coproduction(Sr_sparse_JPM)
-    print("creating symbolic dictionary...")
-    symbol_dict_JPM = create_symbols(coproduction_cols_JPM)
-    print("merging coproduction columns...")
-    S_merge_JPM, col_del_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
-    S_merge_JPM[15, 2] = -2*symbol_dict_JPM[3]
-    print("performing linear algebra...")
-    # rank_jpm = S_merge_jpm.rank()
-    # dim_null_jpm = S_merge_jpm.shape[0] - rank_jpm
-    # del_l_jpm = dim_null_jpm - stoichiometric_invariants_jpm
-    del_r_jpm = S_merge_JPM.shape[1] - Svv_sparse_JPM.shape[1]
-    # del_c_jpm = -del_r_jpm - del_l_jpm
+print("identifying coproduction columns...")
+coproduction_cols_JPM = create_coproduction(Sr_sparse_JPM)
+print("creating symbolic dictionary...")
+symbol_dict_JPM = create_symbols(coproduction_cols_JPM)
+print("merging coproduction columns...")
+S_merge_JPM, col_del_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
+S_merge_JPM[15, 2] = -2*symbol_dict_JPM[3]
+print("performing linear algebra...")
+del_r_jpm = S_merge_JPM.shape[1] - Svv_sparse_JPM.shape[1]
 
-    rank_list_jpm = linalg_experiment(S_merge_JPM, num_experiments)
-    # del_l = S_merge_jpm.shape[0] - rank - stoich_invariants
-    # del_c_jpm = -del_r_jpm - del_l_jpm
-
-    # del_l_jpm, del_r_jpm, del_c_jpm = s_linalg(Svv_sparse_jpm, S_merge_jpm, stoichiometric_invariants_jpm)
-else:
-    print("Error: numpy vs sympy disparity")
+rank_list_jpm = linalg_experiment(S_merge_JPM, num_experiments)

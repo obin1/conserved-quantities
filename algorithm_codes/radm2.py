@@ -25,18 +25,6 @@ symbol_dict_radm2 = create_symbols(coproduction_cols_radm2)
 print("merging coproduction columns...")
 S_merge_radm2, col_del_radm2 = merge_coprod(Sr_sparse_radm2, Sp_sparse_radm2, symbol_dict_radm2, coproduction_cols_radm2, Svv_sparse_radm2)
 print("performing linear algebra...")
-# rank_radm2 = S_merge_radm2.rank()
-# dim_null_radm2 = S_merge_radm2.shape[0] - rank_radm2
-# del_l_radm2 = dim_null_radm2 - stoichiometric_invariants_radm2
 del_r_radm2 = S_merge_radm2.shape[1] - Svv_sparse_radm2.shape[1]
-# del_c_radm2 = -del_r_radm2 - del_l_radm2
 
 rank_list_radm2 = linalg_experiment(S_merge_radm2, num_experiments)
-# del_l_radm2 = S_merge_radm2.shape[0] - rank - stoich_invariants
-# del_c_radm2 = -del_r_radm2 - del_l_radm2
-
-# del_l_radm2, del_r_radm2, del_c_radm2 = s_linalg(
-#     Svv_sparse_radm2,
-#     S_merge_radm2,
-#     stoichiometric_invariants_radm2
-# )

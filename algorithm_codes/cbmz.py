@@ -25,18 +25,7 @@ symbol_dict_cbmz = create_symbols(coproduction_cols_cbmz)
 print("merging coproduction columns...")
 S_merge_cbmz, col_del_cbmz = merge_coprod(Sr_sparse_cbmz, Sp_sparse_cbmz, symbol_dict_cbmz, coproduction_cols_cbmz, Svv_sparse_cbmz)
 print("performing linear algebra...")
-# rank_cbmz = S_merge_cbmz.rank()
-# dim_null_cbmz = S_merge_cbmz.shape[0] - rank_cbmz
-# del_l_cbmz = dim_null_cbmz - stoichiometric_invariants_cbmz
+
 del_r_cbmz = S_merge_cbmz.shape[1] - Svv_sparse_cbmz.shape[1]
-# del_c_cbmz = -del_r_cbmz - del_l_cbmz
 
 rank_list_cbmz = linalg_experiment(S_merge_cbmz, num_experiments)
-# del_l_cbmz = S_merge_cbmz.shape[0] - rank - stoich_invariants
-# del_c_cbmz = -del_r_cbmz - del_l_cbmz
-
-# del_l_cbmz, del_r_cbmz, del_c_cbmz = s_linalg(
-#     Svv_sparse_cbmz,
-#     S_merge_cbmz,
-#     stoichiometric_invariants_cbmz
-# )

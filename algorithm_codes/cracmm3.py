@@ -24,29 +24,12 @@ coproduction_cols_cracmm3 = create_coproduction(Sr_sparse_cracmm3)
 print("creating symbolic dictionary...")
 symbol_dict_cracmm3 = create_symbols(coproduction_cols_cracmm3)
 print("merging coproduction columns...")
-S_merge_cracmm3, col_del_cracmm3 = merge_coprod(
-    Sr_sparse_cracmm3,
-    Sp_sparse_cracmm3,
-    symbol_dict_cracmm3,
-    coproduction_cols_cracmm3,
-    Svv_sparse_cracmm3
-)
+S_merge_cracmm3, col_del_cracmm3 = merge_coprod(Sr_sparse_cracmm3, Sp_sparse_cracmm3, symbol_dict_cracmm3, coproduction_cols_cracmm3, Svv_sparse_cracmm3)
 print("performing linear algebra...")
-# rank_cracmm3 = S_merge_cracmm3.rank()
-# dim_null_cracmm3 = S_merge_cracmm3.shape[0] - rank_cracmm3
-# del_l_cracmm3 = dim_null_cracmm3 - stoichiometric_invariants_cracmm3
 del_r_cracmm3 = S_merge_cracmm3.shape[1] - Svv_sparse_cracmm3.shape[1]
-# del_c_cracmm3 = -del_r_cracmm3 - del_l_cracmm3
     
 rank_list_cracmm3 = linalg_experiment(S_merge_cracmm3, num_experiments)
-# del_l_cracmm3 = S_merge_cracmm3.shape[0] - rank - stoich_invariants
-# del_c_cracmm3 = -del_r_cracmm3 - del_l_cracmm3
 
-# del_l_cracmm3, del_r_cracmm3, del_c_cracmm3 = s_linalg(
-#     Svv_sparse_cracmm3,
-#     S_merge_cracmm3,
-#     stoichiometric_invariants_cracmm3
-# )
 
 #%%
 # WITHOUT DELTA_C, DELTA_N, DELTA_SI
@@ -72,26 +55,8 @@ coproduction_cols_cracmm3e = create_coproduction(Sr_sparse_cracmm3e)
 print("creating symbolic dictionary...")
 symbol_dict_cracmm3e = create_symbols(coproduction_cols_cracmm3e)
 print("merging coproduction columns...")
-S_merge_cracmm3e, col_del_cracmm3e = merge_coprod(
-    Sr_sparse_cracmm3e,
-    Sp_sparse_cracmm3e,
-    symbol_dict_cracmm3e,
-    coproduction_cols_cracmm3e,
-    Svv_sparse_cracmm3e
-)
+S_merge_cracmm3e, col_del_cracmm3e = merge_coprod(Sr_sparse_cracmm3e, Sp_sparse_cracmm3e, symbol_dict_cracmm3e, coproduction_cols_cracmm3e, Svv_sparse_cracmm3e)
 print("performing linear algebra...")
-# rank_cracmm3e = S_merge_cracmm3e.rank()
-# dim_null_cracmm3e = S_merge_cracmm3e.shape[0] - rank_cracmm3e
-# del_l_cracmm3e = dim_null_cracmm3e - stoichiometric_invariants_cracmm3e
 del_r_cracmm3e = S_merge_cracmm3e.shape[1] - Svv_sparse_cracmm3e.shape[1]
-# del_c_cracmm3e = -del_r_cracmm3e - del_l_cracmm3e
     
 rank_list_cracmm3e = linalg_experiment(S_merge_cracmm3e, num_experiments)
-# del_l_cracmm3e = S_merge_cracmm3e.shape[0] - rank - stoich_invariants
-# del_c_cracmm3e = -del_r_cracmm3e - del_l_cracmm3e
-
-# del_l_cracmm3e, del_r_cracmm3e, del_c_cracmm3e = s_linalg(
-#     Svv_sparse_cracmm3e,
-#     S_merge_cracmm3e,
-#     stoichiometric_invariants_cracmm3e
-# )

@@ -23,29 +23,11 @@ coproduction_cols_cb05 = create_coproduction(Sr_sparse_cb05)
 print("creating symbolic dictionary...")
 symbol_dict_cb05 = create_symbols(coproduction_cols_cb05)
 print("merging coproduction columns...")
-S_merge_cb05, col_del_cb05 = merge_coprod(
-    Sr_sparse_cb05,
-    Sp_sparse_cb05,
-    symbol_dict_cb05,
-    coproduction_cols_cb05,
-    Svv_sparse_cb05
-)
+S_merge_cb05, col_del_cb05 = merge_coprod(Sr_sparse_cb05, Sp_sparse_cb05, symbol_dict_cb05, coproduction_cols_cb05, Svv_sparse_cb05)
 print("performing linear algebra...")
-# rank_cb05 = S_merge_cb05.rank()
-# dim_null_cb05 = S_merge_cb05.shape[0] - rank_cb05
-# del_l_cb05 = dim_null_cb05 - stoichiometric_invariants_cb05
 del_r_cb05 = S_merge_cb05.shape[1] - Svv_sparse_cb05.shape[1]
-# del_c_cb05 = -del_r_cb05 - del_l_cb05
     
 rank_list_cb05 = linalg_experiment(S_merge_cb05, num_experiments)
-# del_l_cb05 = S_merge_cb05.shape[0] - rank - stoich_invariants
-# del_c_cb05 = -del_r_cb05 - del_l_cb05
-
-# del_l_cb05, del_r_cb05, del_c_cb05 = s_linalg(
-#     Svv_sparse_cb05,
-#     S_merge_cb05,
-#     stoichiometric_invariants_cb05
-# )
 
 A = numeric_sparse_matrix_fast_combined(S_merge_cb05)
 rank_list_cb05_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])

@@ -16,9 +16,6 @@ edge_list_chemuci = pd.read_csv("../mechanisms/e3sm-chem/chemuci_EdgeList.csv", 
 print("creating sparse matrices...")
 Sr_sparse_chemuci, Sp_sparse_chemuci, Svv_sparse_chemuci = create_sparse(edge_list_chemuci)
 print("computing dimension of nullspace...")
-# chemuci_null = Svv_sparse_chemuci.T.nullspace()
-# stoichiometric_invariants_chemuci = len(chemuci_null)
-
 Svv_chemuci_np = np.array(Svv_sparse_chemuci, dtype=float)
 rank_Svv_chemuci_np = np.linalg.matrix_rank(Svv_chemuci_np)
 dim_leftnull_chemuci = Svv_sparse_chemuci.shape[0] - rank_Svv_chemuci_np
@@ -31,12 +28,7 @@ symbol_dict_chemuci = create_symbols(coproduction_cols_chemuci)
 print("merging coproduction columns...")
 S_merge_chemuci, col_del_chemuci = merge_coprod(Sr_sparse_chemuci, Sp_sparse_chemuci, symbol_dict_chemuci, coproduction_cols_chemuci, Svv_sparse_chemuci)
 print("performing linear algebra...")
-# rank_chemuci = S_merge_chemuci.rank()
-# dim_null_chemuci = S_merge_chemuci.shape[0] - rank_chemuci
-# del_l_chemuci = dim_null_chemuci - stoichiometric_invariants_chemuci
+
 del_r_chemuci = S_merge_chemuci.shape[1] - Svv_sparse_chemuci.shape[1]
-# del_c_chemuci = -del_r_chemuci - del_l_chemuci
 
 rank_list_chemuci = linalg_experiment(S_merge_chemuci, num_experiments)
-# del_l = S_merge_chemuci.shape[0] - rank - stoich_invariants
-# del_c_chemuci = -del_r_chemuci - del_l_chemuci

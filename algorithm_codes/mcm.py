@@ -18,21 +18,13 @@ dim_leftnull_mcm = Svv_sparse_mcm.shape[0] - rank_Svv_mcm_np
 
 
 print("identifying coproduction columns...")
-# coproduction_cols_mcm = create_coproduction(Sr_sparse_mcm)
 coproduction_cols_mcm = create_coproduction_2(Sr_sparse_mcm)
 print("creating symbolic dictionary...")
 symbol_dict_mcm = create_symbols(coproduction_cols_mcm)
 print("merging coproduction columns...")
 S_merge_mcm, col_del_mcm = merge_coprod(Sr_sparse_mcm, Sp_sparse_mcm, symbol_dict_mcm, coproduction_cols_mcm, Svv_sparse_mcm)
 print("performing linear algebra...")
-
 del_r_mcm = S_merge_mcm.shape[1] - Svv_sparse_mcm.shape[1]
-    
-# rank_list_mcm = linalg_experiment(S_merge_mcm, num_experiments)
-# rank_list_mcm = linalg_experiment_fast(S_merge_mcm, num_experiments, proj_dim=300)
 
 A = numeric_sparse_matrix_fast_combined(S_merge_mcm)
 rank_list_mcm = linalg_experiment_fast(A, num_experiments, A.shape[0])
-# del_l = S_merge_mcm.shape[0] - rank - stoich_invariants
-# del_c_mcm = -del_r_mcm - del_l_mcm
-
