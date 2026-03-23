@@ -26,7 +26,6 @@ print("creating symbolic dictionary...")
 symbol_dict_JPM = create_symbols(coproduction_cols_JPM)
 print("merging coproduction columns...")
 S_merge_JPM, col_del_JPM = merge_coprod(Sr_sparse_JPM, Sp_sparse_JPM, symbol_dict_JPM, coproduction_cols_JPM, Svv_sparse_JPM)
-# S_merge_JPM[15, 2] = -2*symbol_dict_JPM[3]
 print("performing linear algebra...")
 del_r_jpm = S_merge_JPM.shape[1] - Svv_sparse_JPM.shape[1]
 

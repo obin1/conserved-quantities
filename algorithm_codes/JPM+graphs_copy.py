@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.gridspec as gridspec 
 
 
+# Define stoichiometric matrix
 # shape: 16 x 13
 Svv = sp.Matrix([
                [ 1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O₃
@@ -27,7 +28,7 @@ Svv = sp.Matrix([
                [ 0,  0,  0,  0,  1,  0,  0,  0,  1,  1,  0,  0,  0], # H₂O
                [-1,  1, -2,  0, -1,  0,  0,  0,  0, -1, -2,  0,  0]])# O₂  
 
-# remove reversible reaction redundancies - rxn 2 and 13
+# Remove reversible reaction redundancies - reactions 2 and 13
 # shape: 16 x 11
 So = sp.Matrix([
                [ 1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0], # O₃
@@ -47,10 +48,11 @@ So = sp.Matrix([
                [ 0,  0,  0,  1,  0,  0,  0,  1,  1,  0,  0], # H₂O
                [-1, -2,  0, -1,  0,  0,  0,  0, -1, -2,  0]])# O₂
 
+# Define SymPy symbolic variable "a" for the partial kinetic reaction rates
 a = sp.Symbol('a')
 
-# merge reactions 3 and 4 (now w col index 2,3) because of proportional reactants
-# shape: 16 x 10, species by reactions
+# merge original reactions 3 and 4 (now with column indices 2 and 3) because of proportional reactants
+# shape: 16 x 10
 S_merge = sp.Matrix([
                     [ 1,    0,  0,  0,  0,  0,  0,  0,  0,  0], # O₃
                     [ 1,    0,  0, -1,  0,  0,  0,  0,  0,  0], # NO
@@ -69,11 +71,11 @@ S_merge = sp.Matrix([
                     [ 0,    0,  1,  0,  0,  0,  1,  1,  0,  0], # H₂O
                     [-1, -2*a, -1,  0,  0,  0,  0, -1, -2,  0]])# O₂  
 
-# merged Rm vector
+# For reference: the merged Rm vector
 Rm = [0, 0, 0, -1, 2*a, 0, 0, 0, 1, 1-a, 0, -2, 0, 0, 0, 0]
 
-# treat O2 as non existent
-# shape: 16 x 10, species by reactions
+# Treat O2 as non existent
+# shape: 16 x 10
 S_merge_noO2 = sp.Matrix([
                     [ 1,   0,  0,  0,  0,  0,  0,  0,  0,  0], # O₃
                     [ 1,   0,  0, -1,  0,  0,  0,  0,  0,  0], # NO
@@ -93,7 +95,7 @@ S_merge_noO2 = sp.Matrix([
                     [ 0,   0,  0,  0,  0,  0,  0,  0,  0,  0]  # O₂ 
                     ])
 
-# Atom matrix -- SAME AS 4 CONSERVATION LAWS
+# Define the atom matrix -- equivalent to the 4 stoichiometric invariants in the system
 M_atom = sp.Matrix(
     [
         [0, 0, 0, 3],  # O₃
@@ -115,38 +117,37 @@ M_atom = sp.Matrix(
     ]
 )
 
-# Known conservation laws
-LN = M_atom[:, 1]
-LH = M_atom[:, 2]
-LC = M_atom[:, 0]
-LO = M_atom[:, 3]
+# Stoichiometric invariants 
+LN = M_atom[:, 1] # Nitrogen conservation
+LH = M_atom[:, 2] # Hydrogen conservation
+LC = M_atom[:, 0] # Carbon conservation
+LO = M_atom[:, 3] # Oxygen conservation
 
 
-# check nullspace of merged
+# Obtain and stack the nullspace of the matrix with merged reactions, S_merge
 L_matrix = sp.Matrix.hstack(*S_merge.T.nullspace())
 
-
-# append conservation laws to merged matrix
-# obtain nullspace
+# Append the stoichiometric invariants to the merged matrix
 S_merge_conserved = S_merge.row_join(M_atom)
+# The null space of S_merge_conserved should consist of 2 additional invariants
 em1 = S_merge_conserved.T.nullspace()[0]
 em2 = S_merge_conserved.T.nullspace()[1]
+# Stack these 2 additional invariants
 M = sp.Matrix.hstack(em1, em2)
 
-
-# Combine and simplify all expressions
+# Combine and simplify all expressions in M (due to the presence of symbolic variables)
 M_simplified = M.applyfunc(sp.simplify)
 
-# If there are still denominators, bring each element to a common denominator
+# If there are still common denominators, further simplify the expressions
 M_simplified = M_simplified.applyfunc(sp.together)
 
-# Multiply through by the least common multiple of denominators to clear fractions (optional)
+# Multiply by the least common multiple of denominators to remove fractions (optional)
 denominators = [sp.denom(x) for x in M_simplified if not x.is_number]
 lcm = sp.lcm(denominators)
 M_clean = (M_simplified * lcm).applyfunc(sp.simplify)
 
-sp.pprint(M_clean)
-
+# Check that S_merge_conserved.T * M_clean should result in a 0 matrix, since M_clean should exist in 
+# the left null space of S_merge_conserved
 simplified_check = (S_merge_conserved.T * M_clean).applyfunc(sp.simplify)
 print(simplified_check)
 
@@ -174,14 +175,16 @@ M_L_alpha_sub = M_L_alpha.subs({a:0.598546359448017})
 np_M_L = np.array(M_L_alpha_sub).astype(np.float64)
 print(np.linalg.matrix_rank(np_M_L))
 
-# Check PCA on D data
+# Initialize random seed
 SEED = 42
 np.random.seed(SEED)
 
-df, C, D, C_active = load_data(file= 'experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv') #replace with your path
-x_train,y_train, x_test, y_test, C_test = createIO(C,D,C_active)
+# Load simulated time series data of species concentration 
+# D: change in species concentration at each time point of each experiment
+# Structure: 
+df, C, D, C_active = load_data(file= 'experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv') 
 
-# no reduction to check which components vanish
+# Perform PCA on D
 pca = PCA(n_components=16, svd_solver="full", random_state=18)   
 X_pca = pca.fit_transform(D)
 pca.singular_values_
@@ -189,21 +192,33 @@ y = pca.singular_values_
 y_fixed = np.where(y == 0, 1e-20, y)
 explained_variance_ratio = pca.explained_variance_ratio_
 
+# --------------------------------------------
 # Analytical method: Absolute Atom Deviation 
+# --------------------------------------------
 
+# Take 50,000 experiments in D, and perform matrix multiplication with the matrix of stoichiometric and kinetic invariants
 abs_atm_dev_analytical = D[:50000, :]@M_L_alpha_sub
+# Convert the product to a NumPy matrix
 abs_atm_dev_analytical = np.array(abs_atm_dev_analytical, dtype=float)
+
+# --------------------------------------------
+# Data-driven method: Absolute Atom Deviation
+# --------------------------------------------
+
+# Take 50,000 experiments in D, and perform matrix multiplication with the vanishing components of PCA
 abs_atm_dev_datadriven = D[:50000, :]@pca.components_[10:, :].T
+# Convert the product to a NumPy matrix
 abs_atm_dev_datadriven = np.array(abs_atm_dev_datadriven, dtype=float)
 
-# Data-driven method: Absolute Atom Deviation
-
+# Define specific labels and color choices for each invariant
 labels = ["C Conservation", "N Conservation", "H Conservation", "O Conservation", "C1 Carbon Subpool Invariant", "Coproduction Emanant"]
 colors = ["green", "#8B4513", "blue", "grey", "orange", "purple"]
 labels1 = ["PC11", "PC12", "PC13", "PC14", "PC15", "PC16"]
 colors1 = ["#8ccdff", "#cfc800", "red", "#7251a6", "#df00e3", "#00a881"]
 
+# Define an empty MatPlotLib figure
 figA = plt.figure(figsize=(7, 9)) 
+# Create a GridSpec to divide the plot into 3 parts with relative size specifications
 gs = gridspec.GridSpec(8, 1, figure=figA) 
 ax1 = figA.add_subplot(gs[0:4]) 
 ax2 = figA.add_subplot(gs[4:6])

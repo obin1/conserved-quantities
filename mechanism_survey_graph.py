@@ -1,4 +1,3 @@
-#%%
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -6,6 +5,7 @@ import numpy as np
 import plotly.io as pio
 pio.renderers.default = "browser"
 
+# Create mechanism survey statistics dictionary
 survey = {
     "Mechanism": ["JPMv0.2", "JPM1.1", "SmallStrato", "Superfast", "Form85", "POLLU", "GC-Hg", "E3SM", "CBM-Z", "SAPRC99", "CB05", "RACM", "RADM2", "MOZART-4", "MOZART-T1", "AMORE", "PACT-1D", "RCIM", "CIM", "CIM-var", "JAM", "GCv12.0", "GCv12.7", "GCv12.8", "GCv12.9", "GCv13.3", "GCv13.4", "GCv14.6", "CRI", "MECCA", "MCM", "Toluene", "Logan81", "CRACMM2", "CRACMM3"],
     "#Species": [11, 16, 5, 15, 12, 20, 32, 47, 67, 74, 82, 82, 59, 81, 155, 133, 167,145, 386, 394, 245, 235, 243, 258, 262, 287, 287, 353, 442, 733, 5832, 12, 38, 196, 226],
@@ -16,42 +16,38 @@ survey = {
     "Broken Null Cycles": [0, 0, 1, 5, 6, 4, 61, 18, 10, 13, 14, 13, 9, 17, 41, 42, 48, 85, 500, 457, 53, 135, 142, 189, 186, 183, 181, 168, 216, 456, 3558, 0, 10, 22, 35]
 }
 
+# Convert dictionary to Pandas dataframe
 mech_survey = pd.DataFrame(survey)
 
+# Create a new column for Effectuve Reactions, calculated by 
+# number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
 mech_survey["R-gamma"] = mech_survey.loc[:, "#Reactions"] - mech_survey.loc[:, "Coproduction Index"]
 
-# remove MCM, MECCA, Toluene
-mech_survey1 = mech_survey[~mech_survey["Mechanism"].isin(["MCM", "MECCA", "Toluene"])]
+# Remove MCM, MECCA, CRI, GCv14.6 due to scale, remove Toluene  
+mech_survey_inscale = mech_survey[~mech_survey["Mechanism"].isin(["MCM", "MECCA", "CRI", "GCv14.6", "Toluene"])]
 
-# Only those with KI
-mech_survey2 = mech_survey1[mech_survey1["Kinetic Invariants"] != 0]
+# Filter to include only mechanisms with kinetic invariants
+mech_survey_KI = mech_survey_inscale[mech_survey_inscale["Kinetic Invariants"] != 0]
 
-# remove CRI and GC 14.6
-mech_survey3 = mech_survey1[mech_survey1["R-gamma"] < 800]
-
-
-#%%
-# -----------------------
-# Plotly for Zooming In
-# -----------------------
-
-# Create Figure
+# Create empty Plotly Graph Object figure
 fig = go.Figure()
 
-# specific labels, positions, and sizes per mechanism
+# Isolate specific labels, positions, and sizes per mechanism for visibility purposes
 label_mechs = {"GCv13.4", "JAM", "CRACMM3", "CRACMM2", "MOZART-T1", "RCIM", "AMORE", "RACM", "SAPRC99", "CB05", "MOZART-4", "RADM2", "CBM-Z"}  
 labels = [name if name in label_mechs else ""
-    for name in mech_survey3["Mechanism"]]
+    for name in mech_survey_inscale["Mechanism"]]
 positions = ["middle right" if name in {"RCIM", "CB05", "CBM-Z"} else "middle left"
-    for name in mech_survey3["Mechanism"]]
+    for name in mech_survey_inscale["Mechanism"]]
 sizes = [8 if name in {"Form85", "POLLU", "SmallStrato"}
-         else 12 for name in mech_survey3["Mechanism"]]
+         else 12 for name in mech_survey_inscale["Mechanism"]]
 
-# Scatter: mech_survey3 (regular points), main plot
+# Add to main scatter plot: all mechanisms, regular gray points regardless of kinetic invariants
+# X-axis: # of species
+# Y-axis: Effective Reactions (R - gamma)
 fig.add_trace(
     go.Scatter(
-        x=mech_survey3["#Species"],
-        y=mech_survey3["R-gamma"],
+        x=mech_survey_inscale["#Species"],
+        y=mech_survey_inscale["R-gamma"],
         mode="markers+text",
         marker=dict(size=sizes, color="gray", opacity=1),
         text=labels,
@@ -59,21 +55,23 @@ fig.add_trace(
         textfont=dict(size=10, color='darkgray'),
         name="Mechanisms w/o Kinetic Invariants"))
 
-# specific labels, positions, sizes per mechanism
+# Isolate specific labels, positions, and sizes per mechanism for visibility purposes
 label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
 labels2 = ["" if name in label_mechs2 else name
-    for name in mech_survey2["Mechanism"]]
+    for name in mech_survey_KI["Mechanism"]]
 positions1 = ["top center" if name in {"E3SM"} 
               else "bottom center" if name in {"CIM"}
-              else "middle right" for name in mech_survey2["Mechanism"]]
+              else "middle right" for name in mech_survey_KI["Mechanism"]]
 sizes1 = [13 if name in {"Logan81", "Superfast", "GC-Hg", "JPM1.1", "JPMv0.2"}
-          else 25 for name in mech_survey2["Mechanism"]]
+          else 25 for name in mech_survey_KI["Mechanism"]]
 
-# Scatter: mech_survey2 (stars), main plot
+# Add to main scatter plot: mechanisms with kinetic invariants only, purple star points
+# X-axis: # of species
+# Y-axis: Effective Reactions (R - gamma)
 fig.add_trace(
     go.Scatter(
-        x=mech_survey2["#Species"],
-        y=mech_survey2["R-gamma"],
+        x=mech_survey_KI["#Species"],
+        y=mech_survey_KI["R-gamma"],
         mode="markers+text",
         marker=dict(
             symbol="star",
@@ -86,7 +84,7 @@ fig.add_trace(
         textfont=dict(size=16),
         name="Mechanisms w/ Kinetic Invariants"))
 
-# 1-1 line, main plot
+# Add a 1-to-1 red dotted line on the main plot
 x_line = np.linspace(0, mech_survey["#Species"].max(), 100)
 y_line = x_line
 fig.add_trace(
@@ -98,7 +96,7 @@ fig.add_trace(
         name="1–1 line",
         showlegend=False))
 
-# Fill under 1-1 line, main plot
+# Fill the area under the 1-to-1 line in the main plot
 fig.add_trace(
     go.Scatter(
         x=np.concatenate([x_line, x_line[::-1]]),
@@ -109,10 +107,10 @@ fig.add_trace(
         hoverinfo="skip",
         showlegend=False))
 
-# Layout properties, main plot
+# Update additional layout properties in the main plot
 fig.update_layout(
     xaxis_title="# Species",
-    yaxis_title="Effective Reactions (R-γ)",
+    yaxis_title="Effective Reactions (R - γ)",
     xaxis=dict(
         title_font=dict(size=20), 
         tickfont=dict(size=16)),
@@ -125,57 +123,59 @@ fig.update_layout(
 fig.update_xaxes(range=[0, 800])
 fig.update_yaxes(range=[0, 800])
 
-# filter only mechanisms in crowded bottom left corner
-mech_survey4 = mech_survey[mech_survey["Mechanism"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
-mech_survey5 = mech_survey[mech_survey["Mechanism"].isin(["SmallStrato", "Form85", "POLLU"])]
+# Filter only the mechanisms in the crowded bottom left corner
+mech_survey_crowded_KI = mech_survey[mech_survey["Mechanism"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
+mech_survey_crowded_noKI = mech_survey[mech_survey["Mechanism"].isin(["SmallStrato", "Form85", "POLLU"])]
+
+# Create a new empty Plotly Graph Object figure for inset plot
 fig1 = go.Figure()
 
-# specific positions per mechanism, inset
+# Define specific text positions for visibility purposes, inset plot
 positions2 = [
     "middle right" if name in {"GC-Hg", "JPM1.1"} 
     else "top center" if name in {"Superfast"}
     else "middle left" if name in {"Logan81"}
     else "bottom center" 
-    for name in mech_survey4["Mechanism"]]
+    for name in mech_survey_crowded_KI["Mechanism"]]
 
-# star points, inset
+# Add to inset scatter plot: mechanisms with kinetic invariants only, purple star points
 fig1.add_trace(
     go.Scatter(
-        x=mech_survey4["#Species"],
-        y=mech_survey4["R-gamma"],
+        x=mech_survey_crowded_KI["#Species"],
+        y=mech_survey_crowded_KI["R-gamma"],
         mode="markers+text",
         marker=dict(
             symbol="star",
             size=25,
             color="purple",
             line=dict(color="black", width=1.2)),
-        text=mech_survey4["Mechanism"],
+        text=mech_survey_crowded_KI["Mechanism"],
         textposition=positions2,
         textfont=dict(size=16),
         name="Mechanisms w/ Kinetic Invariants",
         showlegend=False))
 
-# specific positions per mechanism, inset
+# Define specific text positions for visibility purposes, inset plot
 positions3 = [
     "middle right" if name in {"POLLU"} 
     else "middle left" if name in {"Form85"}
     else "top center" 
-    for name in mech_survey5["Mechanism"]]
+    for name in mech_survey_crowded_noKI["Mechanism"]]
 
-# gray points, inset
+# Add to inset scatter plot: mechanisms without kinetic invariants, regular gray points 
 fig1.add_trace(
     go.Scatter(
-        x=mech_survey5["#Species"],
-        y=mech_survey5["R-gamma"],
+        x=mech_survey_crowded_noKI["#Species"],
+        y=mech_survey_crowded_noKI["R-gamma"],
         mode="markers+text",
         marker=dict(size=12, color="gray"),
-        text=mech_survey5["Mechanism"],
+        text=mech_survey_crowded_noKI["Mechanism"],
         textposition=positions3,
         textfont=dict(size=8, color='darkgray'),
         name="Mechanisms w/o Kinetic Invariants",
         showlegend=False))
 
-# 1-1 line, inset
+# Add a 1-to-1 red dotted line on the inset plot
 x_line = np.linspace(0, mech_survey["#Species"].max(), 100)
 y_line = x_line
 fig1.add_trace(
@@ -187,7 +187,7 @@ fig1.add_trace(
         name="1–1 line",
         showlegend=False))
 
-# fill under 1-1 line, inset
+# Fill the area under the 1-to-1 line in the inset plot
 fig1.add_trace(
     go.Scatter(
         x=np.concatenate([x_line, x_line[::-1]]),
@@ -198,7 +198,7 @@ fig1.add_trace(
         hoverinfo="skip",
         showlegend=False))
 
-# layout properties, inset
+# Update additional layout properties in the inset plot
 fig1.update_layout(
     xaxis=dict(tickfont=dict(size=16)),
     yaxis=dict(tickfont=dict(size=16)),
@@ -207,11 +207,11 @@ fig1.update_layout(
     height=800,
     showlegend=False)
 
-# define ranges for inset
+# Define x,y ranges for the inset plot
 x0, x1 = 0, 50
 y0, y1 = 0, 50
 
-# Define the inset axes (xaxis2, yaxis2) inside the main figure
+# Define the positions of the inset display area (xaxis2, yaxis2) within the main plot
 fig.update_layout(
     xaxis2=dict(
         domain=[0.58, 0.98],   
@@ -228,12 +228,13 @@ fig.update_layout(
         yanchor='top'),
     width=800, height=800)
 fig.update_layout(autosize=False)
-# Copy every trace from fig1 into fig inset
+
+# Copy every trace from fig1 (inset plot) into fig (main plot, inset display area)
 for tr in fig1.data:
     fig.add_trace(tr, row=None, col=None)
     fig.data[-1].update(xaxis="x2", yaxis="y2")
 
-# Draw a rectangular border around the inset plot
+# Draw a rectangular border around the inset display area
 # Uses "paper" coordinates so the border aligns with the inset axes domain
 fig.add_shape(
     type="rect",
@@ -245,7 +246,7 @@ fig.add_shape(
     opacity=1
 )
 
-# Draw a rectangular border around the MAIN plot area left bottom corner
+# Draw a rectangular border around the inset plot in the main plot area, bottom left corner
 fig.add_shape(
     type="rect",
     x0=0, x1=60,
@@ -256,7 +257,7 @@ fig.add_shape(
     opacity=1
 )
 
-# top line leading to inset
+# Add a connecting top line from the inset plot leading to the inset display area
 fig.add_shape(
     type="line",
     x0=60, y0=60,
@@ -265,7 +266,7 @@ fig.add_shape(
     line=dict(color="black", width=2.5),
     opacity=1)
 
-# bottom line leading to inset
+# Add a connecting bottom line from the inset plot leading to the inset display area
 fig.add_shape(
     type="line",
     x0=60, y0=y0,
@@ -274,88 +275,7 @@ fig.add_shape(
     line=dict(color="black", width=2.5),
     opacity=1)
 
+# Save figure as a PDF
 pio.write_image(fig, 'survey_mechanisms.pdf', width=800, height=800) 
+# Show figure in web browser
 fig.show()
-
-#%%
-
-# -----------------------
-# Normalized variables
-# -----------------------
-
-# mech_survey6 = mech_survey[mech_survey["Kinetic Invariants"] != 0]
-
-# mech_survey4 = mech_survey.copy()
-# mech_survey4["s/r"] = mech_survey4["#Species"]/mech_survey4["#Reactions"]
-# mech_survey4["r-g/r"] = mech_survey4["R-gamma"]/mech_survey4["#Reactions"]
-
-
-# mech_survey5 = mech_survey6.copy()
-# mech_survey5["s/r"] = mech_survey5["#Species"]/mech_survey5["#Reactions"]
-# mech_survey5["r-g/r"] = mech_survey5["R-gamma"]/mech_survey5["#Reactions"]
-
-#%%
-
-# -----------------------
-# Normalized Plot
-# -----------------------
-
-# fig, ax = plt.subplots(figsize=(10, 8))
-
-# # Scatter: mech_survey3
-# ax.scatter(
-#     mech_survey4["s/r"],
-#     mech_survey4["r-g/r"],
-#     s=125,           
-#     color="gray",          
-#     label="Mechanisms w/o Kinetic Invariants"
-# )
-
-# # Scatter: mech_survey2 (stars + labels)
-# ax.scatter(
-#     mech_survey5["s/r"],
-#     mech_survey5["r-g/r"],
-#     marker="*",
-#     s=400,                    
-#     color="orange",
-#     edgecolors="black",
-#     linewidths=1.2,
-#     label="Mechanisms w/ Kinetic Invariants"
-# )
-
-# # Text labels for starred points
-# for _, row in mech_survey5.iterrows():
-#     ax.annotate(
-#         row["Mechanism"],
-#         (row["s/r"], row["r-g/r"]),
-#         textcoords="offset points",
-#         xytext=(0, -20),
-#         ha="left",
-#         fontsize=14
-#     )
-
-# # Even out axis limits
-# ax.set_xlim(0, 1)
-# ax.set_ylim(0, 1)
-
-# # 1–1 line
-# x = np.linspace(0, 1.5, 20)
-# ax.plot(x,x,linestyle="--",color="red",label="1–1 line")
-
-# # best fit lines
-# # x1 = np.linspace(0, mech_survey["#Species"].max()+100, 100)
-# # ax.plot(x1, m*x1 + b, color='blue', label=f'Best fit line for all mechanisms shown')
-# # ax.plot(x1, m1*x1 + b1, color='green', label=f'Best fit line for mechanisms w/ KI')
-
-# # Shaded region below 1–1 line
-# ax.fill_between(x,0,x,color="purple",alpha=0.2)
-
-# # Labels & styling
-# ax.set_xlabel("# Species / # R")
-# ax.set_ylabel("R − γ / R")
-# ax.legend(loc="upper right")
-# ax.grid(True, alpha=0.3)
-
-# plt.tight_layout()
-# plt.show()
-# %%
