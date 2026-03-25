@@ -82,7 +82,7 @@ coproduction_cols_d = create_coproduction(Sr_sparse_d)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
 symbol_dict_d = create_symbols(coproduction_cols_d)
-# Perform the column "merging" operation on coproducting groups
+# Perform the column "merging" operation on branching reaction groups
 print("merging coproduction columns...")
 S_merge_d, col_del_d = merge_coprod(Sr_sparse_d, Sp_sparse_d, symbol_dict_d, coproduction_cols_d, Svv_sparse_d)
 print("performing linear algebra...")

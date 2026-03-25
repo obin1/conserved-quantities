@@ -5,26 +5,15 @@ import numpy as np
 import plotly.io as pio
 pio.renderers.default = "browser"
 
-# Create mechanism survey statistics dictionary
-survey = {
-    "Mechanism": ["JPMv0.2", "JPM1.1", "SmallStrato", "Superfast", "Form85", "POLLU", "GC-Hg", "E3SM", "CBM-Z", "SAPRC99", "CB05", "RACM", "RADM2", "MOZART-4", "MOZART-T1", "AMORE", "PACT-1D", "RCIM", "CIM", "CIM-var", "JAM", "GCv12.0", "GCv12.7", "GCv12.8", "GCv12.9", "GCv13.3", "GCv13.4", "GCv14.6", "CRI", "MECCA", "MCM", "Toluene", "Logan81", "CRACMM2", "CRACMM3"],
-    "#Species": [11, 16, 5, 15, 12, 20, 32, 47, 67, 74, 82, 82, 59, 81, 155, 133, 167,145, 386, 394, 245, 235, 243, 258, 262, 287, 287, 353, 442, 733, 5832, 12, 38, 196, 226],
-    "#Reactions": [10,13, 10, 32, 25, 25, 94, 104, 142, 211, 205, 250, 156, 196, 360, 330, 513, 379, 886, 886, 702, 725, 750, 825, 850, 903, 913, 1058, 1258, 2323, 13140, 10, 57, 531, 614],
-    "Stoichiometric Invariants": [2, 5, 1, 0, 1, 3, 2, 1, 7, 1, 7, 1, 2, 0, 0, 0, 9, 0, 0, 2, 4, 6, 6, 6, 8, 10, 10, 9, 2, 9, 1, 3, 10, 4, 5],
-    "Coproduction Index": [1, 1, 1, 6, 6, 4, 65, 19, 10, 13, 14, 13, 9, 17, 41, 42, 49, 85, 650, 474, 53, 136, 143, 190, 188, 185, 181, 168, 216, 456, 3558, 1, 11, 22, 35],
-    "Kinetic Invariants": [1, 1, 0, 1, 0, 0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 150, 17, 0, 1, 1, 1, 2, 2, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-    "Broken Null Cycles": [0, 0, 1, 5, 6, 4, 61, 18, 10, 13, 14, 13, 9, 17, 41, 42, 48, 85, 500, 457, 53, 135, 142, 189, 186, 183, 181, 168, 216, 456, 3558, 0, 10, 22, 35]
-}
-
-# Convert dictionary to Pandas dataframe
-mech_survey = pd.DataFrame(survey)
+# Read CSV file of mechanism survey
+mech_survey = pd.read_csv("mechanism_survey.csv")
 
 # Create a new column for Effectuve Reactions, calculated by 
 # number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
-mech_survey["R-gamma"] = mech_survey.loc[:, "#Reactions"] - mech_survey.loc[:, "Coproduction Index"]
+mech_survey["R-gamma"] = mech_survey.loc[:, "Reactions"] - mech_survey.loc[:, "Coproduction Index"]
 
 # Remove MCM, MECCA, CRI, GCv14.6 due to scale, remove Toluene  
-mech_survey_inscale = mech_survey[~mech_survey["Mechanism"].isin(["MCM", "MECCA", "CRI", "GCv14.6", "Toluene"])]
+mech_survey_inscale = mech_survey[~mech_survey["Short Name"].isin(["MCM", "MECCA", "CRI", "GCv14.6"])]
 
 # Filter to include only mechanisms with kinetic invariants
 mech_survey_KI = mech_survey_inscale[mech_survey_inscale["Kinetic Invariants"] != 0]
@@ -35,18 +24,18 @@ fig = go.Figure()
 # Isolate specific labels, positions, and sizes per mechanism for visibility purposes
 label_mechs = {"GCv13.4", "JAM", "CRACMM3", "CRACMM2", "MOZART-T1", "RCIM", "AMORE", "RACM", "SAPRC99", "CB05", "MOZART-4", "RADM2", "CBM-Z"}  
 labels = [name if name in label_mechs else ""
-    for name in mech_survey_inscale["Mechanism"]]
+    for name in mech_survey_inscale["Short Name"]]
 positions = ["middle right" if name in {"RCIM", "CB05", "CBM-Z"} else "middle left"
-    for name in mech_survey_inscale["Mechanism"]]
+    for name in mech_survey_inscale["Short Name"]]
 sizes = [8 if name in {"Form85", "POLLU", "SmallStrato"}
-         else 12 for name in mech_survey_inscale["Mechanism"]]
+         else 12 for name in mech_survey_inscale["Short Name"]]
 
 # Add to main scatter plot: all mechanisms, regular gray points regardless of kinetic invariants
 # X-axis: # of species
 # Y-axis: Effective Reactions (R - gamma)
 fig.add_trace(
     go.Scatter(
-        x=mech_survey_inscale["#Species"],
+        x=mech_survey_inscale["Species"],
         y=mech_survey_inscale["R-gamma"],
         mode="markers+text",
         marker=dict(size=sizes, color="gray", opacity=1),
@@ -58,19 +47,19 @@ fig.add_trace(
 # Isolate specific labels, positions, and sizes per mechanism for visibility purposes
 label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
 labels2 = ["" if name in label_mechs2 else name
-    for name in mech_survey_KI["Mechanism"]]
+    for name in mech_survey_KI["Short Name"]]
 positions1 = ["top center" if name in {"E3SM"} 
               else "bottom center" if name in {"CIM"}
-              else "middle right" for name in mech_survey_KI["Mechanism"]]
+              else "middle right" for name in mech_survey_KI["Short Name"]]
 sizes1 = [13 if name in {"Logan81", "Superfast", "GC-Hg", "JPM1.1", "JPMv0.2"}
-          else 25 for name in mech_survey_KI["Mechanism"]]
+          else 25 for name in mech_survey_KI["Short Name"]]
 
 # Add to main scatter plot: mechanisms with kinetic invariants only, purple star points
 # X-axis: # of species
 # Y-axis: Effective Reactions (R - gamma)
 fig.add_trace(
     go.Scatter(
-        x=mech_survey_KI["#Species"],
+        x=mech_survey_KI["Species"],
         y=mech_survey_KI["R-gamma"],
         mode="markers+text",
         marker=dict(
@@ -85,7 +74,7 @@ fig.add_trace(
         name="Mechanisms w/ Kinetic Invariants"))
 
 # Add a 1-to-1 red dotted line on the main plot
-x_line = np.linspace(0, mech_survey["#Species"].max(), 100)
+x_line = np.linspace(0, mech_survey["Species"].max(), 100)
 y_line = x_line
 fig.add_trace(
     go.Scatter(
@@ -124,8 +113,8 @@ fig.update_xaxes(range=[0, 800])
 fig.update_yaxes(range=[0, 800])
 
 # Filter only the mechanisms in the crowded bottom left corner
-mech_survey_crowded_KI = mech_survey[mech_survey["Mechanism"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
-mech_survey_crowded_noKI = mech_survey[mech_survey["Mechanism"].isin(["SmallStrato", "Form85", "POLLU"])]
+mech_survey_crowded_KI = mech_survey[mech_survey["Short Name"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
+mech_survey_crowded_noKI = mech_survey[mech_survey["Short Name"].isin(["SmallStrato", "Form85", "POLLU"])]
 
 # Create a new empty Plotly Graph Object figure for inset plot
 fig1 = go.Figure()
@@ -136,12 +125,12 @@ positions2 = [
     else "top center" if name in {"Superfast"}
     else "middle left" if name in {"Logan81"}
     else "bottom center" 
-    for name in mech_survey_crowded_KI["Mechanism"]]
+    for name in mech_survey_crowded_KI["Short Name"]]
 
 # Add to inset scatter plot: mechanisms with kinetic invariants only, purple star points
 fig1.add_trace(
     go.Scatter(
-        x=mech_survey_crowded_KI["#Species"],
+        x=mech_survey_crowded_KI["Species"],
         y=mech_survey_crowded_KI["R-gamma"],
         mode="markers+text",
         marker=dict(
@@ -149,7 +138,7 @@ fig1.add_trace(
             size=25,
             color="purple",
             line=dict(color="black", width=1.2)),
-        text=mech_survey_crowded_KI["Mechanism"],
+        text=mech_survey_crowded_KI["Short Name"],
         textposition=positions2,
         textfont=dict(size=16),
         name="Mechanisms w/ Kinetic Invariants",
@@ -160,23 +149,23 @@ positions3 = [
     "middle right" if name in {"POLLU"} 
     else "middle left" if name in {"Form85"}
     else "top center" 
-    for name in mech_survey_crowded_noKI["Mechanism"]]
+    for name in mech_survey_crowded_noKI["Short Name"]]
 
 # Add to inset scatter plot: mechanisms without kinetic invariants, regular gray points 
 fig1.add_trace(
     go.Scatter(
-        x=mech_survey_crowded_noKI["#Species"],
+        x=mech_survey_crowded_noKI["Species"],
         y=mech_survey_crowded_noKI["R-gamma"],
         mode="markers+text",
         marker=dict(size=12, color="gray"),
-        text=mech_survey_crowded_noKI["Mechanism"],
+        text=mech_survey_crowded_noKI["Short Name"],
         textposition=positions3,
         textfont=dict(size=8, color='darkgray'),
         name="Mechanisms w/o Kinetic Invariants",
         showlegend=False))
 
 # Add a 1-to-1 red dotted line on the inset plot
-x_line = np.linspace(0, mech_survey["#Species"].max(), 100)
+x_line = np.linspace(0, mech_survey["Species"].max(), 100)
 y_line = x_line
 fig1.add_trace(
     go.Scatter(
@@ -208,8 +197,8 @@ fig1.update_layout(
     showlegend=False)
 
 # Define x,y ranges for the inset plot
-x0, x1 = 0, 50
-y0, y1 = 0, 50
+x0, x1 = 0, 55
+y0, y1 = 0, 55
 
 # Define the positions of the inset display area (xaxis2, yaxis2) within the main plot
 fig.update_layout(

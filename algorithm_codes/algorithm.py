@@ -4,13 +4,12 @@ import sympy as sp
 """
 Creates reactant, product, and full stoichiometric sparse matrices using mechanism edge lists.
 Args:
-    edge_list (Pandas DataFrame read from csv): Dictates how each species moves in a reaction...?
-# species_index (starts from 1),reaction_index (starts from 1),from,to, directed stoichiometric value
+    edge_list (Pandas DataFrame read from csv): Edge list of species-reaction matrix
 
 Returns:
     Sr_sparse (sparse SymPy matrix:) Consumption sparse matrix
     Sp_sparse (sparse SymPy matrix): Production sparse matrix
-    Svv_sparse (sparse SymPy matrix): Stoichiometric sparse matrix
+    Svv_sparse (sparse SymPy matrix): Stoichiometric sparse matrix (net stoichiometry)
 """
 def create_sparse(edge_list):
     # We separate species consumption and species production.
@@ -53,10 +52,10 @@ Some reactions both consume and produce the same species, resulting in 0 net cha
 We delete these empty reaction columns from the stoichiometric matrix.
 
 Args:
-    Svv (SymPy sparse matrix): full stoichiometric matrix of a mechanism
+    Svv (SymPy sparse matrix): full stoichiometric matrix of a mechanism (net stoichiometry)
 
 Returns:
-    Svv (SymPy sparse matrix): Full stoichiometric matrix with zero columns deleted
+    Svv (SymPy sparse matrix): full stoichiometric matrix with zero columns deleted (net stoichiometry)
     col_del (list): list of the deleted columns 
 """
 def del_zero_col(Svv):
@@ -152,7 +151,7 @@ Args:
     Sp: (SymPy sparse matrix): product matrix of a mechanism
     symbol_dict: dictionary of symbolic fractional kinetic rate variables for each reaction in a coproduction group
     coproduction_cols: list of column indices representing coproduction groupings 
-    Svv_sparse (SymPy sparse matrix): full stoichiometric matrix of a mechanism
+    Svv_sparse (SymPy sparse matrix): full stoichiometric matrix of a mechanism (net stoichiometry)
 
 Returns:
     S_merge (SymPy matrix): stoichiometric matrix after merging coproducing reactions
@@ -211,7 +210,7 @@ def merge_coprod(Sr, Sp, symbol_dict, coproduction_cols, Svv_sparse):
 Perform linear algebra to identify # kinetic invariants, # lost reactions, # broken null cycles
 
 Args:
-    Svv_sparse (SymPy sparse matrix): full stoichiometric matrix of a mechanism
+    Svv_sparse (SymPy sparse matrix): full stoichiometric matrix of a mechanism (net stoichiometry)
     S_merge (SymPy matrix): stoichiometric matrix after merging coproducing reactions
     stoich_invariants (int): the number of stoichiometric (non-kinetic) invariants of the original system
 
