@@ -1,5 +1,6 @@
 import numpy as np
 import sympy as sp
+from collections import defaultdict
 
 """
 Creates reactant, product, and full stoichiometric sparse matrices using mechanism edge lists.
@@ -83,28 +84,32 @@ Returns:
                               0 indicates that a reaction does not coproduce with any other) 
 """
 def create_coproduction(Sr):
-    n_cols = Sr.shape[1]
-    # Initialize the list of reaction indices
-    coproduction_cols = list(range(1, n_cols + 1))
+    # Get the number of rows and columns in the matrix
+    n_rows, n_cols = Sr.shape
 
-    # Loop over the number of reactions in the mechanism
-    for i in range(n_cols):
-        # Extract column i (reaction i)
-        col_i = Sr[:, i]
-        # Loop over each reaction after i
-        for j in range(i+1, n_cols):
-            # Extract reaction column
-            col_j = Sr[:, j]
-            # If reaction i has the same reactants as reaction j, take the minimum between coproduction
-            # index at position i and index at position j, and. replace index at position j with that minimum
-            if col_i == col_j:
-                rep = min(coproduction_cols[i], coproduction_cols[j])
+    # Initialize an empty defaultdict expecting lists as values
+    groups = defaultdict(list)
+
+    for j in range(n_cols):
+        # Extract column j as a dictionary of nonzero entries
+        # Format: {(row_index, col_index): value}
+        col_entries = Sr[:, j].todok()
+        # Convert dictionary items into a sorted tuple
+        signature = tuple(sorted(col_entries.items()))
+        # In the dictionary, group columns that have the same signature
+        groups[signature].append(j)
+
+    # Initialize output list with 0's
+    coproduction_cols = [0] * n_cols
+
+    for group in groups.values():
+        # Only care about groups with more than one column (duplicates)
+        if len(group) > 1:
+            # Choose a representative column index (smallest index + 1 for 1-based indexing)
+            rep = min(group) + 1
+            # Assign this representative to all columns in the group
+            for j in group:
                 coproduction_cols[j] = rep
-    
-    # If an index only appears once, it does not coproduce; replace that index position with 0
-    for idx in range(n_cols):
-        if coproduction_cols.count(coproduction_cols[idx]) == 1:
-            coproduction_cols[idx] = 0
 
     return coproduction_cols
 
@@ -142,6 +147,7 @@ def create_symbols(coproduction_cols):
         symbol_dict = []
 
     return symbol_dict
+
 
 """
 Merge coproducing reactions in the stoichiometric matrix
@@ -264,53 +270,6 @@ def linalg_experiment(S_merge, num_experiments):
         rank_list.append(np.linalg.matrix_rank(subs_matrix_np))
     return rank_list
 
-
-# ------------------------------------
-# Create coproduction function for MCM 
-# ------------------------------------
-"""
-For very large mechanisms like MCM: 
-Identify which reactions participate in coproduction and group them together by numerical identifiers.
-
-Args:
-    Sr (SymPy sparse matrix): reactant matrix of a mechanism
-
-Returns:
-    coproduction_cols: list of column indices representing coproduction groupings 
-                        (e.g. 1 indicates all reactions that coproduce with reaction 1; 
-                              0 indicates that a reaction does not coproduce with any other) 
-"""
-from collections import defaultdict
-
-def create_coproduction_2(Sr):
-    # Get the number of rows and columns in the matrix
-    n_rows, n_cols = Sr.shape
-
-    # Initialize an empty defaultdict expecting lists as values
-    groups = defaultdict(list)
-
-    for j in range(n_cols):
-        # Extract column j as a dictionary of nonzero entries
-        # Format: {(row_index, col_index): value}
-        col_entries = Sr[:, j].todok()
-        # Convert dictionary items into a sorted tuple
-        signature = tuple(sorted(col_entries.items()))
-        # In the dictionary, group columns that have the same signature
-        groups[signature].append(j)
-
-    # Initialize output list with 0's
-    coproduction_cols = [0] * n_cols
-
-    for group in groups.values():
-        # Only care about groups with more than one column (duplicates)
-        if len(group) > 1:
-            # Choose a representative column index (smallest index + 1 for 1-based indexing)
-            rep = min(group) + 1
-            # Assign this representative to all columns in the group
-            for j in group:
-                coproduction_cols[j] = rep
-
-    return coproduction_cols
 
 # --------------------------------------------------------------
 # Create sparse matrix for faster rank solving function for MCM 

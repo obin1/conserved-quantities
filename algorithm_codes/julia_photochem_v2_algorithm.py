@@ -80,11 +80,8 @@ Sr_sparse_JPM2 = sp.SparseMatrix(Sr_JPM2)
 # Sr_sparse_JPM2, Sp_sparse_JPM2, Svv_sparse_JPM2 = create_sparse(edge_list_JPM2)
 # Svv_sparse_JPM2, init_col_del_JPM2 = del_zero_col(Svv_sparse_JPM2)
 
-# Compute dimension of left null space in two ways 
-# (SymPy nullspace operations sometimes result in a different number due to precision errors)
+# Compute dimension of left null space
 print("computing dimension of nullspace...")
-# Compute dimension of left null space using SymPy nullspace operation
-stoichiometric_invariants_JPM2 = len(Svv_sparse_JPM2.T.nullspace())
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_np_JPM2 = np.array(Svv_sparse_JPM2, dtype=float)
 # Compute rank of NumPy matrix

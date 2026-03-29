@@ -2,31 +2,42 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+# Initialize random seed
 SEED = 42
 np.random.seed(SEED)
 
+# Set number of experiments for linear algebra step
 num_experiments = 10
 
+# Read mechanism EdgeList (CSV) into a Pandas DataFrame
 edge_list_gc12_8_0 = pd.read_csv("../mechanisms/geoschem-12.8.0/gckpp_EdgeList.csv", comment="!")
 
+# Create the sparse stoichiometric, reactant, and product matrices
 print("creating sparse matrices...")
 Sr_sparse_gc12_8_0, Sp_sparse_gc12_8_0, Svv_sparse_gc12_8_0 = create_sparse(edge_list_gc12_8_0)
+# Remove any 0 columns unrelated to merging
 Svv_sparse_gc12_8_0, init_col_del_gc12_8_0 = del_zero_col(Svv_sparse_gc12_8_0)
 print("computing dimension of nullspace...")
+# Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_gc12_8_0_np = np.array(Svv_sparse_gc12_8_0, dtype=float)
+# Compute rank of NumPy matrix
 rank_Svv_gc12_8_0_np = np.linalg.matrix_rank(Svv_gc12_8_0_np)
+# Compute dimension of left null space by subtracting rank from the number of rows
 dim_leftnull_gc12_8_0 = Svv_sparse_gc12_8_0.shape[0] - rank_Svv_gc12_8_0_np
 
-
+# Identify sets of coproducing reactions
 print("identifying coproduction columns...")
 coproduction_cols_gc12_8_0 = create_coproduction(Sr_sparse_gc12_8_0)
+# Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
 symbol_dict_gc12_8_0 = create_symbols(coproduction_cols_gc12_8_0)
+# Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_gc12_8_0, col_del_gc12_8_0 = merge_coprod(Sr_sparse_gc12_8_0, Sp_sparse_gc12_8_0, symbol_dict_gc12_8_0, coproduction_cols_gc12_8_0, Svv_sparse_gc12_8_0)
 print("performing linear algebra...")
-
+# Compute the number of reactions lost due to merging
 del_r_gc12_8_0 = S_merge_gc12_8_0.shape[1] - Svv_sparse_gc12_8_0.shape[1]
-    
+# Perform the rank calculation experiment on S_merge
+# The number of kinetic invariants = S_merge.shape[0] - rank(S_merge) - # stoichiometric invariants     
 rank_list_gc12_8_0 = linalg_experiment(S_merge_gc12_8_0, num_experiments)
 

@@ -1,9 +1,7 @@
-#%% 
 import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
-#%%
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -14,8 +12,6 @@ num_experiments = 10
 pd.set_option('display.max_columns', None)
 
 # Read mechanism EdgeList (CSV) into a Pandas DataFrame
-# edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withloss.csv", comment="!")
-# edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList.csv", comment="!")
 edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withN2.csv", comment="!")
 
 # Create the sparse stoichiometric, reactant, and product matrices
@@ -45,7 +41,7 @@ print("performing linear algebra...")
 # Compute the number of reactions lost due to merging
 del_r_logan = S_merge_logan.shape[1] - Svv_sparse_logan.shape[1]
 # Perform the rank calculation experiment on S_merge
-# The number of kinetic invariants = S_merge_d.shape[0] - rank(S_merge) - # stoichiometric invariants
+# The number of kinetic invariants = S_merge.shape[0] - rank(S_merge) - # stoichiometric invariants
 rank_list_logan = linalg_experiment(S_merge_logan, num_experiments)
 
 # Use SymPy built-in function to obtain left null space of S_merge_logan
@@ -56,8 +52,6 @@ N = S_merge_logan.T.nullspace()
 A = numeric_sparse_matrix_fast_combined(S_merge_logan)
 rank_list_logan_2 = linalg_experiment_fast(A, num_experiments, A.shape[0])
 
-
-#%%
 # Loop over the edge list to create a species index mapping dictionary 
 # Species can either be in from or to columns
 # If it begins with "R" then it is a reaction number, else it is a species
@@ -80,11 +74,11 @@ def get_species_in_null_vector(null_vector, species_index):
             species_name = species_index.get(i + 1, None)  
             if species_name:
                 coeff = null_vector[i]
-                species_involved.append(f"{coeff}*{species_name}")
+                species_involved.append(f"({coeff})*{species_name}")
     equation = " + ".join(species_involved)
     return equation
 
-# Obtain the first vector in the left null space of S_merge_logan
+# Obtain the second vector in the left null space of S_merge_logan
 first_null_vector = N[1]
 species_in_first_null_vector = get_species_in_null_vector(first_null_vector, species_index)
 print(species_in_first_null_vector)
