@@ -16,7 +16,7 @@ edge_list_cri = pd.read_csv("../mechanisms/cri-v2.2/cri_EdgeList.csv", comment="
 print("creating sparse matrices...")
 Sr_sparse_cri, Sp_sparse_cri, Svv_sparse_cri = create_sparse(edge_list_cri)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_cri, init_col_del_cri = del_zero_col(Svv_sparse_cri)
+Svv_sparse_cri, Sp_sparse_cri, Sr_sparse_cri, init_col_del_cri = del_zero_col(Svv_sparse_cri, Sp_sparse_cri, Sr_sparse_cri)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_cri_np = np.array(Svv_sparse_cri, dtype=float)

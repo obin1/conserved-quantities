@@ -16,7 +16,7 @@ edge_list_superfast = pd.read_csv("../mechanisms/superfast/superfast_EdgeList.cs
 print("creating sparse matrices...")
 Sr_sparse_superfast, Sp_sparse_superfast, Svv_sparse_superfast = create_sparse(edge_list_superfast)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_superfast, init_col_del_superfast = del_zero_col(Svv_sparse_superfast)
+Svv_sparse_superfast, Sp_sparse_superfast, Sr_sparse_superfast, init_col_del_superfast = del_zero_col(Svv_sparse_superfast, Sp_sparse_superfast, Sr_sparse_superfast)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_superfast_np = np.array(Svv_sparse_superfast, dtype=float)

@@ -16,7 +16,7 @@ edge_list_saprc99 = pd.read_csv("../mechanisms/saprc99/saprc99_EdgeList.csv", co
 print("creating sparse matrices...")
 Sr_sparse_saprc99, Sp_sparse_saprc99, Svv_sparse_saprc99 = create_sparse(edge_list_saprc99)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_saprc99, init_col_del_saprc99 = del_zero_col(Svv_sparse_saprc99)
+Svv_sparse_saprc99, Sp_sparse_saprc99, Sr_sparse_saprc99, init_col_del_saprc99 = del_zero_col(Svv_sparse_saprc99, Sp_sparse_saprc99, Sr_sparse_saprc99)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_saprc99_np = np.array(Svv_sparse_saprc99, dtype=float)

@@ -16,7 +16,7 @@ edge_list_mecca = pd.read_csv("../mechanisms/mecca_v4.6.0/gas_EdgeList.csv", com
 print("creating sparse matrices...")
 Sr_sparse_mecca, Sp_sparse_mecca, Svv_sparse_mecca = create_sparse(edge_list_mecca)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_mecca, init_col_del_mecca = del_zero_col(Svv_sparse_mecca)
+Svv_sparse_mecca, Sp_sparse_mecca, Sr_sparse_mecca, init_col_del_mecca = del_zero_col(Svv_sparse_mecca, Sp_sparse_mecca, Sr_sparse_mecca)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_mecca_np = np.array(Svv_sparse_mecca, dtype=float)

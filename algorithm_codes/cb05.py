@@ -16,7 +16,7 @@ edge_list_cb05 = pd.read_csv("../mechanisms/cb05/CB05TUCl_EPA_EdgeList.csv", com
 print("creating sparse matrices...")
 Sr_sparse_cb05, Sp_sparse_cb05, Svv_sparse_cb05 = create_sparse(edge_list_cb05)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_cb05, init_col_del_cb05 = del_zero_col(Svv_sparse_cb05)
+Svv_sparse_cb05, Sp_sparse_cb05, Sr_sparse_cb05, init_col_del_cb05 = del_zero_col(Svv_sparse_cb05, Sp_sparse_cb05, Sr_sparse_cb05)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_cb05_np = np.array(Svv_sparse_cb05, dtype=float)

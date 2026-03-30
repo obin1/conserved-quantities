@@ -19,7 +19,7 @@ edge_list_chemuci = pd.read_csv("../mechanisms/e3sm-chem/chemuci_EdgeList.csv", 
 print("creating sparse matrices...")
 Sr_sparse_chemuci, Sp_sparse_chemuci, Svv_sparse_chemuci = create_sparse(edge_list_chemuci)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_chemuci, init_col_del_cb05 = del_zero_col(Svv_sparse_chemuci)
+Svv_sparse_chemuci, Sp_sparse_chemuci, Sr_sparse_chemuci, init_col_del_uci = del_zero_col(Svv_sparse_chemuci, Sp_sparse_chemuci, Sr_sparse_chemuci)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_chemuci_np = np.array(Svv_sparse_chemuci, dtype=float)

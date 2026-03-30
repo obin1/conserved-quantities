@@ -16,7 +16,7 @@ edge_list_JPM = pd.read_csv("../mechanisms/jpm_v1/jpm_v1_EdgeList.csv", comment=
 print("creating sparse matrices...")
 Sr_sparse_JPM, Sp_sparse_JPM, Svv_sparse_JPM = create_sparse(edge_list_JPM)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_JPM, init_col_del_JPM = del_zero_col(Svv_sparse_JPM)
+Svv_sparse_JPM, Sp_sparse_JPM, Sr_sparse_JPM, init_col_del_JPM = del_zero_col(Svv_sparse_JPM, Sp_sparse_JPM, Sr_sparse_JPM)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_np_JPM = np.array(Svv_sparse_JPM, dtype=float)

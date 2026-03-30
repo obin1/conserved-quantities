@@ -16,7 +16,7 @@ edge_list_form1985 = pd.read_csv("../mechanisms/form1985/form1985_EdgeList.csv",
 print("creating sparse matrices...")
 Sr_sparse_form1985, Sp_sparse_form1985, Svv_sparse_form1985 = create_sparse(edge_list_form1985)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_form1985, init_col_del_form1985 = del_zero_col(Svv_sparse_form1985)
+Svv_sparse_form1985, Sp_sparse_form1985, Sr_sparse_form1985, init_col_del_form1985 = del_zero_col(Svv_sparse_form1985, Sp_sparse_form1985, Sr_sparse_form1985)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_form1985_np = np.array(Svv_sparse_form1985, dtype=float)

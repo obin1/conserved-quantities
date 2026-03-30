@@ -16,7 +16,7 @@ edge_list_mcm = pd.read_csv("../mechanisms/mcm_v3.3.1/mcm_EdgeList.csv", comment
 print("creating sparse matrices...")
 Sr_sparse_mcm, Sp_sparse_mcm, Svv_sparse_mcm = create_sparse(edge_list_mcm)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_mcm, init_col_del_mcm = del_zero_col(Svv_sparse_mcm)
+Svv_sparse_mcm, Sp_sparse_mcm, Sr_sparse_mcm, init_col_del_mcm = del_zero_col(Svv_sparse_mcm, Sp_sparse_mcm, Sr_sparse_mcm)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_mcm_np = np.array(Svv_sparse_mcm, dtype=float)

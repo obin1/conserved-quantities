@@ -19,7 +19,7 @@ edge_list_pact1d = pd.read_csv("../mechanisms/pact1d/mech_EdgeList.csv", comment
 print("creating sparse matrices...")
 Sr_sparse_pact1d, Sp_sparse_pact1d, Svv_sparse_pact1d = create_sparse(edge_list_pact1d)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_pact1d, init_col_del_pact1d = del_zero_col(Svv_sparse_pact1d)
+Svv_sparse_pact1d, Sp_sparse_pact1d, Sr_sparse_pact1d, init_col_del_pact1d = del_zero_col(Svv_sparse_pact1d, Sp_sparse_pact1d, Sr_sparse_pact1d)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_pact1d_np = np.array(Svv_sparse_pact1d, dtype=float)

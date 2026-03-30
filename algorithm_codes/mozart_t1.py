@@ -16,7 +16,7 @@ edge_list_mozart_t1 = pd.read_csv("../mechanisms/mozart-t1/MOZART_T1_EdgeList.cs
 print("creating sparse matrices...")
 Sr_sparse_mozart_t1, Sp_sparse_mozart_t1, Svv_sparse_mozart_t1 = create_sparse(edge_list_mozart_t1)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_mozart_t1, init_col_del_mozart_t1 = del_zero_col(Svv_sparse_mozart_t1)
+Svv_sparse_mozart_t1, Sp_sparse_mozart_t1, Sr_sparse_mozart_t1, init_col_del_mozart_t1 = del_zero_col(Svv_sparse_mozart_t1, Sp_sparse_mozart_t1, Sr_sparse_mozart_t1)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_mozart_t1_np = np.array(Svv_sparse_mozart_t1, dtype=float)

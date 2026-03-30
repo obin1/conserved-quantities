@@ -17,7 +17,7 @@ edge_list_cracmm3 = pd.read_csv("../mechanisms/cracmm3/cracmm3_EdgeList.csv", co
 print("creating sparse matrices...")
 Sr_sparse_cracmm3, Sp_sparse_cracmm3, Svv_sparse_cracmm3 = create_sparse(edge_list_cracmm3)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_cracmm3, init_col_del_cracmm3 = del_zero_col(Svv_sparse_cracmm3)
+Svv_sparse_cracmm3, Sp_sparse_cracmm3, Sr_sparse_cracmm3, init_col_del_cracmm3 = del_zero_col(Svv_sparse_cracmm3, Sp_sparse_cracmm3, Sr_sparse_cracmm3)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_cracmm3_np = np.array(Svv_sparse_cracmm3, dtype=float)

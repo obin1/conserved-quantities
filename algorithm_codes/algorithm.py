@@ -59,7 +59,7 @@ Returns:
     Svv (SymPy sparse matrix): full stoichiometric matrix with zero columns deleted (net stoichiometry)
     col_del (list): list of the deleted columns 
 """
-def del_zero_col(Svv):
+def del_zero_col(Svv, Sp, Sr):
     # Initialize an empty list
     col_del = []
 
@@ -68,9 +68,11 @@ def del_zero_col(Svv):
         # Check if column is all 0, then append to col_del if yes
         if all(Svv[i, j] == 0 for i in range(Svv.shape[0])):
             Svv.col_del(j)
+            Sp.col_del(j)
+            Sr.col_del(j)
             col_del.append(j)
 
-    return Svv, col_del
+    return Svv, Sp, Sr, col_del
 
 """
 Identify which reactions participate in coproduction and group them together by numerical identifiers.

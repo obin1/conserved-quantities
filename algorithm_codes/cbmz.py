@@ -16,7 +16,7 @@ edge_list_cbmz = pd.read_csv("../mechanisms/cbmz/CBMZ_EdgeList.csv", comment="!"
 print("creating sparse matrices...")
 Sr_sparse_cbmz, Sp_sparse_cbmz, Svv_sparse_cbmz = create_sparse(edge_list_cbmz)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_cbmz, init_col_del_cbmz = del_zero_col(Svv_sparse_cbmz)
+Svv_sparse_cbmz, Sp_sparse_cbmz, Sr_sparse_cbmz, init_col_del_cbmz = del_zero_col(Svv_sparse_cbmz, Sp_sparse_cbmz, Sr_sparse_cbmz)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_cbmz_np = np.array(Svv_sparse_cbmz, dtype=float)

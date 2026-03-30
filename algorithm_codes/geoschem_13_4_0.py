@@ -16,7 +16,7 @@ edge_list_gc13_4_0 = pd.read_csv("../mechanisms/geoschem-13.4.0/gckpp_EdgeList.c
 print("creating sparse matrices...")
 Sr_sparse_gc13_4_0, Sp_sparse_gc13_4_0, Svv_sparse_gc13_4_0 = create_sparse(edge_list_gc13_4_0)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_gc13_4_0, init_col_del_gc13_4_0 = del_zero_col(Svv_sparse_gc13_4_0)
+Svv_sparse_gc13_4_0, Sp_sparse_gc13_4_0, Sr_sparse_gc13_4_0, init_col_del_gc13_4_0 = del_zero_col(Svv_sparse_gc13_4_0, Sp_sparse_gc13_4_0, Sr_sparse_gc13_4_0)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_gc13_4_0_np = np.array(Svv_sparse_gc13_4_0, dtype=float)

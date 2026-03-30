@@ -18,7 +18,7 @@ edge_list_logan = pd.read_csv("../mechanisms/logan/log81_EdgeList_withN2.csv", c
 print("creating sparse matrices...")
 Sr_sparse_logan, Sp_sparse_logan, Svv_sparse_logan = create_sparse(edge_list_logan)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_logan, init_col_del_logan = del_zero_col(Svv_sparse_logan)
+Svv_sparse_logan, Sp_sparse_logan, Sr_sparse_logan, init_col_del_logan = del_zero_col(Svv_sparse_logan, Sp_sparse_logan, Sr_sparse_logan)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_logan_np = np.array(Svv_sparse_logan, dtype=float)

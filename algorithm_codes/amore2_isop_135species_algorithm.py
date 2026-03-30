@@ -17,8 +17,9 @@ edge_list_amore = pd.read_csv("../mechanisms/amore2_isop_135species/amore2_isop_
 print("creating sparse matrices...")
 Sr_sparse_amore, Sp_sparse_amore, Svv_sparse_amore = create_sparse(edge_list_amore)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_amore, init_col_del_amore = del_zero_col(Svv_sparse_amore)
+Svv_sparse_amore, Sp_sparse_amore, Sr_sparse_amore, init_col_del_amore = del_zero_col(Svv_sparse_amore, Sp_sparse_amore, Sr_sparse_amore)
 
+# Remove rows of species that do not participate in any reactions
 zero_rows_indices = []
 for i in range(Svv_sparse_amore.rows):
     row = Svv_sparse_amore.row(i)

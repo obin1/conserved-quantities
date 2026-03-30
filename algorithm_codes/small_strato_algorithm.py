@@ -16,7 +16,7 @@ edge_list_small_strato = pd.read_csv("../mechanisms/small_strato/small_strato_Ed
 print("creating sparse matrices...")
 Sr_sparse_small_strato, Sp_sparse_small_strato, Svv_sparse_small_strato = create_sparse(edge_list_small_strato)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_small_strato, init_col_del_small_strato = del_zero_col(Svv_sparse_small_strato)
+Svv_sparse_small_strato, Sp_sparse_small_strato, Sr_sparse_small_strato, init_col_del_small_strato = del_zero_col(Svv_sparse_small_strato, Sp_sparse_small_strato, Sr_sparse_small_strato)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_small_strato_np = np.array(Svv_sparse_small_strato, dtype=float)

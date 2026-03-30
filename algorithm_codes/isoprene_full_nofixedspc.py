@@ -16,7 +16,7 @@ edge_list_iso_vo = pd.read_csv("../mechanisms/isoprene_full_v5_nofixedspc/isopre
 print("creating sparse matrices...")
 Sr_sparse_iso_vo, Sp_sparse_iso_vo, Svv_sparse_iso_vo = create_sparse(edge_list_iso_vo)
 # Remove any 0 columns unrelated to merging
-Svv_sparse_iso_vo, init_col_del_iso_vo = del_zero_col(Svv_sparse_iso_vo)
+Svv_sparse_iso_vo, Sp_sparse_iso_vo, Sr_sparse_iso_vo, init_col_del_iso_vo = del_zero_col(Svv_sparse_iso_vo, Sp_sparse_iso_vo, Sr_sparse_iso_vo)
 print("computing dimension of nullspace...")
 # Convert stoichiometric SymPy matrix to NumPy matrix
 Svv_iso_vo_np = np.array(Svv_sparse_iso_vo, dtype=float)
