@@ -38,7 +38,8 @@ sizes = [8 if name in {"Form85", "POLLU", "SmallStrato"}
 fig.add_trace(
     go.Scatter(
         x=mech_survey_inscale["Species"],
-        y=mech_survey_inscale["Reactions"],
+        # y=mech_survey_inscale["Reactions"],
+        y=mech_survey_inscale["R-gamma"],
         mode="markers+text",
         marker=dict(size=sizes, color="gray", opacity=1),
         text=labels,
@@ -62,7 +63,8 @@ sizes1 = [13 if name in {"Logan81", "Superfast", "GC-Hg", "JPM1.1", "JPMv0.2"}
 fig.add_trace(
     go.Scatter(
         x=mech_survey_KI["Species"],
-        y=mech_survey_KI["Reactions"],
+        # y=mech_survey_KI["Reactions"],
+        y=mech_survey_KI["R-gamma"],
         mode="markers+text",
         marker=dict(
             symbol="star",
@@ -78,7 +80,9 @@ fig.add_trace(
 # all mechanisms
 lr = LinearRegression(fit_intercept=False)
 x = mech_survey[["Species"]]
-y = mech_survey[["Reactions"]]
+# y = mech_survey[["Reactions"]]
+y = mech_survey[["R-gamma"]]
+
 lr.fit(x, y)
 m = lr.coef_[0]
 x_line_reg = np.linspace(0, mech_survey["Species"].max(), 100)
@@ -92,12 +96,14 @@ fig.add_trace(
         name=f'{m[0]:.2f} line',
         showlegend=True))
 
-# no CIM & CIM-var
+# no CIM & CIM-var & large mechs
 mech_survey_exclude = mech_survey[~mech_survey["Short Name"].isin(["CIM", "CIM-var", "MCM", "MECCA", "CRI", "GCv14.6", "MCM-PRAM"])]
 
 lr2 = LinearRegression(fit_intercept=False)
 x2 = mech_survey_exclude[["Species"]]
-y2 = mech_survey_exclude[["Reactions"]]
+# y2 = mech_survey_exclude[["Reactions"]]
+y2 = mech_survey_exclude[["R-gamma"]]
+
 lr2.fit(x2, y2)
 m2 = lr2.coef_[0]
 x_line_reg2 = np.linspace(0, mech_survey_exclude["Species"].max(), 100)
@@ -137,7 +143,7 @@ fig.add_trace(
 # Update additional layout properties in the main plot
 fig.update_layout(
     xaxis_title="Species",
-    yaxis_title="Reactions",
+    yaxis_title="Effective Reactions",
     xaxis=dict(
         title_font=dict(size=20), 
         tickfont=dict(size=16)),

@@ -43,6 +43,7 @@ fig.add_trace(
         x=mech_survey["Species"],
         y=mech_survey["R-gamma"],
         mode="markers+text",
+        # mode="text",
         marker=dict(size=sizes, color="gray", opacity=1),
         text=labels,
         textposition=positions,
