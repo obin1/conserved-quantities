@@ -368,3 +368,28 @@ def linalg_experiment_fast(A, num_experiments, proj_dim):
 
     return rank_list
 
+# ----------------------------------------------------------
+# Kinetic Invariant String Constructor (Superfast, Logan81)
+# ----------------------------------------------------------
+"""
+Construct the kinetic invariant vector as a string combination of the involved species, with their respective coefficients.
+Used in Superfast and Logan81 mechanisms only.
+
+Args:
+    null_vector (SymPy sparse matrix): a sparse matrix (vector) corresponding to the left null space of a merged matrix, obtained within thei ndividual mechanism files
+    species_index (dictionary): a species index matching dictionary, created within the individual mechanism files
+
+Returns:
+    equation (string): the kinetic invariant formatted as a combination of the involved species
+"""
+def get_species_in_null_vector(null_vector, species_index):
+    species_involved = []
+    for i in range(len(null_vector)):
+        if abs(null_vector[i]) != 0: 
+            species_name = species_index.get(i + 1, None)  
+            if species_name:
+                coeff = null_vector[i]
+                species_involved.append(f"({coeff})*{species_name}")
+    equation = " + ".join(species_involved)
+    return equation
+

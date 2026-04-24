@@ -101,7 +101,7 @@ S_merge_noO2 = sp.Matrix([
 # Conservation Laws (Invariants) Derived Analytically
 # -------------------------------------------------------
 
-# Define the atom matrix -- equivalent to the 4 stoichiometric invariants in the system
+# Define the atom matrix -- equivalent to 4 stoichiometric invariants in the system
 M_atom = sp.Matrix(
     [
         [0, 0, 0, 3],  # O₃
@@ -129,7 +129,7 @@ LH = M_atom[:, 2] # Hydrogen conservation
 LC = M_atom[:, 0] # Carbon conservation
 LO = M_atom[:, 3] # Oxygen conservation
 
-# Discovered Carbon Subpool Invariant in vector form
+# Discovered Carbon Subpool Invariant (5th stoichiometric invariant) in vector form
 hcho_mgly_co = sp.Matrix([[0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]])
 
 # Emergent kinetic invariant in vector form

@@ -3,7 +3,6 @@ import sympy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-# from reduce_data import load_data, createIO
 import seaborn as sns
 import matplotlib.gridspec as gridspec 
 

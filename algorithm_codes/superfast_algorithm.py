@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
+from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, get_species_in_null_vector
 
 # Initialize random seed
 SEED = 42
@@ -57,18 +57,6 @@ for index, row in edge_list_superfast.iterrows():
     if not to_node.startswith("R"):
         if to_node not in species_index:
             species_index[row["# species_index (starts from 1)"]] = to_node
-
-# Construct the kinetic invariant vector as a string combination of the involved species, with their respective coefficients
-def get_species_in_null_vector(null_vector, species_index):
-    species_involved = []
-    for i in range(len(null_vector)):
-        if abs(null_vector[i]) != 0: 
-            species_name = species_index.get(i + 1, None)  
-            if species_name:
-                coeff = null_vector[i]
-                species_involved.append(f"({coeff})*{species_name}")
-    equation = " + ".join(species_involved)
-    return equation
 
 # Obtain the vector in the left null space of S_merge_logan
 first_null_vector = N[0]
