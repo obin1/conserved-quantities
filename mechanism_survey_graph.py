@@ -8,13 +8,13 @@ pio.renderers.default = "browser"
 # Read CSV file of mechanism survey
 mech_survey = pd.read_csv("mechanism_survey.csv").dropna()
 
-# Create a new column for Effectuve Reactions, calculated by 
+# Create a new column for Effective Reactions, calculated by 
 # number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
 mech_survey["Reactions"] = pd.to_numeric(mech_survey["Reactions"], errors="coerce")
 mech_survey["R-gamma"] = mech_survey.loc[:, "Reactions"] - mech_survey.loc[:, "Coproduction Index"]
 
-# Remove MCM, MECCA, CRI, GCv14.6 due to scale, remove Toluene  
-mech_survey_inscale = mech_survey[~mech_survey["Short Name"].isin(["MCM", "MECCA", "CRI", "GCv14.6"])]
+# Remove MCM, MCM-PRAM, MECCA, CRI, GCv14.6 due to scale  
+mech_survey_inscale = mech_survey[~mech_survey["Short Name"].isin(["MCM", "MCM-PRAM", "MECCA", "CRI", "GCv14.6"])]
 
 # Filter to include only mechanisms with kinetic invariants
 mech_survey_KI = mech_survey_inscale[mech_survey_inscale["Kinetic Invariants"] != 0]
@@ -22,12 +22,11 @@ mech_survey_KI = mech_survey_inscale[mech_survey_inscale["Kinetic Invariants"] !
 # Create empty Plotly Graph Object figure
 fig = go.Figure()
 
-# Isolate specific labels, positions, and sizes per mechanism for visibility purposes
+# Isolate specific labels, positions, and sizes per mechanism for visibility purposes (gray points)
 label_mechs = {"GCv13.4", "JAM", "CRACMM3", "CRACMM2", "MOZART-T1", "RCIM", "AMORE", "RACM", "SAPRC99", "CB05", "MOZART-4", "RADM2", "CBM-Z"}  
-labels = [name if name in label_mechs else ""
-    for name in mech_survey_inscale["Short Name"]]
-positions = ["middle right" if name in {"RCIM", "CB05", "CBM-Z"} else "middle left"
-    for name in mech_survey_inscale["Short Name"]]
+labels = [name if name in label_mechs else "" for name in mech_survey_inscale["Short Name"]]
+positions = ["middle right" if name in {"RCIM", "CB05", "CBM-Z"} 
+             else "middle left" for name in mech_survey_inscale["Short Name"]]
 sizes = [8 if name in {"Form85", "POLLU", "SmallStrato"}
          else 12 for name in mech_survey_inscale["Short Name"]]
 
@@ -45,10 +44,9 @@ fig.add_trace(
         textfont=dict(size=10, color='darkgray'),
         name="without Kinetic Invariants"))
 
-# Isolate specific labels, positions, and sizes per mechanism for visibility purposes
+# Isolate specific labels, positions, and sizes per mechanism for visibility purposes (purple stars)
 label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
-labels2 = ["" if name in label_mechs2 else name
-    for name in mech_survey_KI["Short Name"]]
+labels2 = ["" if name in label_mechs2 else name for name in mech_survey_KI["Short Name"]]
 positions1 = ["top center" if name in {"E3SM"} 
               else "bottom center" if name in {"CIM"}
               else "middle right" for name in mech_survey_KI["Short Name"]]
@@ -106,7 +104,7 @@ fig.update_layout(
         tickfont=dict(size=16)),
     yaxis=dict(
         title_font=dict(size=20),  
-        tickfont=dict(size=16)    ),
+        tickfont=dict(size=16)),
     template="simple_white",
     width=2000,
     height=2000,
@@ -115,8 +113,8 @@ fig.update_layout(
         x=0.85,
         xanchor="center",
         y=0.99,
-        yanchor="top",
-    ),)
+        yanchor="top"
+    ))
 fig.update_xaxes(range=[0, 800])
 fig.update_yaxes(range=[0, 800])
 
@@ -127,13 +125,12 @@ mech_survey_crowded_noKI = mech_survey[mech_survey["Short Name"].isin(["SmallStr
 # Create a new empty Plotly Graph Object figure for inset plot
 fig1 = go.Figure()
 
-# Define specific text positions for visibility purposes, inset plot
+# Define specific text positions for visibility purposes, inset plot (purple stars)
 positions2 = [
     "middle right" if name in {"GC-Hg", "JPM1.1"} 
     else "top center" if name in {"Superfast"}
     else "middle left" if name in {"Logan81"}
-    else "bottom center" 
-    for name in mech_survey_crowded_KI["Short Name"]]
+    else "bottom center" for name in mech_survey_crowded_KI["Short Name"]]
 
 # Add to inset scatter plot: mechanisms with kinetic invariants only, purple star points
 fig1.add_trace(
@@ -152,12 +149,11 @@ fig1.add_trace(
         name="with Kinetic Invariants",
         showlegend=False))
 
-# Define specific text positions for visibility purposes, inset plot
+# Define specific text positions for visibility purposes, inset plot (gray points)
 positions3 = [
     "middle right" if name in {"POLLU"} 
     else "middle left" if name in {"Form85"}
-    else "top center" 
-    for name in mech_survey_crowded_noKI["Short Name"]]
+    else "top center" for name in mech_survey_crowded_noKI["Short Name"]]
 
 # Add to inset scatter plot: mechanisms without kinetic invariants, regular gray points 
 fig1.add_trace(
@@ -240,8 +236,7 @@ fig.add_shape(
     y0=0.05, y1=0.45,
     line=dict(color="black", width=2.5),
     fillcolor="rgba(0,0,0,0)",
-    opacity=1
-)
+    opacity=1)
 
 # Draw a rectangular border around the inset plot in the main plot area, bottom left corner
 fig.add_shape(
@@ -251,8 +246,7 @@ fig.add_shape(
     xref="x", yref="y",
     line=dict(color="black", width=2.5, dash="solid"),
     fillcolor="rgba(0,0,0,0)",
-    opacity=1
-)
+    opacity=1)
 
 # Add a connecting top line from the inset plot leading to the inset display area
 fig.add_shape(
