@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += gckpp_StoichiomSP.o
   STMSPOBJ += gckpp_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += gckpp_Stoichiom.F90
-  HESOBJ   += gckpp_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += gckpp_Stoichiom.F90
+  STMOBJ   += gckpp_Stoichiom.o
 endif
 
 UTLSRC = gckpp_Rates.F90 gckpp_Util.F90 gckpp_Monitor.F90
@@ -198,13 +198,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	gckpp*.dat gckpp.exe gckpp*.mexglx \
-	gckpp.log
+	gckpp.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	gckpp*.dat gckpp*.exe gckpp.log \
 	gckpp_*.f90 gckpp_*.F90 gckpp_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 gckpp_Precision.o: gckpp_Precision.F90
 	$(FC) $(FOPT) -c $<

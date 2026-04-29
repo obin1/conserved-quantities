@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += jam_StoichiomSP.o
   STMSPOBJ += jam_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += jam_Stoichiom.f90
-  HESOBJ   += jam_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += jam_Stoichiom.f90
+  STMOBJ   += jam_Stoichiom.o
 endif
 
 UTLSRC = jam_Rates.f90 jam_Util.f90 jam_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	jam*.dat jam.exe jam*.mexglx \
-	jam.log
+	jam.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	jam*.dat jam.exe jam.log \
 	jam_*.f90 jam_*.f90 jam_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 jam_Precision.o: jam_Precision.f90
 	$(FC) $(FOPT) -c $<

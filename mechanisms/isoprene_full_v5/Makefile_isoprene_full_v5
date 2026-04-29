@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += isoprene_full_v5_StoichiomSP.o
   STMSPOBJ += isoprene_full_v5_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += isoprene_full_v5_Stoichiom.f90
-  HESOBJ   += isoprene_full_v5_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += isoprene_full_v5_Stoichiom.f90
+  STMOBJ   += isoprene_full_v5_Stoichiom.o
 endif
 
 UTLSRC = isoprene_full_v5_Rates.f90 isoprene_full_v5_Util.f90 isoprene_full_v5_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	isoprene_full_v5*.dat isoprene_full_v5.exe isoprene_full_v5*.mexglx \
-	isoprene_full_v5.log
+	isoprene_full_v5.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	isoprene_full_v5*.dat isoprene_full_v5.exe isoprene_full_v5.log \
 	isoprene_full_v5_*.f90 isoprene_full_v5_*.f90 isoprene_full_v5_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 isoprene_full_v5_Precision.o: isoprene_full_v5_Precision.f90
 	$(FC) $(FOPT) -c $<

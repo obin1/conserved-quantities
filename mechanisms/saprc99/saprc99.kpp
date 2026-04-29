@@ -5,4 +5,4 @@
 #HESSIAN off
 #MEX off
 #STOICMAT on
-#GRAPH edgelist
+#GRAPH stoic

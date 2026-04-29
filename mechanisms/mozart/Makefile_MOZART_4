@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += MOZART_4_StoichiomSP.o
   STMSPOBJ += MOZART_4_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += MOZART_4_Stoichiom.f90
-  HESOBJ   += MOZART_4_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += MOZART_4_Stoichiom.f90
+  STMOBJ   += MOZART_4_Stoichiom.o
 endif
 
 UTLSRC = MOZART_4_Rates.f90 MOZART_4_Util.f90 MOZART_4_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	MOZART_4*.dat MOZART_4.exe MOZART_4*.mexglx \
-	MOZART_4.log
+	MOZART_4.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	MOZART_4*.dat MOZART_4.exe MOZART_4.log \
 	MOZART_4_*.f90 MOZART_4_*.f90 MOZART_4_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 MOZART_4_Precision.o: MOZART_4_Precision.f90
 	$(FC) $(FOPT) -c $<

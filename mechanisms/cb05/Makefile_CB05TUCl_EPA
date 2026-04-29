@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += CB05TUCl_EPA_StoichiomSP.o
   STMSPOBJ += CB05TUCl_EPA_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += CB05TUCl_EPA_Stoichiom.f90
-  HESOBJ   += CB05TUCl_EPA_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += CB05TUCl_EPA_Stoichiom.f90
+  STMOBJ   += CB05TUCl_EPA_Stoichiom.o
 endif
 
 UTLSRC = CB05TUCl_EPA_Rates.f90 CB05TUCl_EPA_Util.f90 CB05TUCl_EPA_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	CB05TUCl_EPA*.dat CB05TUCl_EPA.exe CB05TUCl_EPA*.mexglx \
-	CB05TUCl_EPA.log
+	CB05TUCl_EPA.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	CB05TUCl_EPA*.dat CB05TUCl_EPA.exe CB05TUCl_EPA.log \
 	CB05TUCl_EPA_*.f90 CB05TUCl_EPA_*.f90 CB05TUCl_EPA_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 CB05TUCl_EPA_Precision.o: CB05TUCl_EPA_Precision.f90
 	$(FC) $(FOPT) -c $<

@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += chemuci_StoichiomSP.o
   STMSPOBJ += chemuci_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += chemuci_Stoichiom.f90
-  HESOBJ   += chemuci_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += chemuci_Stoichiom.f90
+  STMOBJ   += chemuci_Stoichiom.o
 endif
 
 UTLSRC = chemuci_Rates.f90 chemuci_Util.f90 chemuci_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	chemuci*.dat chemuci.exe chemuci*.mexglx \
-	chemuci.log
+	chemuci.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	chemuci*.dat chemuci.exe chemuci.log \
 	chemuci_*.f90 chemuci_*.f90 chemuci_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 chemuci_Precision.o: chemuci_Precision.f90
 	$(FC) $(FOPT) -c $<

@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += Hg_StoichiomSP.o
   STMSPOBJ += Hg_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += Hg_Stoichiom.F90
-  HESOBJ   += Hg_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += Hg_Stoichiom.F90
+  STMOBJ   += Hg_Stoichiom.o
 endif
 
 UTLSRC = Hg_Rates.F90 Hg_Util.F90 Hg_Monitor.F90
@@ -198,13 +198,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	Hg*.dat Hg.exe Hg*.mexglx \
-	Hg.log
+	Hg.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	Hg*.dat Hg*.exe Hg.log \
 	Hg_*.f90 Hg_*.F90 Hg_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 Hg_Precision.o: Hg_Precision.F90
 	$(FC) $(FOPT) -c $<

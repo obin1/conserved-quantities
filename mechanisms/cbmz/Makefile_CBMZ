@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += CBMZ_StoichiomSP.o
   STMSPOBJ += CBMZ_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += CBMZ_Stoichiom.f90
-  HESOBJ   += CBMZ_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += CBMZ_Stoichiom.f90
+  STMOBJ   += CBMZ_Stoichiom.o
 endif
 
 UTLSRC = CBMZ_Rates.f90 CBMZ_Util.f90 CBMZ_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	CBMZ*.dat CBMZ.exe CBMZ*.mexglx \
-	CBMZ.log
+	CBMZ.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	CBMZ*.dat CBMZ.exe CBMZ.log \
 	CBMZ_*.f90 CBMZ_*.f90 CBMZ_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 CBMZ_Precision.o: CBMZ_Precision.f90
 	$(FC) $(FOPT) -c $<

@@ -97,7 +97,7 @@
 
 // while we're at it generate the edgelist 
 // of the species-reaction graph 
-#GRAPH edgelist
+#GRAPH stoic
 
 // do not create Hessian files
 #HESSIAN OFF

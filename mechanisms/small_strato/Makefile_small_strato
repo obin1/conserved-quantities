@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += small_strato_StoichiomSP.o
   STMSPOBJ += small_strato_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += small_strato_Stoichiom.f90
-  HESOBJ   += small_strato_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += small_strato_Stoichiom.f90
+  STMOBJ   += small_strato_Stoichiom.o
 endif
 
 UTLSRC = small_strato_Rates.f90 small_strato_Util.f90 small_strato_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	small_strato*.dat small_strato.exe small_strato*.mexglx \
-	small_strato.log
+	small_strato.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	small_strato*.dat small_strato.exe small_strato.log \
 	small_strato_*.f90 small_strato_*.f90 small_strato_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 small_strato_Precision.o: small_strato_Precision.f90
 	$(FC) $(FOPT) -c $<

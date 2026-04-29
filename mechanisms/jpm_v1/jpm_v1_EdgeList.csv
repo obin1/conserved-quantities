@@ -1,4 +1,4 @@
-# species_index (starts from 1),reaction_index (starts from 1),from,to, directed stoichiometric value
+species_index,reaction_index,source,target,directed_stoichiometric_value
 3,1,NO2,R1,-1
 2,1,R1,NO,1
 8,1,R1,O,1

@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += superfast_StoichiomSP.o
   STMSPOBJ += superfast_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += superfast_Stoichiom.f90
-  HESOBJ   += superfast_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += superfast_Stoichiom.f90
+  STMOBJ   += superfast_Stoichiom.o
 endif
 
 UTLSRC = superfast_Rates.f90 superfast_Util.f90 superfast_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	superfast*.dat superfast.exe superfast*.mexglx \
-	superfast.log
+	superfast.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	superfast*.dat superfast.exe superfast.log \
 	superfast_*.f90 superfast_*.f90 superfast_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 superfast_Precision.o: superfast_Precision.f90
 	$(FC) $(FOPT) -c $<

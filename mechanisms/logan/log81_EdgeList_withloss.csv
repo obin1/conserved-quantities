@@ -1,4 +1,4 @@
-original r_id,# species_index (starts from 1),reaction_index (starts from 1),from,to, directed stoichiometric value
+original r_id,species_index,reaction_index,source,target,directed_stoichiometric_value
 R1,25,1,O1D,R1,-1
 R1,27,1,R1,O3P,1
 R2,25,2,O1D,R2,-1

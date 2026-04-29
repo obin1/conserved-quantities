@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += RADM2_StoichiomSP.o
   STMSPOBJ += RADM2_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += RADM2_Stoichiom.f90
-  HESOBJ   += RADM2_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += RADM2_Stoichiom.f90
+  STMOBJ   += RADM2_Stoichiom.o
 endif
 
 UTLSRC = RADM2_Rates.f90 RADM2_Util.f90 RADM2_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	RADM2*.dat RADM2.exe RADM2*.mexglx \
-	RADM2.log
+	RADM2.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	RADM2*.dat RADM2.exe RADM2.log \
 	RADM2_*.f90 RADM2_*.f90 RADM2_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 RADM2_Precision.o: RADM2_Precision.f90
 	$(FC) $(FOPT) -c $<

@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += saprc99_StoichiomSP.o
   STMSPOBJ += saprc99_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += saprc99_Stoichiom.f90
-  HESOBJ   += saprc99_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += saprc99_Stoichiom.f90
+  STMOBJ   += saprc99_Stoichiom.o
 endif
 
 UTLSRC = saprc99_Rates.f90 saprc99_Util.f90 saprc99_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	saprc99*.dat saprc99.exe saprc99*.mexglx \
-	saprc99.log
+	saprc99.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	saprc99*.dat saprc99.exe saprc99.log \
 	saprc99_*.f90 saprc99_*.f90 saprc99_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 saprc99_Precision.o: saprc99_Precision.f90
 	$(FC) $(FOPT) -c $<

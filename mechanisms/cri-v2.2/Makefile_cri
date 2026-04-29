@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += cri_StoichiomSP.o
   STMSPOBJ += cri_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += cri_Stoichiom.f90
-  HESOBJ   += cri_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += cri_Stoichiom.f90
+  STMOBJ   += cri_Stoichiom.o
 endif
 
 UTLSRC = cri_Rates.f90 cri_Util.f90 cri_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	cri*.dat cri.exe cri*.mexglx \
-	cri.log
+	cri.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	cri*.dat cri.exe cri.log \
 	cri_*.f90 cri_*.f90 cri_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 cri_Precision.o: cri_Precision.f90
 	$(FC) $(FOPT) -c $<

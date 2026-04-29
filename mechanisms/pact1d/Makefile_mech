@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += mech_StoichiomSP.o
   STMSPOBJ += mech_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += mech_Stoichiom.f90
-  HESOBJ   += mech_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += mech_Stoichiom.f90
+  STMOBJ   += mech_Stoichiom.o
 endif
 
 UTLSRC = mech_Rates.f90 mech_Util.f90 mech_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	mech*.dat mech.exe mech*.mexglx \
-	mech.log
+	mech.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	mech*.dat mech.exe mech.log \
 	mech_*.f90 mech_*.f90 mech_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 mech_Precision.o: mech_Precision.f90
 	$(FC) $(FOPT) -c $<

@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += pollu_StoichiomSP.o
   STMSPOBJ += pollu_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += pollu_Stoichiom.f90
-  HESOBJ   += pollu_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += pollu_Stoichiom.f90
+  STMOBJ   += pollu_Stoichiom.o
 endif
 
 UTLSRC = pollu_Rates.f90 pollu_Util.f90 pollu_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	pollu*.dat pollu.exe pollu*.mexglx \
-	pollu.log
+	pollu.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	pollu*.dat pollu.exe pollu.log \
 	pollu_*.f90 pollu_*.f90 pollu_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 pollu_Precision.o: pollu_Precision.f90
 	$(FC) $(FOPT) -c $<

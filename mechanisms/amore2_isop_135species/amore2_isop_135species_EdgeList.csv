@@ -23,7 +23,7 @@
 !
 !
 !
-# species_index (starts from 1),reaction_index (starts from 1),from,to, directed stoichiometric value
+species_index,reaction_index,source,target,directed_stoichiometric_value
 7,1, ISOP,R1: ISOP + OH = ISOP1OHc + ISOP1OHt + ISOP4OHc + ISOP4OHt,-1
 8,1,R1: ISOP + OH = ISOP1OHc + ISOP1OHt + ISOP4OHc + ISOP4OHt,ISOP1OHt,0.31500000000000006
 9,1,R1: ISOP + OH = ISOP1OHc + ISOP1OHt + ISOP4OHc + ISOP4OHt,ISOP1OHc,0.31500000000000006

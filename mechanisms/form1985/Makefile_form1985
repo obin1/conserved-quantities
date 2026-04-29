@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += form1985_StoichiomSP.o
   STMSPOBJ += form1985_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += form1985_Stoichiom.f90
-  HESOBJ   += form1985_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += form1985_Stoichiom.f90
+  STMOBJ   += form1985_Stoichiom.o
 endif
 
 UTLSRC = form1985_Rates.f90 form1985_Util.f90 form1985_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	form1985*.dat form1985.exe form1985*.mexglx \
-	form1985.log
+	form1985.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	form1985*.dat form1985.exe form1985.log \
 	form1985_*.f90 form1985_*.f90 form1985_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 form1985_Precision.o: form1985_Precision.f90
 	$(FC) $(FOPT) -c $<

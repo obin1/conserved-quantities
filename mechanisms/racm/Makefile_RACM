@@ -145,9 +145,9 @@ ifeq ($(HAS_STM_SP),1)
   STMOBJ   += RACM_StoichiomSP.o
   STMSPOBJ += RACM_StoichiomSP.o
 endif
-ifeq ($(HAS_HES),1)
-  HESSRC   += RACM_Stoichiom.f90
-  HESOBJ   += RACM_Stoichiom.o
+ifeq ($(HAS_STM),1)
+  STMSRC   += RACM_Stoichiom.f90
+  STMOBJ   += RACM_Stoichiom.o
 endif
 
 UTLSRC = RACM_Rates.f90 RACM_Util.f90 RACM_Monitor.f90
@@ -196,13 +196,13 @@ mex:    $(ALLOBJ)
 clean:
 	rm -f *.o *.mod \
 	RACM*.dat RACM.exe RACM*.mexglx \
-	RACM.log
+	RACM.log *.csv
 
 distclean:
 	rm -f *.o *.mod \
 	RACM*.dat RACM.exe RACM.log \
 	RACM_*.f90 RACM_*.f90 RACM_*.mexglx \
-	results*.m *.dat
+	results*.m *.dat *.csv
 
 RACM_Precision.o: RACM_Precision.f90
 	$(FC) $(FOPT) -c $<

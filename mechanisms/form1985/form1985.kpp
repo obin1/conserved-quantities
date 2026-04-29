@@ -3,6 +3,6 @@
 #DRIVER none
 #HESSIAN off
 #STOICMAT on
-#GRAPH stoic
+#GRAPH edgelist
 
 #INCLUDE form1985.eqn
