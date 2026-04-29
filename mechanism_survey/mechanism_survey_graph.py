@@ -45,7 +45,7 @@ fig.add_trace(
         name="without Kinetic Invariants"))
 
 # Isolate specific labels, positions, and sizes per mechanism for visibility purposes (purple stars)
-label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
+label_mechs2 = {"GC-Hg", "Superfast", "JPMv1.1", "JPMv0.2", "Logan81"} 
 labels2 = ["" if name in label_mechs2 else name for name in mech_survey_KI["Short Name"]]
 positions1 = ["top center" if name in {"E3SM"} 
               else "bottom center" if name in {"CIM"}
@@ -119,7 +119,7 @@ fig.update_xaxes(range=[0, 800])
 fig.update_yaxes(range=[0, 800])
 
 # Filter only the mechanisms in the crowded bottom left corner
-mech_survey_crowded_KI = mech_survey[mech_survey["Short Name"].isin(["GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"])]
+mech_survey_crowded_KI = mech_survey[mech_survey["Short Name"].isin(["GC-Hg", "Superfast", "JPMv1.1", "JPMv0.2", "Logan81"])]
 mech_survey_crowded_noKI = mech_survey[mech_survey["Short Name"].isin(["SmallStrato", "Form85", "POLLU"])]
 
 # Create a new empty Plotly Graph Object figure for inset plot
@@ -127,7 +127,7 @@ fig1 = go.Figure()
 
 # Define specific text positions for visibility purposes, inset plot (purple stars)
 positions2 = [
-    "middle right" if name in {"GC-Hg", "JPM1.1"} 
+    "middle right" if name in {"GC-Hg", "JPMv1.1"} 
     else "top center" if name in {"Superfast"}
     else "middle left" if name in {"Logan81"}
     else "bottom center" for name in mech_survey_crowded_KI["Short Name"]]
