@@ -6,7 +6,7 @@ import plotly.io as pio
 pio.renderers.default = "browser"
 
 # Read CSV file of mechanism survey
-mech_survey = pd.read_csv("mechanism_survey.csv").dropna()
+mech_survey = pd.read_csv("mechanism_survey/mechanism_survey.csv").dropna()
 
 # Create a new column for Effective Reactions, calculated by 
 # number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
