@@ -36,7 +36,7 @@ print("merging coproduction columns...")
 S_merge_gchg, col_del_gchg= merge_coprod(Sr_sparse_gchg, Sp_sparse_gchg, symbol_dict_gchg, coproduction_cols_gchg, Svv_sparse_gchg)
 print("performing linear algebra...")
 # Compute the number of reactions lost due to merging
-del_r_gchg= S_merge_gchg.shape[1] - Svv_sparse_gchg.shape[1]
+del_r_gchg = S_merge_gchg.shape[1] - Svv_sparse_gchg.shape[1]
 # Perform the rank calculation experiment on S_merge
 # The number of kinetic invariants = S_merge.shape[0] - rank(S_merge) - # stoichiometric invariants 
 rank_list_gchg= linalg_experiment(S_merge_gchg, num_experiments)

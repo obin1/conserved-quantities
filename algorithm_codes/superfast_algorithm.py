@@ -49,14 +49,14 @@ N = S_merge_superfast.T.nullspace()
 # If it begins with "R" then it is a reaction number, else it is a species
 species_index = {}
 for index, row in edge_list_superfast.iterrows():
-    from_node = row['from']
-    to_node = row['to']
+    from_node = row['source']
+    to_node = row['target']
     if not from_node.startswith("R"):
         if from_node not in species_index:
-            species_index[row["# species_index (starts from 1)"]] = from_node
+            species_index[row["species_index"]] = from_node
     if not to_node.startswith("R"):
         if to_node not in species_index:
-            species_index[row["# species_index (starts from 1)"]] = to_node
+            species_index[row["species_index"]] = to_node
 
 # Obtain the vector in the left null space of S_merge_logan
 first_null_vector = N[0]
