@@ -14,12 +14,12 @@ Returns:
 """
 def create_sparse(edge_list):
     # We separate species consumption and species production.
-    consumed = edge_list[edge_list[" directed stoichiometric value"]<0]
-    produced = edge_list[edge_list[" directed stoichiometric value"]>0]
+    consumed = edge_list[edge_list["directed_stoichiometric_value"]<0]
+    produced = edge_list[edge_list["directed_stoichiometric_value"]>0]
 
     # Identify total number of species and reactions in the mechanism.
-    num_species = edge_list["# species_index (starts from 1)"].max()
-    num_reactions = edge_list["reaction_index (starts from 1)"].max()
+    num_species = edge_list["species_index"].max()
+    num_reactions = edge_list["reaction_index"].max()
 
     # Initialize 2 empty sparse SymPy matrices: one for consumption (Sr) and one for production (Sp).
     Sr = sp.MutableSparseMatrix(num_species, num_reactions, {})
@@ -27,16 +27,16 @@ def create_sparse(edge_list):
 
     # Populate Sr with data from the edge list.
     for _, row in consumed.iterrows():
-        species_idx = int(row["# species_index (starts from 1)"]) - 1
-        reaction_idx = int(row["reaction_index (starts from 1)"]) - 1
-        value = float(row[" directed stoichiometric value"])
+        species_idx = int(row["species_index"]) - 1
+        reaction_idx = int(row["reaction_index"]) - 1
+        value = float(row["directed_stoichiometric_value"])
         Sr[species_idx, reaction_idx] = value
 
     # Populate Sp with data from the edge list.
     for _, row in produced.iterrows():
-        species_idx = int(row["# species_index (starts from 1)"]) - 1
-        reaction_idx = int(row["reaction_index (starts from 1)"]) - 1
-        value = float(row[" directed stoichiometric value"])
+        species_idx = int(row["species_index"]) - 1
+        reaction_idx = int(row["reaction_index"]) - 1
+        value = float(row["directed_stoichiometric_value"])
         Sp[species_idx, reaction_idx] = value
 
     # Combine St and Sp to obtain the full stoichiometric matrix.
