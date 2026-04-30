@@ -3,6 +3,7 @@ import numpy as np
 import plotly.graph_objects as go
 import numpy as np
 import plotly.io as pio
+import os
 pio.renderers.default = "browser"
 
 # Read CSV file of mechanism survey
@@ -267,6 +268,9 @@ fig.add_shape(
     opacity=1)
 
 # Save figure as a PDF
-pio.write_image(fig, 'survey_mechanisms.pdf', width=800, height=800) 
+folder_name = 'figures'
+file_name = 'Figure3.pdf'
+full_path = os.path.join(folder_name, file_name)
+pio.write_image(fig, full_path, width=800, height=800) 
 # Show figure in web browser
 fig.show()
