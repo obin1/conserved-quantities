@@ -7,7 +7,7 @@ import os
 pio.renderers.default = "browser"
 
 # Read CSV file of mechanism survey
-mech_survey = pd.read_csv("mechanism_survey/mechanism_survey.csv").dropna()
+mech_survey = pd.read_csv("mechanism_survey.csv").dropna()
 
 # Create a new column for Effectuve Reactions, calculated by 
 # number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
@@ -147,7 +147,10 @@ fig.update_yaxes(
 
 # Filter only the mechanisms in the crowded middle area
 mech_survey_crowded_KI = mech_survey[mech_survey["Short Name"].isin(["CIM", "CIM-var", "PACT-1D", "GCv12.0", "GCv12.7", "GCv12.8", "GCv12.9", "GCv13.3"])]
-mech_survey_crowded_noKI = mech_survey[mech_survey["Short Name"].isin(["RADM2", "MOZART-4", "CB05", "RACM", "SAPRC99", "AMORE", "RCIM", "MOZART-T1", "CRACMM2", "CRACMM3", "JAM", "GCv13.4", "GCv14.6", "CRI"])]
+mech_survey_crowded_noKI = mech_survey[mech_survey["Short Name"].isin(["RADM2", "MOZART-4", "CB05", "CBM-Z",
+                                                                       "RACM", "SAPRC99", "AMORE", 
+                                                                       "RCIM", "MOZART-T1", "CRACMM2", 
+                                                                       "CRACMM3", "JAM", "GCv13.4", "GCv14.6", "CRI"])]
 
 # Create a new empty Plotly Graph Object figure for inset plot
 fig1 = go.Figure()
@@ -177,7 +180,7 @@ fig1.add_trace(
 
 # Define specific text positions for visibility purposes, inset plot (gray points)
 positions3 = [
-    "middle right" if name in {"RADM2", "MOZART-4", "MOZART-T1", "RCIM", "SAPRC99", "RACM"} 
+    "middle right" if name in {"RADM2", "MOZART-4", "MOZART-T1", "RCIM", "SAPRC99", "RACM","CBM-Z"} 
     else "middle left" if name in {"CRACMM2", "CRACMM3", "CB05", "GCv14.6", "CRI", "AMORE"}
     else "top left" if name in {"GCv13.4", "JAM"}
     else "top center" for name in mech_survey_crowded_noKI["Short Name"]]
@@ -220,7 +223,7 @@ fig1.add_trace(
 
 # Define x,y ranges for the inset plot
 x0, x1 = 1, 550
-y0, y1 = 125, 950
+y0, y1 = 115, 950
 
 # Update additional layout properties in the inset plot
 # Define the positions of the inset display area (xaxis2, yaxis2) within the main plot
@@ -260,14 +263,14 @@ fig.add_shape(
 fig.add_shape(
     type="rect",
     x0=40, x1=550,
-    y0=125, y1=950,
+    y0=115, y1=950,
     xref="x", yref="y",
     line=dict(color="black", width=1.5, dash="solid"),
     fillcolor="rgba(0,0,0,0)",
     opacity=1)
 
 # Save figure as a PDF
-folder_name = 'figures'
+folder_name = '../figures'
 file_name = 'FigureS2.pdf'
 full_path = os.path.join(folder_name, file_name)
 pio.write_image(fig, full_path, width=800, height=800) 
