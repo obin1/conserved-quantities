@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import pandas as pd
 
-def load_data(folder = './', file = "experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv"):
+def load_data(folder = '/Users/psturm/Desktop/Mass conservation on manifolds/', file = "experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv"):
     
     n_points_per_experiment = 13 # 1 hours * 1 step/5 minutes + 1 for the first step
     n_steps_per_experiment = n_points_per_experiment - 1

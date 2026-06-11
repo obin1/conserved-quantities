@@ -3,7 +3,7 @@ import sympy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from algorithm_codes.reduce_data import load_data, createIO
+from reduce_data import load_data, createIO
 import seaborn as sns
 import matplotlib.gridspec as gridspec 
 
@@ -258,3 +258,34 @@ ax3.text(-0.1, 1.05, "(d)", transform=ax3.transAxes,
 plt.tight_layout() 
 plt.show()
 plt.savefig("singular_value_&_atom_deviations.png")
+
+#%% explained variance ratio of the PCA components
+
+figB, axB = plt.subplots(figsize=(7, 4))
+axB.scatter(range(1, 17), explained_variance_ratio*100, c=c, alpha=1.0)
+axB.plot(range(1, 17), explained_variance_ratio*100, color='gray', linewidth=1)
+axB.set_yscale('log')
+axB.set_xlabel("Principal Components")
+axB.set_ylabel("Explained Variance (%)")
+axB.set_xticks([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+axB.set_xticklabels([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+plt.tight_layout()
+plt.show()
+
+
+# %% redo PCA analysis on the data but add 20% noise
+
+D_noisy = D + 0.3 * np.random.randn(*D.shape)
+pca_noisy = PCA(n_components=16)
+X_pca_noisy = pca_noisy.fit_transform(D_noisy)
+explained_variance_ratio_noisy = pca_noisy.explained_variance_ratio_
+
+# plot the explained variance ratio of the PCA components for the noisy data
+figC, axC = plt.subplots(figsize=(7, 4))
+axC.scatter(range(1, 17), explained_variance_ratio_noisy*100, c=c, alpha=1.0)
+axC.plot(range(1, 17), explained_variance_ratio_noisy*100, color='gray', linewidth=1)
+axC.set_yscale('log')
+axC.set_xlabel("Principal Components")
+axC.set_ylabel("Explained Variance (%)")
+
+# %%
