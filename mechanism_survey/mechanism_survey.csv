@@ -3,40 +3,34 @@ Small Strato,SmallStrato,5,10,1,2,1,1,0,1,"(Zaveri & Peters, 1999)"
 Julia Photochem v0.2,JPMv0.2,11,10,2,2,1,1,1,0,"(Sturm & Wexler, 2022)"
 Julia Photochem v1.1,JPMv1.1,16,13,5,2,1,1,1,0,"(Sturm & Silva, 2024)"
 Form85,Form85,12,25,1,3,5,6,0,6,"(Vajda et al., 1985) is the first obtainable reference"
-Superfast,Superfast,15,32,0,3,5,6,1,5,"Original reference (Cameron-Smith et al., 2006), obtained in KPP format from Kelp et al. (2022) and added sulfate chem back based on table S2 of the supplement of (Brown-Steiner et al., 2018)4/2/26 8:41:00 AM"
+Superfast,Superfast,15,32,0,3,5,6,1,5,"Original reference (Cameron-Smith et al., 2006), obtained in KPP format from Kelp et al. (2022) and added sulfate chem back based on table S2 of the supplement of (Brown-Steiner et al., 2018)4/21/26 4:05:00 PM"
 Verwer1994 (POLLU),POLLU,20,25,3,2,4,4,0,4,"(Verwer, 1994) is the first obtainable reference"
-Logan1981,Logan81,29,54,3,3,9,9,1, 8,"(Logan et al., 1981) table 1, gas-phase mechanism reactions 1-49. Note that we expand branching reaction and reversible reactions as their own reactions, leading to a higher count of overall reactions. The original paper used an O1D quantum yield of unity (100%) from O3 photolysis in reaction 40, which we preserve."
-GEOS-Chem Hg,GC-Hg,32,91,2,11,25,65,4,61,"(Shah et al., 2021), exact KPP version downloaded as part of GC14.6.3: https://doi.org/10.5281/zenodo.16538682"
-E3SM-chem,E3SM,46,103,1,3,15,19,1,18,"(Tang et al., 2025) obtained from data availability statement https://github.com/E3SM-Project/E3SM/blob/master/components/eam/src/chemistry/pp_chemuci_linozv3_mam5_vbs/chem_mech.in, last access February 12, 2026"
-CBM-Z,CBM-Z,67,139,7,3,9,10,0,10,"(Zaveri & Peters, 1999),* "
+Logan1981,Logan81,29,54,3,3,8,9,1,8,"(Logan et al., 1981) table 1, gas-phase mechanism reactions 1-49. Note that we expand branching reaction and reversible reactions as their own reactions, leading to a higher count of overall reactions. The original paper used an O1D quantum yield of unity (100%) from O3 photolysis in reaction 40, which we preserve."
+GEOS-Chem Hg,GC-Hg,32,91,2,11,24,65,4,61,"(Shah et al., 2021), exact KPP version downloaded as part of GC14.6.3: https://doi.org/10.5281/zenodo.16538682 ; 3 null reactions not included in reaction count."
+E3SM-chem,E3SM,46,103,1,3,15,19,1,18,"(Tang et al., 2025) obtained from data availability statement https://github.com/E3SM-Project/E3SM/blob/master/components/eam/src/chemistry/pp_chemuci_linozv3_mam5_vbs/chem_mech.in, last access February 12, 2026 ; 1 null reaction not included in reaction count."
+CBM-Z,CBM-Z,67,139,7,3,9,10,0,10,"(Zaveri & Peters, 1999),* ; 3 null reactions not included in reaction count."
 RADM2,RADM2,59,156,2,2,9,9,0,9,"(Stockwell et al., 1990),*"
-SAPRC99,SAPRC99,74,210,1,2,13,13,0,13,"(Carter, 2000), part of KPP software examples (Damian et al., 2002; Lin et al., 2023) "
+SAPRC99,SAPRC99,74,210,1,2,13,13,0,13,"(Carter, 2000), part of KPP software examples (Damian et al., 2002; Lin et al., 2023) ; 1 null reaction not included in reaction count."
 CB05-TUCl,CB05,82,205,7,4,12,14,0,14,"(Whitten et al., 2010),*"
 RACM,RACM,82,250,1,2,13,13,0,13,"(Stockwell et al., 1997)"
 CRACMM2,CRACMM2,196,531,4,4,16,22,0,22,"(Pye et al., 2023; Skipper et al., 2024)"
 CRACMM3 ,CRACMM3,226,614,5,4,23,35,0,35,"Downloaded from the CRACMM Repo Update Oct 2025: https://doi.org/10.23719/d-tdzv. Note: adding the eliminated element tracking species adds 3 species, but only 1 additional stoichiometric invariant, indicating that 2 of 3 of the balance species do not close the atom balance"
 MOZART-4,MOZART-4,81,196,0,3,16,17,0,17,"(Emmons et al., 2010),*"
 MOZART-T1,MOZART-T1,155,360,0,3,39,41,0,41,"(Emmons et al., 2020),*"
-"AMORE-Isoprene v2.0,      109 isoprene-derived species",AMORE,133,330,0,4,32,42,0,42,"(Wiser et al., 2025) downloaded from https://doi.org/10.5281/zenodo.15026991. Wiser et al. (2025) found that the 133-species AMORE-Isoprene mechanism had better fidelity compared to CIM than its comparable size RCIM (pink vs orange points in Figure 2 and Figure 3b of Wiser et al. (2025) – note the number of species discrepancy is because the number in the reference includes only isoprene-derived species). As neither AMORE-Isoprene nor RCIM has stoichiometric invariants or emergent conservation from kinetic invariants, neither has an effective dimensionality lower than its respective number of species. Reduced intrinsic dimensionality from emergent conservation can be ruled out as a structural cause of the difference in fidelity between RCIM and its comparatively sized AMORE-Isoprene mechanism. "
-PACT-1D-HALOGENS-v1.1,PACT-1D,167,512,9,4,36,49,1,48,"(Ahmed et al., 2022) and Zenodo https://doi.org/10.5281/zenodo.6045999"
+"AMORE-Isoprene v2.0, 109 isoprene-derived species",AMORE,133,330,0,4,32,42,0,42,"(Wiser et al., 2025) downloaded from https://doi.org/10.5281/zenodo.15026991. Wiser et al. (2025) found that the 133-species AMORE-Isoprene mechanism had better fidelity compared to CIM than its comparable size RCIM (pink vs orange points in Figure 2 and Figure 3b of Wiser et al. (2025) – note the number of species discrepancy is because the number in the reference includes only isoprene-derived species). As neither AMORE-Isoprene nor RCIM has stoichiometric invariants or emergent conservation from kinetic invariants, neither has an effective dimensionality lower than its respective number of species. Reduced intrinsic dimensionality from emergent conservation can be ruled out as a structural cause of the difference in fidelity between RCIM and its comparatively sized AMORE-Isoprene mechanism. "
+PACT-1D-HALOGENS-v1.1,PACT-1D,167,512,9,4,36,49,1,48,"(Ahmed et al., 2022) and Zenodo https://doi.org/10.5281/zenodo.6045999 ; 1 null reaction not included in reaction count."
 Caltech reduced plus v5,RCIM,145,379,0,5,64,85,0,85,"(Wennberg et al., 2018) downloaded from (Bates & Wennberg, 2017)"
 Caltech Isoprene Mechanism Full v5,CIM,386,886,0,15,195,650,150,500,"(Wennberg et al., 2018) downloaded from (Bates & Wennberg, 2017)"
 "Caltech Isoprene Mechanism, Variable Oxidants",CIM-var,394,886,2,8,284,474,17,457,"(Wennberg et al., 2018) downloaded from (Bates & Wennberg, 2017)"
-Jülich Atmospheric Mechanism JAM002b,JAM,245,702,4,4,41,53,0,53,"(Schultz et al., 2018) downloaded in the supplement of (Sander et al., 2019)4/2/26 8:41:00 AM"
+Jülich Atmospheric Mechanism JAM002b,JAM,245,702,4,4,41,53,0,53,"(Schultz et al., 2018) downloaded in the supplement of (Sander et al., 2019)4/21/26 4:05:00 PM"
 GEOS-Chem v12.0.0,GCv12.0,235,725,6,6,101,136,1,135,Standard mechanism downloaded from https://doi.org/10.5281/zenodo.1343547
 GEOS-Chem v12.7.0,GCv12.7,243,750,6,6,108,143,1,142,Standard mechanism downloaded from https://doi.org/10.5281/zenodo.3634864
 GEOS-Chem v12.8.0,GCv12.8,258,825,6,6,138,190,1,189,Standard mechanism downloaded from https://doi.org/10.5281/zenodo.3784796
 GEOS-Chem v12.9.0,GCv12.9,262,850,8,6,138,188,2,186,Standard mechanism downloaded from https://doi.org/10.5281/zenodo.3950327. Ablation study with no P/L species showed the mechanism still has 2 kinetic invariants
 GEOS-Chem v13.3.0,GCv13.3,287,903,10,6,140,185,2,183,Fullchem mechanism downloaded from https://doi.org/10.5281/zenodo.7254231
 GEOS-Chem v13.4.0,GCv13.4,287,913,10,6,138,181,0,181,Fullchem mechanism downloaded from https://doi.org/10.5281/zenodo.7254268
-GEOS-Chem v14.6.3  ,GCv14.6,353,1058,9,5,123,168,0,168,Fullchem mechanism downloaded from https://doi.org/10.5281/zenodo.16538682
+GEOS-Chem v14.6.3,GCv14.6,353,1058,9,5,123,168,0,168,Fullchem mechanism downloaded from https://doi.org/10.5281/zenodo.16538682
 CRI v2.2,CRI,442,1258,2,6,179,216,0,216,"(Jenkin et al., 2008, 2019; Watson et al., 2008) downloaded from https://www.mcm.york.ac.uk/CRI last access November 6, 2025."
 CAABA /MECCA v4.6.0,MECCA,733,2323,9,8,361,456,0,456,"Downloaded as gas.kpp mechanism in the supplement of (Sander et al., 2019)"
 MCM v3.3.1,MCM,5832,16698,1,7,2617,3558,0,3558,"(Bloss et al., 2005; Jenkin et al., 1997, 2012, 2015; Saunders et al., 2003) downloaded from https://www.mcm.york.ac.uk/MCM/ last access November 6, 2025."
 MCM with PRAM,MCM-PRAM,6041,18478,1,7,2654,3671,3,3668,"MCM v3.3.1 as above, paired with PRAM downloaded in KPP format (Roldin, 2019; Roldin et al., 2019)"
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
