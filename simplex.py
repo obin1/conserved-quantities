@@ -56,7 +56,7 @@ Z[X + Y > 1] = np.nan
 fig = go.Figure()
 
 # Plane
-fig.add_trace(go.Surface(x=X, y=Y, z=Z, opacity=0.6, showscale=False, colorscale=[[0, '#00fa47'], [1, '#00fa47']]))
+fig.add_trace(go.Surface(x=X, y=Y, z=Z, opacity=0.8, showscale=False, colorscale=[[0, '#00fa47'], [1, '#00fa47']]))
 
 x1 = np.linspace(0, 2, 1000)
 z1 = np.linspace(0, 2, 1000)
@@ -70,7 +70,7 @@ L = 0.1
 Y1 = (a1*X + L)/a2
 Z1[(X1>0.6) | (Y1>0.6)] = np.nan
 
-fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.6, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']]))
+fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.8, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']]))
 
 # x-axis
 fig.add_trace(go.Scatter3d(x=[0, 1.2], y=[0, 0], z=[0, 0], mode="lines", line=dict(color="red", width=6), name="RONO2"))
@@ -80,6 +80,20 @@ fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.2], z=[0, 0], mode="lines", line=di
 
 # z-axis
 fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.2], mode="lines", line=dict(color="blue", width=6), name="NO"))
+
+
+t = np.linspace(0, 5/6, 1000)   # segment inside the unit simplex
+X2 = 0.5 - 3*t/5
+Y2 = 0.5 - 2*t/5
+Z2 = t
+
+fig.add_trace(go.Scatter3d(
+    x=X2, y=Y2, z=Z2,
+    mode="lines",
+    line=dict(width=8, color='white'),
+    name="intersection line"
+))
+
 
 
 fig.update_layout(scene=dict(xaxis=dict(title="RONO2", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
