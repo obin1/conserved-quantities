@@ -73,16 +73,16 @@ Z1[(X1>0.6) | (Y1>0.6)] = np.nan
 fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.8, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']]))
 
 # x-axis
-fig.add_trace(go.Scatter3d(x=[0, 1.2], y=[0, 0], z=[0, 0], mode="lines", line=dict(color="red", width=6), name="RONO2"))
+fig.add_trace(go.Scatter3d(x=[0, 1.3], y=[0, 0], z=[0, 0], mode="lines", line=dict(color="black", width=6), name="RONO2"))
 
 # y-axis
-fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.2], z=[0, 0], mode="lines", line=dict(color="green", width=6), name="NO2"))
+fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.3], z=[0, 0], mode="lines", line=dict(color="black", width=6), name="NO2"))
 
 # z-axis
-fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.2], mode="lines", line=dict(color="blue", width=6), name="NO"))
+fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.3], mode="lines", line=dict(color="black", width=6), name="NO"))
 
 
-t = np.linspace(0, 5/6, 1000)   # segment inside the unit simplex
+t = np.linspace(0, 5/6, 10000)   # segment inside the unit simplex
 X2 = 0.5 - 3*t/5
 Y2 = 0.5 - 2*t/5
 Z2 = t
@@ -91,14 +91,65 @@ fig.add_trace(go.Scatter3d(
     x=X2, y=Y2, z=Z2,
     mode="lines",
     line=dict(width=8, color='white'),
-    name="intersection line"
+    name="intersection line",
+    hoverinfo='skip'
+))
+
+fig.add_trace(go.Scatter3d(
+    x=[1.2, 0, 0],
+    y=[0, 1.2, 0],
+    z=[0, 0, 1.2],
+    mode="text",
+    text=["<b>RONO2</b>", "<b>NO2</b>", "<b>NO</b>"],
+    textfont=dict(color="black", size=14),
+    showlegend=False
 ))
 
 
-
-fig.update_layout(scene=dict(xaxis=dict(title="RONO2", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
-                yaxis=dict(title="NO2", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
-                zaxis=dict(title="NO", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False)))
+fig.update_layout(scene=dict(xaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
+                yaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
+                zaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False), 
+                # width=1000, height=1000,
+                annotations=[
+                # dict(
+                #     showarrow=False,
+                #     x=1.3, y=0, z=0,  # X-axis tip
+                #     text="<b>RONO2</b>",
+                #     font=dict(color="black", size=14),
+                #     xanchor="left"
+                # ),
+                # dict(
+                #     showarrow=False,
+                #     x=-0, y=1.3, z=0,  # Y-axis tip
+                #     text="<b>NO2</b>",
+                #     font=dict(color="black", size=14),
+                #     yanchor="bottom"
+                # ),
+                # dict(
+                #     showarrow=False,
+                #     x=-0, y=0, z=1.3,  # Z-axis tip
+                #     text="<b>NO</b>",
+                #     font=dict(color="black", size=14),
+                #     xanchor="center"
+                # ),
+                dict(
+                        showarrow=True,
+                        x=0.28,      # X-coordinate of the arrow tip
+                        y=0.34,      # Y-coordinate of the arrow tip
+                        z=0.4,      # Z-coordinate of the arrow tip
+                        text="Intersection Line",
+                        textangle=0,
+                        ax=100,    # Horizontal arrow tail offset (pixels)
+                        ay=-100,   # Vertical arrow tail offset (pixels)
+                        arrowhead=2,
+                        arrowcolor="red",
+                        arrowsize=1,
+                        arrowwidth=2,
+                        font=dict(color="black", size=12),
+                        bgcolor="yellow",
+                        bordercolor="black",
+                        borderwidth=1)]),
+                )
 
 
 fig.show()
