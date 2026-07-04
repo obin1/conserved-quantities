@@ -54,7 +54,8 @@ species_index,reaction_index,source,target,directed_stoichiometric_value
 7,14,OH,R14,-1
 9,14,R14,CO,1
 14,14,PAN,R14,-1
-15,14,R14,H2O,1
+10,14,R14,H2,1
+16,14,R14,O2,1
 1,15,O3,R15,-1
 5,15,R15,HO2,1
 7,15,OH,R15,-1
