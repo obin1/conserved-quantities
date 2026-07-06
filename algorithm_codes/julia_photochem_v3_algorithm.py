@@ -14,7 +14,7 @@ num_experiments = 10
 # no Oxygen tracked in reaction 3
 
 # new reactions: 
-# reaction 14 is PAN + OH -> HCHO + CO + NO2 + H2O
+# reaction 14 is PAN + OH -> HCHO + CO + NO2 + H2 + O2
 # reaction 15 is O3 + OH -> HO2 + O2
 Svv_JPM3_hardcoded = sp.Matrix([
                [ 1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1], # O₃
