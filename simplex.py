@@ -56,7 +56,10 @@ Z[X + Y > 1] = np.nan
 fig = go.Figure()
 
 # Plane
-fig.add_trace(go.Surface(x=X, y=Y, z=Z, opacity=0.8, showscale=False, colorscale=[[0, '#00fa47'], [1, '#00fa47']]))
+fig.add_trace(go.Surface(x=X, y=Y, z=Z, opacity=0.5, showscale=False, colorscale=[[0, '#00fa47'], [1, '#00fa47']],
+                         contours={ "x": {"show": True, "start":X.min(), "end":X.max(), "color": "#00fa47", "size": 0.05},
+                                    "y": {"show": True, "start":Y.min(), "end":Y.max(), "color": "#00fa47", "size": 0.05},
+                                    "z": {"show": True, "start":Z.min(), "end":Z.max(), "color": "#00fa47", "size": 0.02}}))
 
 x1 = np.linspace(0, 2, 1000)
 z1 = np.linspace(0, 2, 1000)
@@ -70,16 +73,19 @@ L = 0.1
 Y1 = (a1*X + L)/a2
 Z1[(X1>0.6) | (Y1>0.6)] = np.nan
 
-fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.8, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']]))
+fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.5, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']],
+                         contours={ "x": {"show": True, "start":X1.min(), "end":X1.max(), "color": "#d400c6", "size": 0.05},
+                                    "y": {"show": True, "start":Y1.min(), "end":Y1.max(), "color": "#d400c6", "size": 0.05},
+                                    "z": {"show": True, "start":Z1.min(), "end":Z1.max(), "color": "#d400c6", "size": 0.02}}))
 
 # x-axis
-fig.add_trace(go.Scatter3d(x=[0, 1.3], y=[0, 0], z=[0, 0], mode="lines", line=dict(color="black", width=6), name="RONO2"))
+fig.add_trace(go.Scatter3d(x=[0, 1.3], y=[0, 0], z=[0, 0], mode="lines", line=dict(color="white", width=6), name="RONO2"))
 
 # y-axis
-fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.3], z=[0, 0], mode="lines", line=dict(color="black", width=6), name="NO2"))
+fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.3], z=[0, 0], mode="lines", line=dict(color="white", width=6), name="NO2"))
 
 # z-axis
-fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.3], mode="lines", line=dict(color="black", width=6), name="NO"))
+fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.3], mode="lines", line=dict(color="white", width=6), name="NO"))
 
 
 t = np.linspace(0, 5/6, 10000)   # segment inside the unit simplex
@@ -101,12 +107,13 @@ fig.add_trace(go.Scatter3d(
     z=[0, 0, 1.2],
     mode="text",
     text=["<b>RONO2</b>", "<b>NO2</b>", "<b>NO</b>"],
-    textfont=dict(color="black", size=14),
+    textfont=dict(color="white", size=14),
     showlegend=False
 ))
 
 
-fig.update_layout(scene=dict(xaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
+fig.update_layout(scene=dict(bgcolor='black',
+                xaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
                 yaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
                 zaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False), 
                 # width=1000, height=1000,
