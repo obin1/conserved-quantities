@@ -232,7 +232,7 @@ abs_atm_dev_datadriven = np.array(abs_atm_dev_datadriven, dtype=float)
 labels = [r'$\Delta [C]$', r'$\Delta [N]$', r'$\Delta [H]$', r'$\Delta [O]$', r'$KI$']
 colors = ["green", "#8B4513", "blue", "grey", "#df00e3"]
 labels1 = [r'$PC_{11}$', r'$PC_{12}$', r'$PC_{13}$', r'$PC_{14}$', r'$PC_{15}$']
-colors1 = ["#34ebde", "#cfc800", "red", "#5b00b5", "#a4ff7a"]
+colors1 = ["#34ebde", "#5b00b5", "red", "#cfc800", "#a4ff7a"]
 
 
 figA = plt.figure(figsize=(8, 11)) 
@@ -296,6 +296,9 @@ ax2.text(-0.1, 1.05, "(c)", transform=ax2.transAxes,
 
 ax3.text(-0.1, 1.05, "(d)", transform=ax3.transAxes,
          fontsize=22, fontweight='bold', va='top', ha='right')
+
+ax1.text(0.7, 0.00005, r'Invariant Threshold ($10^{-5}$)', fontsize=12, color="red")
+
 
 
 plt.tight_layout() 
