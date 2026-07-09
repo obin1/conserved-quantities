@@ -1,44 +1,3 @@
-# import numpy as np
-# import matplotlib.pyplot as plt
-# from mpl_toolkits.mplot3d import Axes3D
-
-# fig = plt.figure(figsize=(6,6))
-# ax = fig.add_subplot(111, projection='3d')
-
-# # Limits
-# # L = 2
-# # ax.set_xlim(-L, L)
-# # ax.set_ylim(-L, L)
-# # ax.set_zlim(-L, L)
-
-# # Draw custom axes
-# ax.quiver(0, 0, 0, 2, 0, 0, color='red', arrow_length_ratio=0.08)
-# ax.quiver(0, 0, 0, 0, 2, 0, color='green', arrow_length_ratio=0.08)
-# ax.quiver(0, 0, 0, 0, 0, 2, color='blue', arrow_length_ratio=0.08)
-
-# # Label the ends
-# # ax.text(L, 0, 0, 'x')
-# # ax.text(0, L, 0, 'y')
-# # ax.text(0, 0, L, 'z')
-
-# x = np.linspace(0,1,100)
-# y = np.linspace(0,1,100)
-
-# X,Y = np.meshgrid(x,y)
-# Z = 1 - X - Y
-
-# ax.plot_surface(X, Y, Z, alpha=0.5)
-
-# # plane_surface = ax.plot_surface(X, Y, Z, alpha=0.8)
-
-# ax.xaxis.pane.fill = False
-# ax.yaxis.pane.fill = False
-# ax.zaxis.pane.fill = False
-
-# ax.grid(False)
-# ax.set_box_aspect([1, 1, 1])
-
-# plt.show()
 
 import numpy as np
 import plotly.graph_objects as go
@@ -88,7 +47,7 @@ fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.3], z=[0, 0], mode="lines", line=di
 fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.3], mode="lines", line=dict(color="white", width=6), name="NO"))
 
 
-t = np.linspace(0, 5/6, 10000)   # segment inside the unit simplex
+t = np.linspace(0, 5/6, 100000) 
 X2 = 0.5 - 3*t/5
 Y2 = 0.5 - 2*t/5
 Z2 = t
@@ -116,38 +75,16 @@ fig.update_layout(scene=dict(bgcolor='black',
                 xaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
                 yaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False),
                 zaxis=dict(title="", range=[0,1.2], showgrid=False, zeroline=False, showbackground=False, showticklabels=False), 
-                # width=1000, height=1000,
                 annotations=[
-                # dict(
-                #     showarrow=False,
-                #     x=1.3, y=0, z=0,  # X-axis tip
-                #     text="<b>RONO2</b>",
-                #     font=dict(color="black", size=14),
-                #     xanchor="left"
-                # ),
-                # dict(
-                #     showarrow=False,
-                #     x=-0, y=1.3, z=0,  # Y-axis tip
-                #     text="<b>NO2</b>",
-                #     font=dict(color="black", size=14),
-                #     yanchor="bottom"
-                # ),
-                # dict(
-                #     showarrow=False,
-                #     x=-0, y=0, z=1.3,  # Z-axis tip
-                #     text="<b>NO</b>",
-                #     font=dict(color="black", size=14),
-                #     xanchor="center"
-                # ),
                 dict(
                         showarrow=True,
-                        x=0.28,      # X-coordinate of the arrow tip
-                        y=0.34,      # Y-coordinate of the arrow tip
-                        z=0.4,      # Z-coordinate of the arrow tip
+                        x=0.28,   
+                        y=0.34,  
+                        z=0.4,    
                         text="Intersection Line",
                         textangle=0,
-                        ax=100,    # Horizontal arrow tail offset (pixels)
-                        ay=-100,   # Vertical arrow tail offset (pixels)
+                        ax=100,  
+                        ay=-100,
                         arrowhead=2,
                         arrowcolor="red",
                         arrowsize=1,
