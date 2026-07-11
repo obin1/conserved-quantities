@@ -29,7 +29,7 @@ k2 = 1.2
 a1 = k1/(k1+k2)
 a2 = k2/(k1+k2)
 L = 0.1
-Y1 = (a1*X + L)/a2
+Y1 = (a1*X1 + L)/a2
 Z1[(X1>0.6) | (Y1>0.6)] = np.nan
 
 fig.add_trace(go.Surface(x=X1, y=Y1, z=Z1, opacity=0.5, showscale=False, colorscale=[[0, '#d400c6'], [1, '#d400c6']],
@@ -46,11 +46,19 @@ fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 1.3], z=[0, 0], mode="lines", line=di
 # z-axis
 fig.add_trace(go.Scatter3d(x=[0, 0], y=[0, 0], z=[0, 1.3], mode="lines", line=dict(color="white", width=6), name="NO"))
 
-
+# in terms of alpha
 t = np.linspace(0, 5/6, 100000) 
 X2 = 0.5 - 3*t/5
 Y2 = 0.5 - 2*t/5
 Z2 = t
+
+# X + Y = 1 - t 
+# -2/3 X + Y = 1/6
+
+# 5/3 X = 5/6 - t
+# X = 1/2 - 3/5 t
+# Y = 1/2 - 2/5 t
+
 
 fig.add_trace(go.Scatter3d(
     x=X2, y=Y2, z=Z2,
