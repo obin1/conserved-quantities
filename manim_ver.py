@@ -1,6 +1,8 @@
 from manim import *
 import numpy as np
 
+# remove axis ticks
+# NO label
 
 class UnitSimplex3D(ThreeDScene):
     def construct(self):
