@@ -18,7 +18,7 @@ class UnitSimplex3D(ThreeDScene):
             y_length=6.0,
             z_length=6.0,
         )
-        axes.shift(DOWN * 3.5)
+        axes.shift(DOWN * 5.5)
 
         # Axis labels
         # Use the Unicode subscript character ₂
@@ -38,7 +38,7 @@ class UnitSimplex3D(ThreeDScene):
         simplex = Polygon(
             p1, p2, p3,
             fill_color=GREEN,
-            fill_opacity=0.45,
+            fill_opacity=0.75,
             stroke_color=GREEN,
             stroke_width=2,
         )
@@ -92,7 +92,6 @@ class UnitSimplex3D(ThreeDScene):
                 )
             )
 
-        # Second plane from your Plotly code:
         # y = (a1*x + L)/a2
         k1 = 0.8
         k2 = 1.2
@@ -110,10 +109,10 @@ class UnitSimplex3D(ThreeDScene):
         plane2 = Surface(
             second_plane,
             u_range=[0.0, 1.05],   # taller in the y direction
-            v_range=[0.0, 0.95],   # deeper in z
+            v_range=[0.0, 0.65],   # deeper in z
             resolution=(24, 24),
         )
-        plane2.set_fill(PINK, opacity=0.45)
+        plane2.set_fill(PINK, opacity=0.75)
         plane2.set_stroke(PINK, width=0.5)
         plane2.set_shade_in_3d(True)
         
@@ -140,12 +139,6 @@ class UnitSimplex3D(ThreeDScene):
         line_label.move_to(axes.c2p(1.18, 1.15, 1.08))
         line_label.set_color(WHITE)
         self.add_fixed_orientation_mobjects(line_label)
-
-        # Title
-        # title = Text("3D Graph with Unit Simplex", font_size=32)
-        # title.to_corner(UL)
-        # title.shift(DOWN * 0.15)
-        # self.add_fixed_orientation_mobjects(title)
 
         # Add everything
         self.add(axes)
