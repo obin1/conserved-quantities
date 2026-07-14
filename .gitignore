@@ -22,3 +22,9 @@ experiments_11e5_1hour_5mins_falsecombinatoricratelaws.csv
 *.docx
 *.xlsx
 *.pptx
+*.svg
+*.mp4
+*.tex
+*.log
+
+partial_movie_file_list.txt
