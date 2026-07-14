@@ -1,34 +1,31 @@
 from manim import *
 import numpy as np
 
-# remove axis ticks
-# NO label
-
 class UnitSimplex3D(ThreeDScene):
     def construct(self):
-        # Camera
-        self.set_camera_orientation(phi=68 * DEGREES, theta=-50 * DEGREES, zoom=0.78)
+        self.set_camera_orientation(phi=68 * DEGREES, theta=-50 * DEGREES, zoom=1.05)
 
-        # Axes
         axes = ThreeDAxes(
             x_range=[0, 1.35, 0.2],
             y_range=[0, 1.35, 0.2],
             z_range=[0, 1.35, 0.2],
-            x_length=6.0,
-            y_length=6.0,
-            z_length=6.0,
+            x_length=3.6,
+            y_length=3.6,
+            z_length=3.6,
+            x_axis_config={"include_ticks": False, "include_numbers": False},
+            y_axis_config={"include_ticks": False, "include_numbers": False},
+            z_axis_config={"include_ticks": False, "include_numbers": False},
         )
-        axes.shift(DOWN * 5.5)
+        axes.shift(DOWN * 2.5)
+        axes.shift(RIGHT * 1.5)
 
-        # Axis labels
-        # Use the Unicode subscript character ₂
         x_label = Text("RONO₂", font_size=28)
         y_label = Text("NO₂", font_size=28)
         z_label = Text("NO", font_size=28)
 
-        x_label.move_to(axes.c2p(1.42, 0, 0) + RIGHT * 0.18)
-        y_label.move_to(axes.c2p(0, 1.42, 0) + UP * 0.10)
-        z_label.move_to(axes.c2p(0, 0, 1.42) + OUT * 0.10)
+        x_label.move_to(axes.c2p(1.42, 0, 0)).shift(RIGHT * 0.25)
+        y_label.move_to(axes.c2p(0, 1.42, 0)).shift(OUT * 0.25)
+        z_label.move_to(axes.c2p(0, 0, 1.42)).shift(RIGHT * 0.10)
 
         # Unit simplex x + y + z = 1
         p1 = axes.c2p(1, 0, 0)
@@ -60,35 +57,35 @@ class UnitSimplex3D(ThreeDScene):
         simplex_contours = VGroup()
 
         # x = c lines on x + y + z = 1
-        for c in np.linspace(0, 1, 25):
+        for c in np.linspace(0, 1, 20):
             simplex_contours.add(
                 Line3D(
                     axes.c2p(c, 0, 1 - c),
                     axes.c2p(c, 1 - c, 0),
                     color=GREEN,
-                    thickness=0.015,
+                    thickness=0.010,
                 )
             )
 
         # y = c lines
-        for c in np.linspace(0, 1, 25):
+        for c in np.linspace(0, 1, 20):
             simplex_contours.add(
                 Line3D(
                     axes.c2p(0, c, 1 - c),
                     axes.c2p(1 - c, c, 0),
                     color=GREEN,
-                    thickness=0.015,
+                    thickness=0.010,
                 )
             )
 
         # z = c lines
-        for c in np.linspace(0, 1, 25):
+        for c in np.linspace(0, 1, 20):
             simplex_contours.add(
                 Line3D(
                     axes.c2p(0, 1 - c, c),
                     axes.c2p(1 - c, 0, c),
                     color=GREEN,
-                    thickness=0.015,
+                    thickness=0.010,
                 )
             )
 
@@ -99,23 +96,51 @@ class UnitSimplex3D(ThreeDScene):
         a2 = k2 / (k1 + k2)   # 0.6
         L = 0.1
 
-        def second_plane(u, v):
-            y = (a1 * u + L) / a2
+        # def second_plane(u, v):
+        #     y = (a1 * u + L) / a2
+        #     return axes.c2p(u, y, v)
+
+        # plane2 = Surface(
+        #     second_plane,
+        #     u_range=[0.0, 0.60],   # further in the y direction
+        #     v_range=[0.0, 1.00],   # higher in z
+        #     resolution=(24, 24),
+        # )
+        # plane2.set_fill(PINK, opacity=1.0)
+        # plane2.set_stroke(PINK, width=0.5)
+        # plane2.set_shade_in_3d(True)
+
+        def plane_left(u, t):
+            v_line = 5/6 - 5*u/3
+            v = t * v_line            # 0 <= v <= intersection
+            y = (a1*u + L)/a2
             return axes.c2p(u, y, v)
 
-        # Make the plane taller by increasing u_range.
-        # Increase the upper bound even more if you want it taller.
-
-        plane2 = Surface(
-            second_plane,
-            u_range=[0.0, 1.05],   # taller in the y direction
-            v_range=[0.0, 0.65],   # deeper in z
-            resolution=(24, 24),
+        plane_left = Surface(
+            plane_left,
+            u_range=[0, 0.5],
+            v_range=[0, 1],
         )
-        plane2.set_fill(PINK, opacity=0.75)
-        plane2.set_stroke(PINK, width=0.5)
-        plane2.set_shade_in_3d(True)
-        
+
+        plane_left.set_fill(PINK, opacity=1.0)
+        plane_left.set_stroke(PINK, width=0.5)
+        plane_left.set_shade_in_3d(True)
+
+        def plane_right(u, t):
+            v_line = 5/6 - 5*u/3
+            v = v_line + t*(1 - v_line)
+            y = (a1*u + L)/a2
+            return axes.c2p(u, y, v)
+
+        plane_right = Surface(
+            plane_right,
+            u_range=[0, 0.5],
+            v_range=[0, 1],
+        )
+
+        plane_right.set_fill(PINK, opacity=1.0)
+        plane_right.set_stroke(PINK, width=0.5)
+        plane_right.set_shade_in_3d(True)  
 
         # Intersection line
         intersection = ParametricFunction(
@@ -128,17 +153,33 @@ class UnitSimplex3D(ThreeDScene):
             color=WHITE,
             stroke_width=6,
         )
+        
 
         # Arrow annotation to the intersection line
-        arrow = Arrow3D(
-            start=axes.c2p(1.05, 1.05, 1.05),
-            end=axes.c2p(0.34, 0.39, 0.45),  # a point on/near the line
-            color=WHITE,
-        )
-        line_label = Text("intersection line", font_size=24)
-        line_label.move_to(axes.c2p(1.18, 1.15, 1.08))
-        line_label.set_color(WHITE)
-        self.add_fixed_orientation_mobjects(line_label)
+        # Arrow annotation to the intersection line
+        # arrow = Arrow3D(
+        #     start=axes.c2p(1.05, 1.05, 1.05),
+        #     end=axes.c2p(0.34, 0.39, 0.45),
+        #     color=WHITE,
+        # )
+
+        # IMPORTANT: disable depth test on every submobject of the arrow
+        # for mob in arrow.family_members_with_points():
+        #     mob.set_depth_test(False)
+        #     mob.set_z_index(1000)
+
+        # Make the arrow a bit thicker so it reads clearly
+        # arrow.set_stroke(width=8)
+
+        # arrow.set_depth_test(False)
+        # arrow.set_z_index(100)
+        
+        # line_label = Text("intersection line", font_size=24)
+        # line_label.move_to(axes.c2p(1.75, 1.45, 1.20)).shift(RIGHT * 0.6 + UP * 0.3)
+        # line_label.set_color(WHITE)
+        # line_label.set_depth_test(False)
+
+        # self.add_fixed_orientation_mobjects(line_label)
 
         # Add everything
         self.add(axes)
@@ -146,9 +187,13 @@ class UnitSimplex3D(ThreeDScene):
         self.play(FadeIn(simplex))
         self.play(Create(simplex_edges), FadeIn(simplex_vertices))
         self.play(Create(simplex_contours))
-        self.play(FadeIn(plane2))
+        # self.play(FadeIn(plane2))
+        self.play(FadeIn(plane_left))
+        self.play(FadeIn(plane_right))
         self.play(Create(intersection))
-        self.play(Create(arrow), FadeIn(line_label))
+        # self.play(Create(arrow), FadeIn(line_label))
+        # self.add(arrow)
+        # self.add(line_label)
 
         self.begin_ambient_camera_rotation(rate=0.10)
         self.wait(6)
