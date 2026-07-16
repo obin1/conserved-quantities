@@ -40,12 +40,6 @@ def frosted_field(seed, sigma=13.0, res=128):     # sigma up -> translucent acry
 GFIELD = frosted_field(11)
 MFIELD = frosted_field(23)
 
-# def sample(field, u, v):
-#     res = field.shape[0]
-#     iu = np.clip((u * (res-1)).astype(int) if hasattr(u, "astype") else int(u*(res-1)), 0, res-1)
-#     iv = np.clip((v * (res-1)).astype(int) if hasattr(v, "astype") else int(v*(res-1)), 0, res-1)
-#     return field[iu, iv]
-
 def frost_color(base, t, lo=0.55, hi=1.28, alpha=0.50):
     b = lo + (hi - lo) * t
     rgb = np.clip(base * b, 0, 1)
@@ -89,9 +83,6 @@ def mag_faces(na=10, nh=8):
 gfaces, guv = tri_faces()
 mfaces, muv = mag_faces()
 
-# gcolors = [frost_color(GREEN,   sample(GFIELD, u, v), alpha=0.52) for (u, v) in guv]  # green denser
-# mcolors = [frost_color(MAGENTA, sample(MFIELD, u, v), alpha=0.38) for (u, v) in muv]
-
 gcolors = [frost_color(GREEN,   1, alpha=0.40) for (u, v) in guv]  # green denser
 mcolors = [frost_color(MAGENTA, 1, alpha=0.30) for (u, v) in muv]
 
@@ -102,14 +93,10 @@ def edge_rgba(c, alpha, boost=1.0):
 gedge = [edge_rgba(c, alpha=0.005,  boost=1.18) for c in gcolors]
 medge = [edge_rgba(c, alpha=0.005, boost=1.22) for c in mcolors]
 
-
-
-all_faces  = gfaces + mfaces
-all_colors = gcolors + mcolors
-all_edges  = gedge + medge
-
 # all_faces  = gfaces + mfaces
 # all_colors = gcolors + mcolors
+# all_edges  = gedge + medge
+
 
 # ------------------------------------------------------------------- figure
 fig = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
@@ -118,28 +105,109 @@ ax = fig.add_subplot(111, projection="3d")
 ax.set_facecolor("black")
 ax.set_proj_type("persp", focal_length=0.62)
 
-poly = Poly3DCollection(all_faces, facecolors=all_colors, edgecolors=all_colors,
-                        linewidths=0.18, antialiaseds=True)
+# poly = Poly3DCollection(all_faces, facecolors=all_colors, edgecolors=all_colors,
+#                         linewidths=0.18, antialiaseds=True)
 
-# Foreground copy of the simplex portion "left" of the kinetic line
-# This is the side satisfying k2*x - k1*y >= L, i.e. the NO2-rich side.
+# Split green simplex by the kinetic line
+right_piece = [A, P_bot, P_top]              # k2*x - k1*y >= L
+left_piece  = [B, C, P_top, P_bot]           # k2*x - k1*y <= L
 
-front_simplex = [A, P_bot, P_top]
+# Split magenta plane by the same intersection line
+mBL = anchor
+mBR = anchor + A_MAX * dfloor
+mTR = anchor + A_MAX * dfloor + H_MAX * zhat
+mTL = anchor + H_MAX * zhat
 
-front_poly = Poly3DCollection(
-    [front_simplex],
-    facecolors=[(*GREEN, 0.42)],  # more translucent fill
+mag_left_piece  = [mBL, P_bot, P_top]
+mag_right_piece = [P_top, mTL, mTR, mBR, P_bot]
+
+right_poly = Poly3DCollection(
+    [right_piece],
+    facecolors=[(*GREEN, 0.65)],
     edgecolors=[(*np.clip(GREEN * 1.35, 0, 1), 0.95)],
     linewidths=1.2,
     antialiaseds=True
 )
-front_poly.set_zsort("max")
-front_poly.set_zorder(100)
-ax.add_collection3d(front_poly)
 
+left_poly = Poly3DCollection(
+    [left_piece],
+    facecolors=[(*GREEN, 0.65)],
+    edgecolors=[(*np.clip(GREEN * 1.15, 0, 1), 0.65)],
+    linewidths=1.0,
+    antialiaseds=True
+)
 
-poly.set_zsort("average")
-ax.add_collection3d(poly)
+mag_left_poly = Poly3DCollection(
+    [mag_left_piece],
+    facecolors=[(*MAGENTA, 0.55)],
+    edgecolors='none',
+    linewidths=0,
+    antialiaseds=True
+)
+
+mag_right_poly = Poly3DCollection(
+    [mag_right_piece],
+    facecolors=[(*MAGENTA, 0.55)],
+    edgecolors='none',
+    linewidths=0,
+    antialiaseds=True
+)
+
+# Add fills
+ax.add_collection3d(mag_left_poly)
+ax.add_collection3d(right_poly)
+ax.add_collection3d(mag_right_poly)
+ax.add_collection3d(left_poly)
+
+# zsort / zorder
+mag_left_poly.set_zsort("min")
+right_poly.set_zsort("min")
+mag_right_poly.set_zsort("min")
+left_poly.set_zsort("max")
+
+mag_left_poly.set_zorder(80)
+right_poly.set_zorder(90)
+mag_right_poly.set_zorder(100)
+left_poly.set_zorder(110)
+
+# -------------------------------------------------------------
+# Manual magenta outline: draw only visible edges
+# Omit the edge you do NOT want inside the green overlap.
+# -------------------------------------------------------------
+def add_line_segments(points, color, lw, alpha, zorder):
+    pts = np.array(points)
+    segs = np.stack([pts[:-1], pts[1:]], axis=1)
+    lc = Line3DCollection(
+        segs,
+        colors=[(*color, alpha)] * len(segs),
+        linewidths=lw,
+        capstyle="round"
+    )
+    lc.set_zorder(zorder)
+    ax.add_collection3d(lc)
+
+# Left magenta piece outline:
+# draw the outer edges, but NOT the interior/shared edge P_bot -> P_top
+add_line_segments([mBL, P_bot], MAGENTA, 16, 0.05, 81)
+add_line_segments([mBL, P_top], MAGENTA, 16, 0.05, 81)
+
+add_line_segments([mBL, P_bot], MAGENTA, 8, 0.16, 82)
+add_line_segments([mBL, P_top], MAGENTA, 8, 0.16, 82)
+
+add_line_segments([mBL, P_bot], MAGENTA, 3.2, 0.42, 83)
+add_line_segments([mBL, P_top], MAGENTA, 3.2, 0.42, 83)
+
+add_line_segments([mBL, P_bot], MAGENTA, 1.2, 0.95, 84)
+add_line_segments([mBL, P_top], MAGENTA, 1.2, 0.95, 84)
+
+# Right magenta piece outline
+add_line_segments([P_top, mTL, mTR, mBR, P_bot], MAGENTA, 16, 0.05, 99)
+add_line_segments([P_top, mTL, mTR, mBR, P_bot], MAGENTA, 8, 0.16, 100)
+add_line_segments([P_top, mTL, mTR, mBR, P_bot], MAGENTA, 3.2, 0.42, 101)
+add_line_segments([P_top, mTL, mTR, mBR, P_bot], MAGENTA, 1.2, 0.95, 102)
+
+# poly.set_zsort("average")
+# ax.add_collection3d(poly)
 
 # --------------------------------------------------------- line geometry
 elev, azim = 18, -22
@@ -232,14 +300,14 @@ def soft_edge(loop, color):
 
 soft_edge([A, B, C, A], GREEN)
 
-soft_edge(
-    [anchor,
-     anchor+A_MAX*dfloor,
-     anchor+A_MAX*dfloor+H_MAX*zhat,
-     anchor+H_MAX*zhat,
-     anchor],
-    MAGENTA
-)
+# soft_edge(
+#     [anchor,
+#      anchor+A_MAX*dfloor,
+#      anchor+A_MAX*dfloor+H_MAX*zhat,
+#      anchor+H_MAX*zhat,
+#      anchor],
+#     MAGENTA
+# )
 
 # ------------------------------------------------------------- floor grid
 gl = []
