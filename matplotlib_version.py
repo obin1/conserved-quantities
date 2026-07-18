@@ -209,6 +209,7 @@ add_line_segments([P_top, mTL, mTR, mBR, P_bot], MAGENTA, 1.2, 0.95, 102)
 # poly.set_zsort("average")
 # ax.add_collection3d(poly)
 
+
 # --------------------------------------------------------- line geometry
 elev, azim = 18, -22
 ax.view_init(elev=elev, azim=azim)
@@ -222,6 +223,9 @@ segs = np.stack([pts[:-1], pts[1:]], axis=1)
 depth = (0.5*(pts[:-1] + pts[1:])) @ eye
 dn = (depth - depth.min())/(np.ptp(depth) + 1e-9)     # 0 far .. 1 near
 width_scale = 0.55 + 1.0*dn                           # taper toward viewer
+
+# gridlines more faint
+# camera angle
 
 def draw_line(target, base_w, color=(1,1,1), sparks=False, spark_s=60):
     rgba = (*color, 1.0)
@@ -244,61 +248,33 @@ def draw_line(target, base_w, color=(1,1,1), sparks=False, spark_s=60):
 # NOTE: line is NOT drawn into the base scene; it is composited afterwards.
 
 # ------------------------------------------------------------ soft edges
+
 def soft_edge(loop, color):
     loop = np.array(loop)
     e = np.stack([loop[:-1], loop[1:]], axis=1)
 
-    # saturated glow color
     glow = tuple(np.clip(np.array(color) * 1.35, 0, 1))
+    # core = tuple(np.clip(np.array(color) * 1.15, 0, 1))
 
-    # bright colored core
-    core = tuple(np.clip(np.array(color) * 1.15, 0, 1))
+    layers = [(16-i, 0.01*i, glow) for i in range(16)]
 
-    # Large colored halo
-    lc = Line3DCollection(
-        e,
-        colors=[(*glow, 0.05)] * len(e),
-        linewidths=16,
-        capstyle="round"
-    )
-    lc.set_zorder(18)
-    ax.add_collection3d(lc)
+    for i, (lw, alpha, c) in enumerate(layers):
+        lc = Line3DCollection(
+            e,
+            colors=[(*c, alpha)] * len(e),
+            linewidths=lw,
+            capstyle="round"
+        )
+        lc.set_zorder(18 + i)
+        ax.add_collection3d(lc)
 
-    # Medium halo
-    lc = Line3DCollection(
-        e,
-        colors=[(*glow, 0.16)] * len(e),
-        linewidths=8,
-        capstyle="round"
-    )
-    lc.set_zorder(19)
-    ax.add_collection3d(lc)
+soft_edge([A, B, C, A], GREEN)
 
-    # Inner glow
-    lc = Line3DCollection(
-        e,
-        colors=[(*glow, 0.42)] * len(e),
-        linewidths=3.2,
-        capstyle="round"
-    )
-    lc.set_zorder(20)
-    ax.add_collection3d(lc)
-
-    # Bright colored edge
-    lc = Line3DCollection(
-        e,
-        colors=[(*core, 0.95)] * len(e),
-        linewidths=1.2,
-        capstyle="round"
-    )
-    lc.set_zorder(21)
-    ax.add_collection3d(lc)
 
 # soft_edge([A, B, C, A], (0.60, 0.90, 0.28))
 # soft_edge([anchor, anchor+A_MAX*dfloor, anchor+A_MAX*dfloor+H_MAX*zhat,
 #            anchor+H_MAX*zhat, anchor], (0.95, 0.30, 0.86))
 
-soft_edge([A, B, C, A], GREEN)
 
 # soft_edge(
 #     [anchor,
@@ -308,6 +284,42 @@ soft_edge([A, B, C, A], GREEN)
 #      anchor],
 #     MAGENTA
 # )
+
+
+# def draw_glow_path(target, points, base_w=1.6,
+#                    glow_color=(0.55, 0.85, 0.20)):
+#     pts = np.asarray(points)
+#     segs = np.stack([pts[:-1], pts[1:]], axis=1)
+
+#     # ---------- glow layers ----------
+#     glow_layers = [
+#         (18, 0.03),
+#         (12, 0.08),
+#         (7,  0.18),
+#         (4,  0.35),
+#     ]
+
+#     for lw, alpha in glow_layers:
+#         lc = Line3DCollection(
+#             segs,
+#             colors=[(*glow_color, alpha)] * len(segs),
+#             linewidths=lw,
+#             capstyle="round"
+#         )
+#         lc.set_zorder(40)
+#         target.add_collection3d(lc)
+
+#     # ---------- white core ----------
+#     core = Line3DCollection(
+#         segs,
+#         colors=[(1, 1, 1, 1)] * len(segs),
+#         linewidths=base_w,
+#         capstyle="round"
+#     )
+#     core.set_zorder(41)
+#     target.add_collection3d(core)
+
+# draw_glow_path(ax, [A, B, C, A], base_w=1.6, glow_color=GREEN)
 
 # ------------------------------------------------------------- floor grid
 gl = []
