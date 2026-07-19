@@ -236,6 +236,7 @@ def soft_edge_inward(points, color, *, inside_point=None, layers=16, shrink_step
     core.set_zorder(200)
     ax.add_collection3d(core)
 
+
 # left piece: a V-shape inside the magenta plane
 soft_edge_inward([mBL, P_bot, P_top], MAGENTA, inside_point=(mBL + P_bot + P_top) / 3)
 
@@ -243,7 +244,7 @@ soft_edge_inward([mBL, P_bot, P_top], MAGENTA, inside_point=(mBL + P_bot + P_top
 soft_edge_inward([P_top, mTL, mTR, mBR, P_bot], MAGENTA,
                  inside_point=(P_top + mTL + mTR + mBR + P_bot) / 5)
 
-soft_edge_inward([mBL, mTL], MAGENTA, inside_point=(mBL + mTL + P_top + P_bot) / 4)
+soft_edge_inward([mBL, mTL, P_top, P_bot, mBL], MAGENTA, shrink_step=0.018)
 
 
 # --------------------------------------------------------- line geometry
@@ -331,9 +332,9 @@ axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
 ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="white", lw=1.6, arrow_length_ratio=0.05)
 ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="white", lw=1.6, arrow_length_ratio=0.05)
 ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="white", lw=1.6, arrow_length_ratio=0.06)
-ax.text(axis_len["x"]+0.20, 0, 0.02, "[NO$_2$]", color="white", fontsize=18, ha="center")
-ax.text(0, axis_len["y"]+0.18, 0.0, "[RONO$_2$]", color="white", fontsize=18, ha="center")
-ax.text(0, 0, axis_len["z"]+0.07, "[NO]", color="white", fontsize=18, ha="center")
+ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="white", fontsize=28, ha="center")
+ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="white", fontsize=28, ha="center")
+ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="white", fontsize=28, ha="center")
 
 ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()

@@ -27,7 +27,7 @@ for P in (P_top, P_bot):
     assert abs(k2*P[0] - k1*P[1] - L) < 1e-12
     assert (P >= -1e-12).all()
 
-GREEN   = np.array([0.03, 0.85, 0.03])
+GREEN   = np.array([0.2, 0.5, 0.1])
 MAGENTA = np.array([0.85, 0, 0.67])
 
 # ------------------------------------------------- frosted / acrylic texture
@@ -243,7 +243,7 @@ soft_edge_inward([mBL, P_bot, P_top], MAGENTA, inside_point=(mBL + P_bot + P_top
 soft_edge_inward([P_top, mTL, mTR, mBR, P_bot], MAGENTA,
                  inside_point=(P_top + mTL + mTR + mBR + P_bot) / 5)
 
-soft_edge_inward([mBL, mTL], MAGENTA, inside_point=(mBL + mTL + P_top + P_bot) / 4)
+soft_edge_inward([mBL, mTL, P_top, P_bot, mBL], MAGENTA, shrink_step=0.018)
 
 
 # --------------------------------------------------------- line geometry
@@ -331,9 +331,9 @@ axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
 ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
 ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
 ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="black", lw=1.6, arrow_length_ratio=0.06)
-ax.text(axis_len["x"]+0.20, 0, 0.02, "[NO$_2$]", color="black", fontsize=13, ha="center")
-ax.text(0, axis_len["y"]+0.18, 0.0, "[RONO$_2$]", color="black", fontsize=13, ha="center")
-ax.text(0, 0, axis_len["z"]+0.07, "[NO]", color="black", fontsize=13, ha="center")
+ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="black", fontsize=28, ha="center")
+ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="black", fontsize=28, ha="center")
+ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="black", fontsize=28, ha="center")
 
 ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
