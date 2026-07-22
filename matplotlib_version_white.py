@@ -368,9 +368,9 @@ def draw_axis(ax, start, end, color="black",
 
 
 axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
-draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black")
-draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black")
-draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black")
+draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.10, head_width=0.02)
+draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.08, head_width=0.05)
+draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black", head_length=0.07, head_width=0.08)
 
 # ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
 # ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
@@ -383,19 +383,31 @@ ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
 
 ax.text(
-    0.50, 0.70, 0.30,
-    "Nitrogen\nConservation",
+    0.50, 0.60, 0.45,
+    "Nitrogen Conservation",
     color=GREEN,
     fontsize=15,
     fontweight="bold"
 )
+ax.text(
+    0.50, 0.60, 0.38,
+    "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
+    color=GREEN,
+    fontsize=13
+)
 
 ax.text(
-    0.50, 0.60, 0.75,
-    "Kinetic\nInvariant",
+    0.90, 0.60, 0.08,
+    "Kinetic Invariant",
     color=MAGENTA,
     fontsize=15,
     fontweight="bold"
+)
+ax.text(
+    0.90, 0.60, 0,
+    "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
+    color=MAGENTA,
+    fontsize=13
 )
 
 ax.text(
@@ -416,30 +428,6 @@ theta = np.linspace(np.pi*0.3, np.pi*0.8, len(t))
 x = cx + r*np.cos(theta)
 y = cy - r*np.sin(theta)
 z = cz + 0.03*t
-
-# ax.plot(x, y, z, color="white", lw=2)
-
-# # use a longer, normalized arrow direction
-# dx = x[-1] - x[-2]
-# dy = y[-1] - y[-2]
-# dz = z[-1] - z[-2]
-# L = (dx**2 + dy**2 + dz**2) ** 0.5
-
-# angle = np.deg2rad(60)  # rotate head by 20 degrees
-# dx2 = dx*np.cos(angle) - dy*np.sin(angle)
-# dy2 = dx*np.sin(angle) + dy*np.cos(angle)
-
-# ax.quiver(
-#     x[-2], y[-2], z[-2],          # start a bit before the end
-#     dx/L, dy/L, dz/L,             # normalized direction
-#     length=0.06,                  # make the head/shaft visible
-#     normalize=True,
-#     color="white",
-#     linewidth=2,
-#     arrow_length_ratio=0.8,
-#     pivot="tail"
-# )
-
 
 def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="black", lw=2):
     # shaft
@@ -470,8 +458,9 @@ def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, ro
     # draw head
     ax.plot([left[0], p2[0], right[0]], [left[1], p2[1], right[1]], [left[2], p2[2], right[2]],
             color=color, lw=lw)
-
+    
 draw_curved_arrow_with_roll(ax, x, y, z, roll=np.deg2rad(0))
+
 
 
 fig.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
