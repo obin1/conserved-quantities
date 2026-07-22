@@ -327,10 +327,54 @@ grid = Line3DCollection(gl, colors=[(0.42, 0.5, 0.42, 0.15)]*len(gl), linewidths
 grid.set_zorder(5); ax.add_collection3d(grid)
 
 # ------------------------------------------------------------------ axes
+def draw_axis(ax, start, end, color="black",
+              lw=1.6, head_length=0.05, head_width=0.02):
+    start = np.asarray(start, dtype=float)
+    end   = np.asarray(end, dtype=float)
+
+    # Shaft
+    ax.plot(
+        [start[0], end[0]],
+        [start[1], end[1]],
+        [start[2], end[2]],
+        color=color,
+        lw=lw
+    )
+
+    # Unit direction
+    d = end - start
+    d /= np.linalg.norm(d)
+
+    # Choose a vector not parallel to d
+    ref = np.array([0., 0., 1.])
+    if abs(np.dot(ref, d)) > 0.95:
+        ref = np.array([0., 1., 0.])
+
+    # Perpendicular direction
+    u = np.cross(d, ref)
+    u /= np.linalg.norm(u)
+
+    # Triangle vertices
+    base = end - head_length * d
+    v1 = base + head_width * u
+    v2 = base - head_width * u
+
+    head = Poly3DCollection(
+        [[end, v1, v2]],
+        facecolor=color,
+        edgecolor=color
+    )
+    ax.add_collection3d(head)
+
+
 axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
-ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
-ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
-ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="black", lw=1.6, arrow_length_ratio=0.06)
+draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black")
+draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black")
+draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black")
+
+# ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
+# ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
+# ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="black", lw=1.6, arrow_length_ratio=0.06)
 ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="black", fontsize=28, ha="center")
 ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="black", fontsize=28, ha="center")
 ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="black", fontsize=28, ha="center")
@@ -361,6 +405,74 @@ ax.text(
     fontsize=14,
     fontweight="bold"
 )
+
+# -------- curved arrow --------
+t = np.linspace(0, 1, 40)
+
+cx, cy, cz = 1.1, 0.18, 0
+r = 0.08
+theta = np.linspace(np.pi*0.3, np.pi*0.8, len(t))
+
+x = cx + r*np.cos(theta)
+y = cy - r*np.sin(theta)
+z = cz + 0.03*t
+
+# ax.plot(x, y, z, color="white", lw=2)
+
+# # use a longer, normalized arrow direction
+# dx = x[-1] - x[-2]
+# dy = y[-1] - y[-2]
+# dz = z[-1] - z[-2]
+# L = (dx**2 + dy**2 + dz**2) ** 0.5
+
+# angle = np.deg2rad(60)  # rotate head by 20 degrees
+# dx2 = dx*np.cos(angle) - dy*np.sin(angle)
+# dy2 = dx*np.sin(angle) + dy*np.cos(angle)
+
+# ax.quiver(
+#     x[-2], y[-2], z[-2],          # start a bit before the end
+#     dx/L, dy/L, dz/L,             # normalized direction
+#     length=0.06,                  # make the head/shaft visible
+#     normalize=True,
+#     color="white",
+#     linewidth=2,
+#     arrow_length_ratio=0.8,
+#     pivot="tail"
+# )
+
+
+def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="black", lw=2):
+    # shaft
+    ax.plot(x, y, z, color=color, lw=lw)
+
+    # tip direction from last segment
+    p2 = np.array([x[-1], y[-1], z[-1]], dtype=float)
+    p1 = np.array([x[-2], y[-2], z[-2]], dtype=float)
+    d = p2 - p1
+    d = d / (np.linalg.norm(d) + 1e-12)
+
+    # make two perpendicular vectors to d
+    a = np.array([0.0, 0.0, 1.0])
+    if abs(np.dot(a, d)) > 0.9:
+        a = np.array([0.0, 1.0, 0.0])
+
+    u = np.cross(d, a)
+    u = u / (np.linalg.norm(u) + 1e-12)
+    v = np.cross(d, u)
+
+    # roll the head around the shaft axis
+    u2 = np.cos(roll) * u + np.sin(roll) * v
+
+    # two wing endpoints
+    left  = p2 - head_len * d + head_width * u2
+    right = p2 - head_len * d - head_width * u2
+
+    # draw head
+    ax.plot([left[0], p2[0], right[0]], [left[1], p2[1], right[1]], [left[2], p2[2], right[2]],
+            color=color, lw=lw)
+
+draw_curved_arrow_with_roll(ax, x, y, z, roll=np.deg2rad(0))
+
 
 fig.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
 
