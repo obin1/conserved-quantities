@@ -236,7 +236,6 @@ def soft_edge_inward(points, color, *, inside_point=None, layers=16, shrink_step
     core.set_zorder(200)
     ax.add_collection3d(core)
 
-
 # left piece: a V-shape inside the magenta plane
 soft_edge_inward([mBL, P_bot, P_top], MAGENTA, inside_point=(mBL + P_bot + P_top) / 3)
 
@@ -324,14 +323,58 @@ gl = []
 ext, step = 1.5, 0.15
 for x in np.arange(0, ext+1e-9, step):
     gl.append([[x, 0, 0], [x, ext, 0]]); gl.append([[0, x, 0], [ext, x, 0]])
-grid = Line3DCollection(gl, colors=[(0.42, 0.5, 0.42, 0.25)]*len(gl), linewidths=0.7)
+grid = Line3DCollection(gl, colors=[(0.42, 0.5, 0.42, 0.15)]*len(gl), linewidths=0.7)
 grid.set_zorder(5); ax.add_collection3d(grid)
 
 # ------------------------------------------------------------------ axes
+def draw_axis(ax, start, end, color="black",
+              lw=1.6, head_length=0.05, head_width=0.02):
+    start = np.asarray(start, dtype=float)
+    end   = np.asarray(end, dtype=float)
+
+    # Shaft
+    ax.plot(
+        [start[0], end[0]],
+        [start[1], end[1]],
+        [start[2], end[2]],
+        color=color,
+        lw=lw
+    )
+
+    # Unit direction
+    d = end - start
+    d /= np.linalg.norm(d)
+
+    # Choose a vector not parallel to d
+    ref = np.array([0., 0., 1.])
+    if abs(np.dot(ref, d)) > 0.95:
+        ref = np.array([0., 1., 0.])
+
+    # Perpendicular direction
+    u = np.cross(d, ref)
+    u /= np.linalg.norm(u)
+
+    # Triangle vertices
+    base = end - head_length * d
+    v1 = base + head_width * u
+    v2 = base - head_width * u
+
+    head = Poly3DCollection(
+        [[end, v1, v2]],
+        facecolor=color,
+        edgecolor=color
+    )
+    ax.add_collection3d(head)
+
+
 axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
-ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="white", lw=1.6, arrow_length_ratio=0.05)
-ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="white", lw=1.6, arrow_length_ratio=0.05)
-ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="white", lw=1.6, arrow_length_ratio=0.06)
+draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="white", head_length=0.10, head_width=0.02)
+draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="white", head_length=0.08, head_width=0.05)
+draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="white", head_length=0.07, head_width=0.08)
+
+# ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
+# ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
+# ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="black", lw=1.6, arrow_length_ratio=0.06)
 ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="white", fontsize=28, ha="center")
 ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="white", fontsize=28, ha="center")
 ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="white", fontsize=28, ha="center")
@@ -340,19 +383,31 @@ ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
 
 ax.text(
-    0.50, 0.70, 0.30,
-    "Nitrogen\nConservation",
+    0.50, 0.60, 0.45,
+    "Nitrogen Conservation",
     color=GREEN,
     fontsize=15,
     fontweight="bold"
 )
+ax.text(
+    0.50, 0.60, 0.38,
+    "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
+    color=GREEN,
+    fontsize=13
+)
 
 ax.text(
-    0.50, 0.60, 0.75,
-    "Kinetic\nInvariant",
+    0.90, 0.60, 0.08,
+    "Kinetic Invariant",
     color=MAGENTA,
     fontsize=15,
     fontweight="bold"
+)
+ax.text(
+    0.90, 0.60, 0,
+    "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
+    color=MAGENTA,
+    fontsize=13
 )
 
 ax.text(
@@ -374,31 +429,7 @@ x = cx + r*np.cos(theta)
 y = cy - r*np.sin(theta)
 z = cz + 0.03*t
 
-# ax.plot(x, y, z, color="white", lw=2)
-
-# # use a longer, normalized arrow direction
-# dx = x[-1] - x[-2]
-# dy = y[-1] - y[-2]
-# dz = z[-1] - z[-2]
-# L = (dx**2 + dy**2 + dz**2) ** 0.5
-
-# angle = np.deg2rad(60)  # rotate head by 20 degrees
-# dx2 = dx*np.cos(angle) - dy*np.sin(angle)
-# dy2 = dx*np.sin(angle) + dy*np.cos(angle)
-
-# ax.quiver(
-#     x[-2], y[-2], z[-2],          # start a bit before the end
-#     dx/L, dy/L, dz/L,             # normalized direction
-#     length=0.06,                  # make the head/shaft visible
-#     normalize=True,
-#     color="white",
-#     linewidth=2,
-#     arrow_length_ratio=0.8,
-#     pivot="tail"
-# )
-
-
-def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="white", lw=2):
+def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="black", lw=2):
     # shaft
     ax.plot(x, y, z, color=color, lw=lw)
 
@@ -427,12 +458,12 @@ def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, ro
     # draw head
     ax.plot([left[0], p2[0], right[0]], [left[1], p2[1], right[1]], [left[2], p2[2], right[2]],
             color=color, lw=lw)
-
+    
 draw_curved_arrow_with_roll(ax, x, y, z, roll=np.deg2rad(0))
 
+
+
 fig.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
-
-
 
 # ============================================ game-laser line compositing
 fig.canvas.draw()
@@ -473,7 +504,7 @@ plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
 comp = plt.figure(figsize=(15.36, 10.24), dpi=100*SCALE)
-comp.patch.set_facecolor("black")
+comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
 
 ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
