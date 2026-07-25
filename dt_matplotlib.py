@@ -214,10 +214,16 @@ ax.view_init(elev=elev, azim=azim)
 el, az = np.radians(elev), np.radians(azim)
 eye = np.array([np.cos(el)*np.cos(az), np.cos(el)*np.sin(az), np.sin(el)])
 
+line_top = P_top
+line_bot = 0.55 * P_bot
+
 M = 160
 ts   = np.linspace(0, 1, M)
-pts  = np.outer(1-ts, P_top) + np.outer(ts, P_bot)
-pts = pts + np.array([0.0, 0.0, 0.35])
+pts  = np.outer(1-ts, line_top) + np.outer(ts, line_bot)
+shift = np.array([0.0, 0.0, 0.35])
+pts = pts + shift
+
+
 segs = np.stack([pts[:-1], pts[1:]], axis=1)
 depth = (0.5*(pts[:-1] + pts[1:])) @ eye
 dn = (depth - depth.min())/(np.ptp(depth) + 1e-9)     # 0 far .. 1 near
@@ -228,8 +234,8 @@ def draw_line(target, base_w, color=(1,1,1), sparks=False, spark_s=60):
     rgba = (*color, 1.0)
     lc = Line3DCollection(
         segs,
-        colors=[rgba]*len(segs),
-        linewidths=base_w*width_scale,
+        colors=[rgba] * len(segs),
+        linewidths=base_w * width_scale,
         capstyle="round"
     )
     lc.set_zorder(50)
@@ -367,7 +373,7 @@ ax.text2D(
 )
 
 ax.text2D(
-    0.28, 0.24,
+    0.3, 0.24,
     "Accessible states",
     transform=ax.transAxes,
     fontsize=12,
@@ -377,9 +383,10 @@ ax.text2D(
 # -------- curved arrow --------
 t = np.linspace(0, 1, 40)
 
-cx, cy, cz = 1.1, 0.18, 0
-r = 0.08
-theta = np.linspace(np.pi*0.3, np.pi*0.8, len(t))
+cx, cy, cz = 1.2, 0.75, -0.9
+r = 0.15
+phi = np.deg2rad(110)
+theta = np.linspace(np.pi*1.1, np.pi*0.3, len(t)) + phi
 
 x = cx + r*np.cos(theta)
 y = cy - r*np.sin(theta)
