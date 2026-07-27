@@ -327,6 +327,44 @@ grid = Line3DCollection(gl, colors=[(0.42, 0.5, 0.42, 0.15)]*len(gl), linewidths
 grid.set_zorder(5); ax.add_collection3d(grid)
 
 # ------------------------------------------------------------------ axes
+def draw_cone_head(ax, start, end, head_length=0.10, radius=0.03, n=24, color="black"):
+    start = np.asarray(start, dtype=float)
+    end   = np.asarray(end, dtype=float)
+
+    d = end - start
+    d /= np.linalg.norm(d)
+
+    # choose a perpendicular basis
+    ref = np.array([0.0, 0.0, 1.0])
+    if abs(np.dot(ref, d)) > 0.95:
+        ref = np.array([0.0, 1.0, 0.0])
+
+    u = np.cross(d, ref)
+    u /= np.linalg.norm(u)
+    v = np.cross(d, u)
+
+    # center of the cone's base
+    base_center = end - head_length * d
+
+    theta = np.linspace(0, 2*np.pi, n, endpoint=False)
+    circle = np.array([
+        base_center + radius * (np.cos(t) * u + np.sin(t) * v)
+        for t in theta
+    ])
+
+    faces = []
+    for i in range(n):
+        faces.append([end, circle[i], circle[(i + 1) % n]])
+
+    ax.add_collection3d(
+        Poly3DCollection(
+            faces,
+            facecolor=color,
+            edgecolor=color
+        )
+    )
+
+
 def draw_axis(ax, start, end, color="black",
               lw=1.6, head_length=0.05, head_width=0.02):
     start = np.asarray(start, dtype=float)
@@ -356,25 +394,15 @@ def draw_axis(ax, start, end, color="black",
 
     # Triangle vertices
     base = end - head_length * d
-    v1 = base + head_width * u
-    v2 = base - head_width * u
 
-    head = Poly3DCollection(
-        [[end, v1, v2]],
-        facecolor=color,
-        edgecolor=color
-    )
-    ax.add_collection3d(head)
+    draw_cone_head(ax, base, end, head_length=head_length, radius=head_width, n=28, color=color)
 
 
 axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
-draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.10, head_width=0.02)
-draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.08, head_width=0.05)
-draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black", head_length=0.07, head_width=0.08)
+draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.11, head_width=0.025)
+draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.08, head_width=0.025)
+draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black", head_length=0.09, head_width=0.025)
 
-# ax.quiver(0, 0, 0, axis_len["x"], 0, 0, color="black", lw=1.6, arrow_length_ratio=0.05)
-# ax.quiver(0, 0, 0, 0, axis_len["y"], 0, color="black", lw=1.6, arrow_length_ratio=0.05)
-# ax.quiver(0, 0, 0, 0, 0, axis_len["z"], color="black", lw=1.6, arrow_length_ratio=0.06)
 ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="black", fontsize=28, ha="center")
 ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="black", fontsize=28, ha="center")
 ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="black", fontsize=28, ha="center")
@@ -511,5 +539,6 @@ ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
 ov.set_aspect("equal"); ov.axis("off")
 
 
-comp.savefig("kinv_figure_white.png", facecolor="white", dpi=100*SCALE)
+comp.savefig("kinv_figure_white.png", facecolor="white", dpi=1200)
+comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=1200)
 print("saved kinv_figure_white.png")
