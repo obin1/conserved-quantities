@@ -1,12 +1,3 @@
-"""
-Kinetic-invariant geometry for the RO2 + NO branching system (RONO2 / NO / NO2).
-
-Coordinates:  x = [NO2],  y = [RONO2],  z = [NO] (vertical)
-Invariants:
-  (1) nitrogen conservation:  [NO2] + [RONO2] + [NO] = N_tot   -> green simplex (triangle)
-  (2) kinetic invariant:      k2 [NO2] - k1 [RONO2] = L        -> magenta plane (parallel to NO axis)
-Intersection = 1D chord of accessible states, drawn as a game-style laser.
-"""
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -19,7 +10,7 @@ SCALE = 2          # 1 = preview, 2 = print resolution
 
 # ---------------------------------------------------------------- chemistry
 k1, k2 = 0.7, 0.3
-S = 1.0   # patch size in derivative space
+S = 1.0  
 
 P_bot = np.array([
     S * k1 / (k1 + k2),
@@ -76,7 +67,7 @@ fig = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
 fig.patch.set_facecolor("white")
 ax = fig.add_subplot(111, projection="3d")
 ax.set_facecolor("white")
-ax.set_proj_type("persp", focal_length=0.62)
+ax.set_proj_type("persp", focal_length=0.9)
 
 right_poly = Poly3DCollection(
     [right_piece],
@@ -220,6 +211,10 @@ line_bot = np.array([
     (S * k2 / (k1 + k2))+0.05,
     -S-0.6
 ])
+
+factor = 0.9
+
+line_bot_short = line_top + factor*(line_bot-line_top)
 
 M = 160
 ts   = np.linspace(0, 1, M)
@@ -381,120 +376,11 @@ def draw_axis(ax, start, end, color="black",
 
     # Triangle vertices
     base = end - head_length * d
-    # v1 = base + head_width * u
-    # v2 = base - head_width * u
 
-    # head = Poly3DCollection(
-    #     [[end, v1, v2]],
-    #     facecolor=color,
-    #     edgecolor=color
-    # )
-    # ax.add_collection3d(head)
 
     draw_cone_head(ax, base, end, head_length=head_length, radius=head_width * 1.6, n=28, color=color)
 
 
-def draw_cone(
-    ax,
-    tip,
-    direction,
-    head_length=0.12,
-    radius=0.03,
-    color="white",
-    n=32,
-):
-    tip = np.asarray(tip, dtype=float)
-
-    direction = np.asarray(direction, dtype=float)
-    direction /= np.linalg.norm(direction)
-
-    # build orthonormal basis
-    ref = np.array([0.0, 0.0, 1.0])
-    if abs(np.dot(ref, direction)) > 0.95:
-        ref = np.array([0.0, 1.0, 0.0])
-
-    u = np.cross(direction, ref)
-    u /= np.linalg.norm(u)
-    v = np.cross(direction, u)
-
-    base_center = tip - head_length * direction
-
-    theta = np.linspace(0, 2*np.pi, n, endpoint=False)
-
-    circle = np.array([
-        base_center +
-        radius*np.cos(t)*u +
-        radius*np.sin(t)*v
-        for t in theta
-    ])
-
-    faces = [
-        [tip, circle[i], circle[(i+1) % n]]
-        for i in range(n)
-    ]
-
-    cone = Poly3DCollection(
-        faces,
-        facecolor=color,
-        edgecolor="none"
-    )
-
-    ax.add_collection3d(cone)
-
-    
-def cone_buffer(start, end, head_length=0.12, radius=0.03, n=24, color=(1, 1, 1)):
-    cf = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
-    cf.patch.set_facecolor("black")
-    ca = cf.add_subplot(111, projection="3d")
-    ca.set_facecolor("black")
-    ca.set_proj_type("persp", focal_length=0.62)
-    ca.view_init(elev=elev, azim=azim)
-
-    start = np.asarray(start, dtype=float)
-    end = np.asarray(end, dtype=float)
-
-    d = end - start
-    d = d / (np.linalg.norm(d) + 1e-12)
-
-    ref = np.array([0.0, 0.0, 1.0])
-    if abs(np.dot(ref, d)) > 0.95:
-        ref = np.array([0.0, 1.0, 0.0])
-
-    u = np.cross(d, ref)
-    u = u / (np.linalg.norm(u) + 1e-12)
-    v = np.cross(d, u)
-
-    base_center = end - head_length * d
-
-    theta = np.linspace(0, 2*np.pi, n, endpoint=False)
-    circle = np.array([
-        base_center + radius * (np.cos(t) * u + np.sin(t) * v)
-        for t in theta
-    ])
-
-    faces = []
-    for i in range(n):
-        faces.append([end, circle[i], circle[(i + 1) % n]])
-
-    cone = Poly3DCollection(
-        faces,
-        facecolors=[(*color, 1.0)],
-        edgecolors=[(*color, 1.0)],
-        linewidths=0.2
-    )
-    ca.add_collection3d(cone)
-
-    ca.set_xlim(-1.5, 1.5)
-    ca.set_ylim(-1.5, 1.5)
-    ca.set_zlim(-1.5, 1.5)
-    ca.set_box_aspect((1.5, 1.5, 1.5))
-    ca.set_axis_off()
-
-    cf.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
-    cf.canvas.draw()
-    b = np.asarray(cf.canvas.buffer_rgba()).astype(np.float32)[..., :3] / 255.0
-    plt.close(cf)
-    return b
 
 axis_len = {"x": 1.35, "y": 1.45, "z": 1.5}
 draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.09, head_width=0.013)
@@ -510,7 +396,7 @@ ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5); ax.set_zlim(-1.5, 1.5)
 ax.set_box_aspect((1.5, 1.5, 1.5)); ax.set_axis_off()
 
 ax.text2D(
-    0.16, 0.38,
+    0.14, 0.38,
     "Kinetic Invariant",
     transform=ax.transAxes,
     fontsize=12,
@@ -518,7 +404,7 @@ ax.text2D(
 )
 
 ax.text2D(
-    0.16, 0.35,
+    0.14, 0.35,
     "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
     transform=ax.transAxes,
     fontsize=12,
@@ -552,7 +438,7 @@ ax.text2D(
 # -------- curved arrow --------
 t = np.linspace(0, 1, 40)
 
-cx, cy, cz = 1.2, 0.75, -0.9
+cx, cy, cz = 1.2, 0.78, -0.88
 r = 0.15
 phi = np.deg2rad(110)
 theta = np.linspace(np.pi*1.1, np.pi*0.3, len(t)) + phi
@@ -595,7 +481,7 @@ draw_curved_arrow_with_roll(ax, x, y, z, roll=np.deg2rad(0))
 
 
 
-fig.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
+fig.subplots_adjust(left=0.02, right=0.98, top=0.98, bottom=0.02)
 
 # ============================================ game-laser line compositing
 fig.canvas.draw()
@@ -612,12 +498,7 @@ def line_buffer(base_w, color=(1,1,1), sparks=False, spark_s=60):
     lf.patch.set_facecolor("black")
     la = lf.add_subplot(111, projection="3d"); la.set_facecolor("black")
     la.set_proj_type("persp", focal_length=0.62); la.view_init(elev=elev, azim=azim)
-    draw_line(la, line_top, line_bot, base_w, color=color, sparks=sparks, spark_s=spark_s)
-    draw_line(la, leg_left_b, leg_left_a, base_w, color=color)
-    draw_line(la, leg_left_a, leg_right_b, base_w, color=color)
-    draw_cone(la, tip=np.array([0.42, 0.52, -0.95]),
-                direction=np.array([0.7, 0.3, -1.0]), head_length=0.10,
-                radius=0.035, color=MAGENTA)
+    draw_line(la, line_top, line_bot_short, base_w, color=color, sparks=sparks, spark_s=spark_s)
     la.set_xlim(0, 1.5); la.set_ylim(0, 1.5); la.set_zlim(-1.4, 1.4)
     la.set_box_aspect((1.5, 1.5, 1.4)); la.set_axis_off()
     lf.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
@@ -632,7 +513,6 @@ def screen(a, b):
 WHITE   = (1.0, 1.0, 1.0)
 MAGENTA = (0.94, 0.12, 0.82)
 
-
 emissive = line_buffer(base_w=4.5, color=MAGENTA, sparks=False)   # glow source
 crisp    = line_buffer(base_w=1.6, color=WHITE, sparks=False)    # sharp core
 
@@ -642,30 +522,44 @@ for s, w in zip((2.5*SCALE, 8*SCALE, 20*SCALE), (1.1, 1.45, 1.5)):   # 2. blur  
     out = screen(out, np.stack([gaussian_filter(emissive[..., c], s) for c in range(3)], -1) * w)
 out = screen(out, crisp)          
 
-cone = cone_buffer(
-    tip=np.array([0.42, 0.52, -0.95]),
-    direction=np.array([0.7, 0.3, -1.0]),
-    head_length=0.10,
-    radius=0.035,
-    color=MAGENTA
-)
-
-for s, w in zip((2.5*SCALE, 8*SCALE, 20*SCALE), (1.1, 1.45, 1.5)):
-    out = screen(out, np.stack([gaussian_filter(cone[..., c], s) for c in range(3)], -1) * w)
-
-res = np.clip(out, 0, 1)
-                                    # 4. crisp line on top
 res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(15.36, 10.24), dpi=100*SCALE)
+comp = plt.figure(figsize=(8.0, 5.5), dpi=100*SCALE)
 comp.patch.set_facecolor("white")
-ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
+ax3d = comp.add_axes([0.0, 0.0, 1.0, 1.0])
+ax3d.imshow(res)
+ax3d.axis("off")
 
-ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
-ov.set_aspect("equal"); ov.axis("off")
+cone_ax = comp.add_axes([0.0, 0.0, 1.0, 1.0], projection="3d")
+cone_ax.patch.set_alpha(0.0)
+cone_ax.set_proj_type("persp", focal_length=0.62)
+cone_ax.view_init(elev=elev, azim=azim)
+cone_ax.set_xlim(-1.5, 1.5)
+cone_ax.set_ylim(-1.5, 1.5)
+cone_ax.set_zlim(-1.5, 1.5)
+cone_ax.set_box_aspect((1.5, 1.5, 1.5))
+cone_ax.set_axis_off()
+cone_ax.set_zorder(500)
 
 
-comp.savefig("dt.png", facecolor="white", dpi=100*SCALE)
-print("saved dt.png")
+cone_tip = np.array([1.01, 0.67, -0.68])
+cone_back = np.array([0.98, 0.67, -0.58])
+
+
+draw_cone_head(
+    cone_ax,
+    cone_back,
+    cone_tip,
+    head_length=0.08,
+    radius=0.02,
+    n=32,
+    color="white"
+)
+
+
+
+comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=1200, pad_inches=0)
+comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=1200)
+print("saved dt.pdf")
