@@ -539,6 +539,6 @@ ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
 ov.set_aspect("equal"); ov.axis("off")
 
 
-comp.savefig("kinv_figure_white.png", facecolor="white", dpi=1200)
-comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=1200)
+comp.savefig("kinv_figure_white.png", facecolor="white", dpi=2400)
+comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=2400)
 print("saved kinv_figure_white.png")
