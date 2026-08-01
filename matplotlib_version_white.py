@@ -531,7 +531,7 @@ res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(15.36, 10.24), dpi=100*SCALE)
+comp = plt.figure(figsize=(30.72, 20.48), dpi=1200)
 comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
 
@@ -539,6 +539,6 @@ ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
 ov.set_aspect("equal"); ov.axis("off")
 
 
-comp.savefig("kinv_figure_white.png", facecolor="white", dpi=2400)
-comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=2400)
+comp.savefig("kinv_figure_white.png", facecolor="white", dpi=1200)
+comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=1200)
 print("saved kinv_figure_white.png")

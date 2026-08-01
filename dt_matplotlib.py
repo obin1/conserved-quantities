@@ -526,7 +526,7 @@ res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(8.0, 5.5), dpi=100*SCALE)
+comp = plt.figure(figsize=(32, 22), dpi=1200)
 comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 1.0, 1.0])
 ax3d.imshow(res)
@@ -560,6 +560,6 @@ draw_cone_head(
 
 
 
-comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=2400, pad_inches=0)
-comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=2400)
+comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=1200, pad_inches=0)
+comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=1200)
 print("saved dt.pdf")
