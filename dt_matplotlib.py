@@ -7,7 +7,8 @@ from matplotlib.patches import FancyBboxPatch
 from scipy.ndimage import gaussian_filter
 
 SCALE = 2          # 1 = preview, 2 = print resolution
-
+fig_size = (32, 22)
+dpi = 300
 # ---------------------------------------------------------------- chemistry
 k1, k2 = 0.7, 0.3
 S = 1.0  
@@ -63,7 +64,7 @@ mag_left_piece = [mBL, P_bot, P_top]
 mag_right_piece = [P_top, mTL, mTR, mBR, P_bot]
 
 # ------------------------------------------------------------------- figure
-fig = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+fig = plt.figure(figsize=fig_size, dpi=dpi)
 fig.patch.set_facecolor("white")
 ax = fig.add_subplot(111, projection="3d")
 ax.set_facecolor("white")
@@ -205,11 +206,11 @@ ax.view_init(elev=elev, azim=azim)
 el, az = np.radians(elev), np.radians(azim)
 eye = np.array([np.cos(el)*np.cos(az), np.cos(el)*np.sin(az), np.sin(el)])
 
-line_top = np.array([0.0, 0.0, -0.7])
+line_top = np.array([0.0, 0.0, -0.66])
 line_bot = np.array([
     (S * k1 / (k1 + k2))-0.14,
     (S * k2 / (k1 + k2))+0.05,
-    -S-0.6
+    -S-0.56
 ])
 
 factor = 0.9
@@ -388,26 +389,26 @@ draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.09, hea
 draw_axis(ax, [0,0,0], [0,0,-axis_len["z"]], color="black", head_length=0.09, head_width=0.013)
 
 
-ax.text(axis_len["x"]+0.46, 0, 0.02, "d$_t$[NO$_2$]", color="black", fontsize=22, ha="center")
-ax.text(0, axis_len["y"]+0.55, 0.0, "d$_t$[RONO$_2$]", color="black", fontsize=22, ha="center")
-ax.text(0, 0, -axis_len["z"]-0.20, "d$_t$[NO]", color="black", fontsize=22, ha="center")
+ax.text(axis_len["x"]+0.32, 0, 0.02, "d$_t$[NO$_2$]", color="black", fontsize=34, ha="center")
+ax.text(0, axis_len["y"]+0.42, 0.0, "d$_t$[RONO$_2$]", color="black", fontsize=34, ha="center")
+ax.text(0, 0, -axis_len["z"]-0.16, "d$_t$[NO]", color="black", fontsize=34, ha="center")
 
 ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5); ax.set_zlim(-1.5, 1.5)
 ax.set_box_aspect((1.5, 1.5, 1.5)); ax.set_axis_off()
 
 ax.text2D(
-    0.14, 0.38,
+    0.17, 0.38,
     "Kinetic Invariant",
     transform=ax.transAxes,
-    fontsize=12,
+    fontsize=24,
     color=MAGENTA
 )
 
 ax.text2D(
-    0.14, 0.35,
+    0.17, 0.35,
     "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
     transform=ax.transAxes,
-    fontsize=12,
+    fontsize=24,
     color=MAGENTA
 )
 
@@ -415,7 +416,7 @@ ax.text2D(
     0.64, 0.38,
     "Nitrogen Conservation",
     transform=ax.transAxes,
-    fontsize=12,
+    fontsize=24,
     color=GREEN
 )
 
@@ -423,7 +424,7 @@ ax.text2D(
     0.64, 0.35,
     "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
     transform=ax.transAxes,
-    fontsize=12,
+    fontsize=24,
     color=GREEN
 )
 
@@ -431,7 +432,7 @@ ax.text2D(
     0.3, 0.24,
     "Accessible states",
     transform=ax.transAxes,
-    fontsize=12,
+    fontsize=24,
     color="black"
 )
 
@@ -494,7 +495,7 @@ leg_right_b = np.array([0.86, 0.7, -1.12])
 
 def line_buffer(base_w, color=(1,1,1), sparks=False, spark_s=60):
     """Render the line ALONE on black at identical camera -> RGB buffer."""
-    lf = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+    lf = plt.figure(figsize=fig_size, dpi=300)
     lf.patch.set_facecolor("black")
     la = lf.add_subplot(111, projection="3d"); la.set_facecolor("black")
     la.set_proj_type("persp", focal_length=0.62); la.view_init(elev=elev, azim=azim)
@@ -526,7 +527,7 @@ res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(32, 22), dpi=1200)
+comp = plt.figure(figsize=fig_size, dpi=dpi)
 comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 1.0, 1.0])
 ax3d.imshow(res)
@@ -544,8 +545,8 @@ cone_ax.set_axis_off()
 cone_ax.set_zorder(500)
 
 
-cone_tip = np.array([1.01, 0.67, -0.68])
-cone_back = np.array([0.98, 0.67, -0.58])
+cone_tip = np.array([1.01, 0.64, -0.77])
+cone_back = np.array([0.98, 0.64, -0.67])
 
 
 draw_cone_head(
@@ -560,6 +561,6 @@ draw_cone_head(
 
 
 
-comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=1200, pad_inches=0)
-comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=1200)
+# comp.savefig("dt2.png", facecolor="white", bbox_inches="tight", dpi=300, pad_inches=0)
+comp.savefig("dt2.pdf", format="pdf", bbox_inches="tight", dpi=300)
 print("saved dt.pdf")
