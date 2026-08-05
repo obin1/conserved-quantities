@@ -15,8 +15,9 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 from matplotlib.patches import FancyBboxPatch
 from scipy.ndimage import gaussian_filter
 
-SCALE = 2          # 1 = preview, 2 = print resolution
-
+SCALE = 2          
+fig_size = (30.72, 20.48)
+dpi = 300
 # ---------------------------------------------------------------- chemistry
 k1, k2, N, L = 0.7, 0.3, 1.0, 0.06
 
@@ -96,7 +97,7 @@ medge = [edge_rgba(c, alpha=0.005, boost=1.22) for c in mcolors]
 
 
 # ------------------------------------------------------------------- figure
-fig = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+fig = plt.figure(figsize=fig_size, dpi=dpi)
 fig.patch.set_facecolor("black")
 ax = fig.add_subplot(111, projection="3d")
 ax.set_facecolor("black")
@@ -403,46 +404,46 @@ draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="white", head_length=0.11, hea
 draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="white", head_length=0.08, head_width=0.025)
 draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="white", head_length=0.09, head_width=0.025)
 
-ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="white", fontsize=28, ha="center")
-ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="white", fontsize=28, ha="center")
-ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="white", fontsize=28, ha="center")
+ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="white", fontsize=54, ha="center")
+ax.text(0, axis_len["y"]+0.3, 0.0, "[RONO$_2$]", color="white", fontsize=54, ha="center")
+ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="white", fontsize=54, ha="center")
 
 ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
 
 ax.text(
-    0.50, 0.60, 0.45,
+    0.50, 0.60, 0.47,
     "Nitrogen Conservation",
     color=GREEN,
-    fontsize=15,
+    fontsize=44,
     fontweight="bold"
 )
 ax.text(
     0.50, 0.60, 0.38,
     "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
     color=GREEN,
-    fontsize=13
+    fontsize=44
 )
 
 ax.text(
     0.90, 0.60, 0.08,
     "Kinetic Invariant",
     color=MAGENTA,
-    fontsize=15,
+    fontsize=44,
     fontweight="bold"
 )
 ax.text(
     0.90, 0.60, 0,
     "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
     color=MAGENTA,
-    fontsize=13
+    fontsize=44
 )
 
 ax.text(
     1.25, 0.10, 0,
     "Accessible states",
     color="white",
-    fontsize=14,
+    fontsize=44,
     fontweight="bold"
 )
 
@@ -457,7 +458,7 @@ x = cx + r*np.cos(theta)
 y = cy - r*np.sin(theta)
 z = cz + 0.03*t
 
-def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="black", lw=2):
+def draw_curved_arrow_with_roll(ax, x, y, z, head_len=0.03, head_width=0.015, roll=0.0, color="white", lw=2):
     # shaft
     ax.plot(x, y, z, color=color, lw=lw)
 
@@ -499,7 +500,7 @@ buf = np.asarray(fig.canvas.buffer_rgba()).astype(np.float32)[..., :3] / 255.0
 
 def line_buffer(base_w, color=(1,1,1), sparks=False, spark_s=60):
     """Render the line ALONE on black at identical camera -> RGB buffer."""
-    lf = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+    lf = plt.figure(figsize=fig_size, dpi=dpi)
     lf.patch.set_facecolor("black")
     la = lf.add_subplot(111, projection="3d"); la.set_facecolor("black")
     la.set_proj_type("persp", focal_length=0.62); la.view_init(elev=elev, azim=azim)
@@ -531,7 +532,7 @@ res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(30.72, 20.48), dpi=1200)
+comp = plt.figure(figsize=fig_size, dpi=dpi)
 comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
 
@@ -539,6 +540,6 @@ ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
 ov.set_aspect("equal"); ov.axis("off")
 
 
-comp.savefig("kinv_figure.png", facecolor="black", dpi=1200)
-comp.savefig("kinv_figure.pdf", format="pdf", bbox_inches="tight", dpi=1200)
+comp.savefig("kinv_figure.png", facecolor="black", dpi=dpi)
+comp.savefig("kinv_figure.pdf", format="pdf", bbox_inches="tight", dpi=dpi)
 print("saved kinv_figure.png")

@@ -16,7 +16,7 @@ from matplotlib.patches import FancyBboxPatch
 from scipy.ndimage import gaussian_filter
 
 SCALE = 2         
-fig_size = (30.72, 20.48)
+fig_size = (35.72, 25.48)
 dpi = 300
 # ---------------------------------------------------------------- chemistry
 k1, k2, N, L = 0.7, 0.3, 1.0, 0.06
@@ -404,9 +404,9 @@ draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.11, hea
 draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.08, head_width=0.025)
 draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="black", head_length=0.09, head_width=0.025)
 
-ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="black", fontsize=28, ha="center")
-ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="black", fontsize=28, ha="center")
-ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="black", fontsize=28, ha="center")
+ax.text(axis_len["x"]+0.35, 0, 0.02, "[NO$_2$]", color="black", fontsize=54, ha="center")
+ax.text(0, axis_len["y"]+0.24, 0.0, "[RONO$_2$]", color="black", fontsize=54, ha="center")
+ax.text(0, 0, axis_len["z"]+0.05, "[NO]", color="black", fontsize=54, ha="center")
 
 ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
 ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
@@ -415,35 +415,35 @@ ax.text(
     0.50, 0.60, 0.45,
     "Nitrogen Conservation",
     color=GREEN,
-    fontsize=15,
+    fontsize=44,
     fontweight="bold"
 )
 ax.text(
     0.50, 0.60, 0.38,
     "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
     color=GREEN,
-    fontsize=13
+    fontsize=44
 )
 
 ax.text(
     0.90, 0.60, 0.08,
     "Kinetic Invariant",
     color=MAGENTA,
-    fontsize=15,
+    fontsize=44,
     fontweight="bold"
 )
 ax.text(
     0.90, 0.60, 0,
     "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
     color=MAGENTA,
-    fontsize=13
+    fontsize=44
 )
 
 ax.text(
     1.25, 0.10, 0,
     "Accessible states",
     color="black",
-    fontsize=14,
+    fontsize=44,
     fontweight="bold"
 )
 
