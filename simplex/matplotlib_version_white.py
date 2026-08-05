@@ -15,8 +15,9 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 from matplotlib.patches import FancyBboxPatch
 from scipy.ndimage import gaussian_filter
 
-SCALE = 2          # 1 = preview, 2 = print resolution
-
+SCALE = 2         
+fig_size = (30.72, 20.48)
+dpi = 300
 # ---------------------------------------------------------------- chemistry
 k1, k2, N, L = 0.7, 0.3, 1.0, 0.06
 
@@ -96,7 +97,7 @@ medge = [edge_rgba(c, alpha=0.005, boost=1.22) for c in mcolors]
 
 
 # ------------------------------------------------------------------- figure
-fig = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+fig = plt.figure(figsize=fig_size, dpi=dpi)
 fig.patch.set_facecolor("white")
 ax = fig.add_subplot(111, projection="3d")
 ax.set_facecolor("white")
@@ -499,7 +500,7 @@ buf = np.asarray(fig.canvas.buffer_rgba()).astype(np.float32)[..., :3] / 255.0
 
 def line_buffer(base_w, color=(1,1,1), sparks=False, spark_s=60):
     """Render the line ALONE on black at identical camera -> RGB buffer."""
-    lf = plt.figure(figsize=(9.6, 10.24), dpi=100*SCALE)
+    lf = plt.figure(figsize=fig_size, dpi=dpi)
     lf.patch.set_facecolor("black")
     la = lf.add_subplot(111, projection="3d"); la.set_facecolor("black")
     la.set_proj_type("persp", focal_length=0.62); la.view_init(elev=elev, azim=azim)
@@ -531,7 +532,7 @@ res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=(30.72, 20.48), dpi=1200)
+comp = plt.figure(figsize=fig_size, dpi=dpi)
 comp.patch.set_facecolor("white")
 ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
 
@@ -539,6 +540,6 @@ ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
 ov.set_aspect("equal"); ov.axis("off")
 
 
-comp.savefig("kinv_figure_white.png", facecolor="white", dpi=1200)
-comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=1200)
+comp.savefig("kinv_figure_white.png", facecolor="white", dpi=dpi)
+comp.savefig("kinv_figure_white.pdf", format="pdf", bbox_inches="tight", dpi=300)
 print("saved kinv_figure_white.png")

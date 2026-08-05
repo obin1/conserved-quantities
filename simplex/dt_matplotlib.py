@@ -1,12 +1,3 @@
-"""
-Kinetic-invariant geometry for the RO2 + NO branching system (RONO2 / NO / NO2).
-
-Coordinates:  x = [NO2],  y = [RONO2],  z = [NO] (vertical)
-Invariants:
-  (1) nitrogen conservation:  [NO2] + [RONO2] + [NO] = N_tot   -> green simplex (triangle)
-  (2) kinetic invariant:      k2 [NO2] - k1 [RONO2] = L        -> magenta plane (parallel to NO axis)
-Intersection = 1D chord of accessible states, drawn as a game-style laser.
-"""
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -15,107 +6,69 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 from matplotlib.patches import FancyBboxPatch
 from scipy.ndimage import gaussian_filter
 
-SCALE = 2          
-fig_size = (30.72, 20.48)
+SCALE = 2          # 1 = preview, 2 = print resolution
+fig_size = (32, 22)
 dpi = 300
 # ---------------------------------------------------------------- chemistry
-k1, k2, N, L = 0.7, 0.3, 1.0, 0.06
+k1, k2 = 0.7, 0.3
+S = 1.0  
 
-P_top = np.array([L/k2, 0.0, N - L/k2])                            # (0.20, 0.00, 0.80)
-P_bot = np.array([(k1*N + L)/(k1+k2), (k2*N - L)/(k1+k2), 0.0])    # (0.76, 0.24, 0.00)
-for P in (P_top, P_bot):
-    assert abs(P.sum() - N) < 1e-12
-    assert abs(k2*P[0] - k1*P[1] - L) < 1e-12
-    assert (P >= -1e-12).all()
+P_bot = np.array([
+    S * k1 / (k1 + k2),
+    S * k2 / (k1 + k2),
+    -S
+])
 
-GREEN   = np.array([0.55, 0.85, 0.20])
-MAGENTA = np.array([0.94, 0.12, 0.82])
+P_top = np.array([0.0, 0.0, 0.0])
 
-# ------------------------------------------------- frosted / acrylic texture
-def frosted_field(seed, sigma=13.0, res=128):     # sigma up -> translucent acrylic, not noise
-    r = np.random.default_rng(seed).standard_normal((res, res))
-    f = gaussian_filter(r, sigma=sigma, mode="reflect")
-    f -= f.min(); f /= (f.max() + 1e-9)
-    return f
+GREEN   = np.array([0.2, 0.5, 0.1])
+MAGENTA = np.array([0.85, 0, 0.67])
 
-GFIELD = frosted_field(11)
-MFIELD = frosted_field(23)
+# -------------------------------------------------------------------
+# Finite green patch for dt[NO] + dt[NO2] + dt[RONO2] = 0
+# clipped to x > 0, y > 0, z < 0
+#
+# In the box 0 <= x <= S, 0 <= y <= S, -S <= z <= 0,
+# the plane x + y + z = 0 becomes the triangle:
+#   (S, 0, -S), (0, S, -S), (0, 0, 0)
+# -------------------------------------------------------------------
+G0 = np.array([S, 0.0, -S])
+G1 = np.array([0.0, S, -S])
+G2 = np.array([0.0, 0.0, 0.0])
 
-def frost_color(base, t, lo=0.55, hi=1.28, alpha=0.50):
-    b = lo + (hi - lo) * t
-    rgb = np.clip(base * b, 0, 1)
-    return (rgb[0], rgb[1], rgb[2], alpha)
+# intersection line between:
+#   x + y + z = 0
+#   k2*x - k1*y = 0
+# direction = (k1, k2, -(k1+k2))
 
-# ------------------------------------------------------------- tessellation
-A = np.array([N, 0, 0]); B = np.array([0, N, 0]); C = np.array([0, 0, N])
+# Split the green triangle into two pieces
+right_piece = [G2, G0, P_bot]
+left_piece  = [G2, P_bot, G1]
 
-def tri_faces(n=11):
-    faces, cols = [], []
-    def bary(a, b):
-        c = 1 - a - b
-        return a*A + b*B + c*C
-    for i in range(n):
-        for j in range(n - i):
-            p00 = bary(i/n, j/n); p10 = bary((i+1)/n, j/n); p01 = bary(i/n, (j+1)/n)
-            faces.append([p00, p10, p01])
-            cols.append(((i+0.33)/n, (j+0.33)/n))
-            if j < n - i - 1:
-                p11 = bary((i+1)/n, (j+1)/n)
-                faces.append([p10, p11, p01])
-                cols.append(((i+0.66)/n, (j+0.66)/n))
-    return faces, np.array(cols)
+# -------------------------------------------------------------------
+# Finite magenta patch for k2*x - k1*y = 0, extended vertically in z
+# clipped to x > 0, y > 0, z < 0
+#
+# Rectangle in the box:
+#   (0,0,-S) -> (S,(k2/k1)S,-S) -> (S,(k2/k1)S,0) -> (0,0,0)
+#
+# One edge is exactly on the dt[NO] axis (x = y = 0).
+# -------------------------------------------------------------------
+mBL = np.array([0.0, 0.0, -S])                 # bottom-left
+mTL = np.array([0.0, 0.0, 0.0])                 # top-left, on z-axis
+mTR = np.array([S, (k2 / k1) * S, 0.0])         # top-right
+mBR = np.array([S, (k2 / k1) * S, -S])          # bottom-right
 
-anchor = np.array([L/k2, 0.0, 0.0])
-dfloor = np.array([k1, k2, 0.0]); dfloor /= np.linalg.norm(dfloor)
-zhat   = np.array([0, 0, 1.0])
-A_MAX, H_MAX = 0.86, 1.06
-
-def mag_faces(na=10, nh=8):
-    faces, cols = [], []
-    def pt(a, h):
-        return anchor + a*A_MAX*dfloor + h*H_MAX*zhat
-    for i in range(na):
-        for j in range(nh):
-            faces.append([pt(i/na, j/nh), pt((i+1)/na, j/nh),
-                          pt((i+1)/na, (j+1)/nh), pt(i/na, (j+1)/nh)])
-            cols.append(((i+0.5)/na, (j+0.5)/nh))
-    return faces, np.array(cols)
-
-gfaces, guv = tri_faces()
-mfaces, muv = mag_faces()
-
-gcolors = [frost_color(GREEN,   1, alpha=0.40) for (u, v) in guv]  # green denser
-mcolors = [frost_color(MAGENTA, 1, alpha=0.30) for (u, v) in muv]
-
-def edge_rgba(c, alpha, boost=1.0):
-    rgb = tuple(np.clip(np.array(c[:3]) * boost, 0, 1))
-    return (*rgb, alpha)
-
-gedge = [edge_rgba(c, alpha=0.005,  boost=1.18) for c in gcolors]
-medge = [edge_rgba(c, alpha=0.005, boost=1.22) for c in mcolors]
-
-
+# Split the magenta rectangle by the same intersection line
+mag_left_piece = [mBL, P_bot, P_top]
+mag_right_piece = [P_top, mTL, mTR, mBR, P_bot]
 
 # ------------------------------------------------------------------- figure
 fig = plt.figure(figsize=fig_size, dpi=dpi)
-fig.patch.set_facecolor("black")
+fig.patch.set_facecolor("white")
 ax = fig.add_subplot(111, projection="3d")
-ax.set_facecolor("black")
-ax.set_proj_type("persp", focal_length=0.62)
-
-
-# Split green simplex by the kinetic line
-right_piece = [A, P_bot, P_top]              # k2*x - k1*y >= L
-left_piece  = [B, C, P_top, P_bot]           # k2*x - k1*y <= L
-
-# Split magenta plane by the same intersection line
-mBL = anchor
-mBR = anchor + A_MAX * dfloor
-mTR = anchor + A_MAX * dfloor + H_MAX * zhat
-mTL = anchor + H_MAX * zhat
-
-mag_left_piece  = [mBL, P_bot, P_top]
-mag_right_piece = [P_top, mTL, mTR, mBR, P_bot]
+ax.set_facecolor("white")
+ax.set_proj_type("persp", focal_length=0.9)
 
 right_poly = Poly3DCollection(
     [right_piece],
@@ -135,7 +88,7 @@ left_poly = Poly3DCollection(
 
 mag_left_poly = Poly3DCollection(
     [mag_left_piece],
-    facecolors=[(*MAGENTA, 0.55)],
+    facecolors=[(*MAGENTA, 0.65)],
     edgecolors='none',
     linewidths=0,
     antialiaseds=True
@@ -143,7 +96,7 @@ mag_left_poly = Poly3DCollection(
 
 mag_right_poly = Poly3DCollection(
     [mag_right_piece],
-    facecolors=[(*MAGENTA, 0.55)],
+    facecolors=[(*MAGENTA, 0.65)],
     edgecolors='none',
     linewidths=0,
     antialiaseds=True
@@ -237,50 +190,88 @@ def soft_edge_inward(points, color, *, inside_point=None, layers=16, shrink_step
     core.set_zorder(200)
     ax.add_collection3d(core)
 
-# left piece: a V-shape inside the magenta plane
-soft_edge_inward([mBL, P_bot, P_top], MAGENTA, inside_point=(mBL + P_bot + P_top) / 3)
-
-# right piece: boundary path of the other magenta polygon
-soft_edge_inward([P_top, mTL, mTR, mBR, P_bot], MAGENTA,
-                 inside_point=(P_top + mTL + mTR + mBR + P_bot) / 5)
-
-soft_edge_inward([mBL, mTL, P_top, P_bot, mBL], MAGENTA, shrink_step=0.018)
+# only the magenta boundary that does NOT lie on the z-axis
+soft_edge_inward(
+    [P_top, mTR, mBR, P_bot, P_top],
+    MAGENTA,
+    inside_point=(P_top + mTR + mBR + P_bot) / 4,
+    shrink_step=0.022
+)
 
 
 # --------------------------------------------------------- line geometry
-elev, azim = 9, -22
+
+elev, azim = 18, 45
 ax.view_init(elev=elev, azim=azim)
 el, az = np.radians(elev), np.radians(azim)
 eye = np.array([np.cos(el)*np.cos(az), np.cos(el)*np.sin(az), np.sin(el)])
 
+line_top = np.array([0.0, 0.0, -0.66])
+line_bot = np.array([
+    (S * k1 / (k1 + k2))-0.14,
+    (S * k2 / (k1 + k2))+0.05,
+    -S-0.56
+])
+
+factor = 0.9
+
+line_bot_short = line_top + factor*(line_bot-line_top)
+
 M = 160
 ts   = np.linspace(0, 1, M)
-pts  = np.outer(1-ts, P_top) + np.outer(ts, P_bot)
+pts  = np.outer(1-ts, line_top) + np.outer(ts, line_bot)
+shift = np.array([0.0, 0.0, 0.35])
+pts = pts + shift
+
+
 segs = np.stack([pts[:-1], pts[1:]], axis=1)
 depth = (0.5*(pts[:-1] + pts[1:])) @ eye
 dn = (depth - depth.min())/(np.ptp(depth) + 1e-9)     # 0 far .. 1 near
 width_scale = 0.55 + 1.0*dn                           # taper toward viewer
 
 
-def draw_line(target, base_w, color=(1,1,1), sparks=False, spark_s=60):
+def draw_line(
+    target,
+    p0,
+    p1,
+    base_w,
+    color=(1,1,1),
+    sparks=False,
+    spark_s=60
+):
+    p0 = np.asarray(p0, dtype=float)
+    p1 = np.asarray(p1, dtype=float)
+
+    M = 160
+    ts = np.linspace(0, 1, M)
+
+    pts = np.outer(1-ts, p0) + np.outer(ts, p1)
+    segs = np.stack([pts[:-1], pts[1:]], axis=1)
+
+    depth = (0.5*(pts[:-1] + pts[1:])) @ eye
+    dn = (depth - depth.min()) / (np.ptp(depth) + 1e-9)
+    width_scale = 0.55 + 1.0 * dn
+
     rgba = (*color, 1.0)
+
     lc = Line3DCollection(
         segs,
-        colors=[rgba]*len(segs),
-        linewidths=base_w*width_scale,
+        colors=[rgba] * len(segs),
+        linewidths=base_w * width_scale,
         capstyle="round"
     )
+
     lc.set_zorder(50)
     target.add_collection3d(lc)
+
     if sparks:
         target.scatter(
-            *np.stack([P_top, P_bot]).T,
+            *np.stack([p0, p1]).T,
             s=spark_s,
             c=[color],
             depthshade=False,
             zorder=60
         )
-# NOTE: line is NOT drawn into the base scene; it is composited afterwards.
 
 # ------------------------------------------------------------ soft edges
 
@@ -316,16 +307,8 @@ def soft_edge(loop, color, layers=16, shrink_step=0.014):
         lc.set_zorder(18 + (layers - level))
         ax.add_collection3d(lc)
 
-soft_edge([A, B, C, A], GREEN, shrink_step=0.008)
+soft_edge([G0, G1, G2, G0], GREEN, shrink_step=0.008)
 
-
-# ------------------------------------------------------------- floor grid
-gl = []
-ext, step = 1.5, 0.15
-for x in np.arange(0, ext+1e-9, step):
-    gl.append([[x, 0, 0], [x, ext, 0]]); gl.append([[0, x, 0], [ext, x, 0]])
-grid = Line3DCollection(gl, colors=[(0.42, 0.5, 0.42, 0.15)]*len(gl), linewidths=0.7)
-grid.set_zorder(5); ax.add_collection3d(grid)
 
 # ------------------------------------------------------------------ axes
 def draw_cone_head(ax, start, end, head_length=0.10, radius=0.03, n=24, color="black"):
@@ -365,7 +348,6 @@ def draw_cone_head(ax, start, end, head_length=0.10, radius=0.03, n=24, color="b
         )
     )
 
-
 def draw_axis(ax, start, end, color="black",
               lw=1.6, head_length=0.05, head_width=0.02):
     start = np.asarray(start, dtype=float)
@@ -396,63 +378,71 @@ def draw_axis(ax, start, end, color="black",
     # Triangle vertices
     base = end - head_length * d
 
-    draw_cone_head(ax, base, end, head_length=head_length, radius=head_width, n=28, color=color)
+
+    draw_cone_head(ax, base, end, head_length=head_length, radius=head_width * 1.6, n=28, color=color)
 
 
-axis_len = {"x": 1.45, "y": 1.45, "z": 1.32}
-draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="white", head_length=0.11, head_width=0.025)
-draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="white", head_length=0.08, head_width=0.025)
-draw_axis(ax, [0,0,0], [0,0,axis_len["z"]], color="white", head_length=0.09, head_width=0.025)
 
-ax.text(axis_len["x"]+0.42, 0, 0.02, "[NO$_2$]", color="white", fontsize=28, ha="center")
-ax.text(0, axis_len["y"]+0.30, 0.0, "[RONO$_2$]", color="white", fontsize=28, ha="center")
-ax.text(0, 0, axis_len["z"]+0.06, "[NO]", color="white", fontsize=28, ha="center")
+axis_len = {"x": 1.35, "y": 1.45, "z": 1.5}
+draw_axis(ax, [0,0,0], [axis_len["x"],0,0], color="black", head_length=0.09, head_width=0.013)
+draw_axis(ax, [0,0,0], [0,axis_len["y"],0], color="black", head_length=0.09, head_width=0.013)
+draw_axis(ax, [0,0,0], [0,0,-axis_len["z"]], color="black", head_length=0.09, head_width=0.013)
 
-ax.set_xlim(0, 1.5); ax.set_ylim(0, 1.5); ax.set_zlim(0, 1.4)
-ax.set_box_aspect((1.5, 1.5, 1.4)); ax.set_axis_off()
 
-ax.text(
-    0.50, 0.60, 0.45,
-    "Nitrogen Conservation",
-    color=GREEN,
-    fontsize=15,
-    fontweight="bold"
-)
-ax.text(
-    0.50, 0.60, 0.38,
-    "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
-    color=GREEN,
-    fontsize=13
-)
+ax.text(axis_len["x"]+0.32, 0, 0.02, "d$_t$[NO$_2$]", color="black", fontsize=34, ha="center")
+ax.text(0, axis_len["y"]+0.42, 0.0, "d$_t$[RONO$_2$]", color="black", fontsize=34, ha="center")
+ax.text(0, 0, -axis_len["z"]-0.16, "d$_t$[NO]", color="black", fontsize=34, ha="center")
 
-ax.text(
-    0.90, 0.60, 0.08,
+ax.set_xlim(-1.5, 1.5); ax.set_ylim(-1.5, 1.5); ax.set_zlim(-1.5, 1.5)
+ax.set_box_aspect((1.5, 1.5, 1.5)); ax.set_axis_off()
+
+ax.text2D(
+    0.17, 0.38,
     "Kinetic Invariant",
-    color=MAGENTA,
-    fontsize=15,
-    fontweight="bold"
-)
-ax.text(
-    0.90, 0.60, 0,
-    "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
-    color=MAGENTA,
-    fontsize=13
+    transform=ax.transAxes,
+    fontsize=24,
+    color=MAGENTA
 )
 
-ax.text(
-    1.25, 0.10, 0,
+ax.text2D(
+    0.17, 0.35,
+    "k$_2$d$_t$[NO$_2$] - k$_1$d$_t$[RONO$_2$] = 0",
+    transform=ax.transAxes,
+    fontsize=24,
+    color=MAGENTA
+)
+
+ax.text2D(
+    0.64, 0.38,
+    "Nitrogen Conservation",
+    transform=ax.transAxes,
+    fontsize=24,
+    color=GREEN
+)
+
+ax.text2D(
+    0.64, 0.35,
+    "d$_t$[NO] + d$_t$[NO$_2$] + d$_t$[RONO$_2$] = 0",
+    transform=ax.transAxes,
+    fontsize=24,
+    color=GREEN
+)
+
+ax.text2D(
+    0.3, 0.24,
     "Accessible states",
-    color="white",
-    fontsize=14,
-    fontweight="bold"
+    transform=ax.transAxes,
+    fontsize=24,
+    color="black"
 )
 
 # -------- curved arrow --------
 t = np.linspace(0, 1, 40)
 
-cx, cy, cz = 1.1, 0.18, 0
-r = 0.08
-theta = np.linspace(np.pi*0.3, np.pi*0.8, len(t))
+cx, cy, cz = 1.2, 0.78, -0.88
+r = 0.15
+phi = np.deg2rad(110)
+theta = np.linspace(np.pi*1.1, np.pi*0.3, len(t)) + phi
 
 x = cx + r*np.cos(theta)
 y = cy - r*np.sin(theta)
@@ -492,20 +482,25 @@ draw_curved_arrow_with_roll(ax, x, y, z, roll=np.deg2rad(0))
 
 
 
-fig.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
+fig.subplots_adjust(left=0.02, right=0.98, top=0.98, bottom=0.02)
 
 # ============================================ game-laser line compositing
 fig.canvas.draw()
 buf = np.asarray(fig.canvas.buffer_rgba()).astype(np.float32)[..., :3] / 255.0
 
+leg_left_a = np.array([0.9, 0.7, -1.22])
+leg_left_b = np.array([0.91, 0.7, -1.12])
+leg_right_b = np.array([0.86, 0.7, -1.12])
+
+
 def line_buffer(base_w, color=(1,1,1), sparks=False, spark_s=60):
     """Render the line ALONE on black at identical camera -> RGB buffer."""
-    lf = plt.figure(figsize=fig_size, dpi=dpi)
+    lf = plt.figure(figsize=fig_size, dpi=300)
     lf.patch.set_facecolor("black")
     la = lf.add_subplot(111, projection="3d"); la.set_facecolor("black")
     la.set_proj_type("persp", focal_length=0.62); la.view_init(elev=elev, azim=azim)
-    draw_line(la, base_w, color=color, sparks=sparks, spark_s=spark_s)
-    la.set_xlim(0, 1.5); la.set_ylim(0, 1.5); la.set_zlim(0, 1.4)
+    draw_line(la, line_top, line_bot_short, base_w, color=color, sparks=sparks, spark_s=spark_s)
+    la.set_xlim(0, 1.5); la.set_ylim(0, 1.5); la.set_zlim(-1.4, 1.4)
     la.set_box_aspect((1.5, 1.5, 1.4)); la.set_axis_off()
     lf.subplots_adjust(left=-0.02, right=1.02, top=1.04, bottom=-0.04)
     lf.canvas.draw()
@@ -519,7 +514,6 @@ def screen(a, b):
 WHITE   = (1.0, 1.0, 1.0)
 MAGENTA = (0.94, 0.12, 0.82)
 
-
 emissive = line_buffer(base_w=4.5, color=MAGENTA, sparks=False)   # glow source
 crisp    = line_buffer(base_w=1.6, color=WHITE, sparks=False)    # sharp core
 
@@ -527,19 +521,46 @@ crisp    = line_buffer(base_w=1.6, color=WHITE, sparks=False)    # sharp core
 out = buf.copy()
 for s, w in zip((2.5*SCALE, 8*SCALE, 20*SCALE), (1.1, 1.45, 1.5)):   # 2. blur  3. screen
     out = screen(out, np.stack([gaussian_filter(emissive[..., c], s) for c in range(3)], -1) * w)
-out = screen(out, crisp)                                              # 4. crisp line on top
+out = screen(out, crisp)          
+
 res = np.clip(out, 0, 1)
 plt.close(fig)
 
 GREEN_HEX = "#8fe23a"; MAG_HEX = "#f01fd0"; GREY = "#9a9a9a"
-comp = plt.figure(figsize=fig_size), dpi=dpi)
+comp = plt.figure(figsize=fig_size, dpi=dpi)
 comp.patch.set_facecolor("white")
-ax3d = comp.add_axes([0.0, 0.0, 960/1536, 1.0]); ax3d.imshow(res); ax3d.axis("off")
+ax3d = comp.add_axes([0.0, 0.0, 1.0, 1.0])
+ax3d.imshow(res)
+ax3d.axis("off")
 
-ov = comp.add_axes([0, 0, 1, 1]); ov.set_xlim(0, 1536); ov.set_ylim(1024, 0)
-ov.set_aspect("equal"); ov.axis("off")
+cone_ax = comp.add_axes([0.0, 0.0, 1.0, 1.0], projection="3d")
+cone_ax.patch.set_alpha(0.0)
+cone_ax.set_proj_type("persp", focal_length=0.62)
+cone_ax.view_init(elev=elev, azim=azim)
+cone_ax.set_xlim(-1.5, 1.5)
+cone_ax.set_ylim(-1.5, 1.5)
+cone_ax.set_zlim(-1.5, 1.5)
+cone_ax.set_box_aspect((1.5, 1.5, 1.5))
+cone_ax.set_axis_off()
+cone_ax.set_zorder(500)
 
 
-comp.savefig("kinv_figure.png", facecolor="black", dpi=dpi)
-comp.savefig("kinv_figure.pdf", format="pdf", bbox_inches="tight", dpi=dpi)
-print("saved kinv_figure.png")
+cone_tip = np.array([1.01, 0.64, -0.77])
+cone_back = np.array([0.98, 0.64, -0.67])
+
+
+draw_cone_head(
+    cone_ax,
+    cone_back,
+    cone_tip,
+    head_length=0.08,
+    radius=0.02,
+    n=32,
+    color="white"
+)
+
+
+
+comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=dpi, pad_inches=0)
+comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=dpi)
+print("saved dt.pdf")
