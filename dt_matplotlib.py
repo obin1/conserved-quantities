@@ -561,6 +561,6 @@ draw_cone_head(
 
 
 
-# comp.savefig("dt2.png", facecolor="white", bbox_inches="tight", dpi=300, pad_inches=0)
-comp.savefig("dt2.pdf", format="pdf", bbox_inches="tight", dpi=300)
+comp.savefig("dt.png", facecolor="white", bbox_inches="tight", dpi=300, pad_inches=0)
+comp.savefig("dt.pdf", format="pdf", bbox_inches="tight", dpi=300)
 print("saved dt.pdf")
