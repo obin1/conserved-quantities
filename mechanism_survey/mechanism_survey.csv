@@ -1,7 +1,7 @@
 ﻿Mechanism,Short Name,Species,Reactions,Stoichiometric Invariants,Largest Merged Group,# Merged Groups,Coproduction Index,Kinetic Invariants,Broken Null Cycles,References and Source Notes
 Small Strato,SmallStrato,5,10,1,2,1,1,0,1,"(Zaveri & Peters, 1999)"
 Julia Photochem v0.2,JPMv0.2,11,10,2,2,1,1,1,0,"(Sturm & Wexler, 2022)"
-Julia Photochem v1.1,JPMv1.1,16,13,5,2,1,1,1,0,"(Sturm & Silva, 2024)"
+Julia Photochem v1.2,JPMv1.2,16,13,5,2,1,1,1,0,"(Sturm & Silva, 2024)"
 Form85,Form85,12,25,1,3,5,6,0,6,"(Vajda et al., 1985) is the first obtainable reference"
 Superfast,Superfast,15,32,0,3,5,6,1,5,"Original reference (Cameron-Smith et al., 2006), obtained in KPP format from Kelp et al. (2022) and added sulfate chem back based on table S2 of the supplement of (Brown-Steiner et al., 2018)4/21/26 4:05:00 PM"
 Verwer1994 (POLLU),POLLU,20,25,3,2,4,4,0,4,"(Verwer, 1994) is the first obtainable reference"

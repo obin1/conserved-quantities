@@ -49,8 +49,7 @@ fig.add_trace(
         name="without Kinetic Invariants"))
 
 # Isolate specific labels, positions, and sizes per mechanism for visibility purposes (purple stars)
-# label_mechs2 = {"GC-Hg", "Superfast", "JPM1.1", "JPMv0.2", "Logan81"} 
-label_mechs2 = {"JPMv0.2", "JPMv1.1", "E3SM", "GC-Hg", "Logan81", "Superfast", "MCM-PRAM"}
+label_mechs2 = {"JPMv0.2", "JPMv1.2", "E3SM", "GC-Hg", "Logan81", "Superfast", "MCM-PRAM"}
 labels2 = [name if name in label_mechs2 else "" for name in mech_survey_KI["Short Name"]]
 positions2 = ["bottom center" if name in {"CIM", "JPMv0.2"}
               else "middle left" if name in {"Superfast", "E3SM"}
