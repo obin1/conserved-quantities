@@ -269,7 +269,7 @@ fig.add_shape(
     opacity=1)
 
 # Save figure as a PDF
-folder_name = '../figures'
+folder_name = '/Users/beatrizrodriguez/Desktop/conserved-quantities/figures'
 file_name = 'FigureS2.pdf'
 full_path = os.path.join(folder_name, file_name)
 pio.write_image(fig, full_path, width=800, height=800) 

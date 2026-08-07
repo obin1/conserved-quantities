@@ -7,7 +7,7 @@ import os
 pio.renderers.default = "browser"
 
 # Read CSV file of mechanism survey
-mech_survey = pd.read_csv("mechanism_survey/mechanism_survey.csv").dropna()
+mech_survey = pd.read_csv("/Users/beatrizrodriguez/Desktop/conserved-quantities/mechanism_survey/mechanism_survey.csv").dropna()
 
 # Create a new column for Effective Reactions, calculated by 
 # number of total reactions "R" minus the coproduction index, or number of reactions lost to coproduction "gamma"
@@ -268,7 +268,7 @@ fig.add_shape(
     opacity=1)
 
 # Save figure as a PDF
-folder_name = 'figures'
+folder_name = '/Users/beatrizrodriguez/Desktop/conserved-quantities/figures'
 file_name = 'Figure3.pdf'
 full_path = os.path.join(folder_name, file_name)
 pio.write_image(fig, full_path, width=800, height=800) 
