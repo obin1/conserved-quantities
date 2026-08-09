@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("CBMZ")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_cbmz = create_coproduction(Sr_sparse_cbmz)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_cbmz = create_symbols(coproduction_cols_cbmz)
+symbol_dict_cbmz = create_symbols(coproduction_cols_cbmz, init_col_del_cbmz)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_cbmz, col_del_cbmz = merge_coprod(Sr_sparse_cbmz, Sp_sparse_cbmz, symbol_dict_cbmz, coproduction_cols_cbmz, Svv_sparse_cbmz)

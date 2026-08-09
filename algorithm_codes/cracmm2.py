@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("CRACMM2")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_cracmm = create_coproduction(Sr_sparse_cracmm)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_cracmm = create_symbols(coproduction_cols_cracmm)
+symbol_dict_cracmm = create_symbols(coproduction_cols_cracmm, init_col_del_cracmm)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_cracmm, col_del_cracmm = merge_coprod(Sr_sparse_cracmm, Sp_sparse_cracmm, symbol_dict_cracmm, coproduction_cols_cracmm, Svv_sparse_cracmm)

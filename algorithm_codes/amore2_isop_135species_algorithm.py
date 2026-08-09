@@ -3,6 +3,8 @@ import numpy as np
 from sympy import S
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("Amore")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -43,7 +45,7 @@ print("identifying coproduction columns...")
 coproduction_cols_amore = create_coproduction(Sr_sparse_amore)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_amore = create_symbols(coproduction_cols_amore)
+symbol_dict_amore = create_symbols(coproduction_cols_amore, init_col_del_amore)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_amore, col_del_amore = merge_coprod(Sr_sparse_amore, Sp_sparse_amore, symbol_dict_amore, coproduction_cols_amore, Svv_sparse_amore)

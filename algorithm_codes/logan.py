@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast, get_species_in_null_vector
 
+print("Logan")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -33,7 +35,7 @@ print("identifying coproduction columns...")
 coproduction_cols_logan = create_coproduction(Sr_sparse_logan)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_logan = create_symbols(coproduction_cols_logan)
+symbol_dict_logan = create_symbols(coproduction_cols_logan, init_col_del_logan)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_logan, col_del_logan = merge_coprod(Sr_sparse_logan, Sp_sparse_logan, symbol_dict_logan, coproduction_cols_logan, Svv_sparse_logan)

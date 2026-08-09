@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("Form1985")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_form1985 = create_coproduction(Sr_sparse_form1985)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_form1985 = create_symbols(coproduction_cols_form1985)
+symbol_dict_form1985 = create_symbols(coproduction_cols_form1985, init_col_del_form1985)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_form1985, col_del_form1985 = merge_coprod(Sr_sparse_form1985, Sp_sparse_form1985, symbol_dict_form1985, coproduction_cols_form1985, Svv_sparse_form1985)

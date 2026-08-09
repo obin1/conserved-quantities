@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("E3SM")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -33,7 +35,7 @@ print("identifying coproduction columns...")
 coproduction_cols_chemuci = create_coproduction(Sr_sparse_chemuci)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_chemuci = create_symbols(coproduction_cols_chemuci)
+symbol_dict_chemuci = create_symbols(coproduction_cols_chemuci, init_col_del_uci)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_chemuci, col_del_chemuci = merge_coprod(Sr_sparse_chemuci, Sp_sparse_chemuci, symbol_dict_chemuci, coproduction_cols_chemuci, Svv_sparse_chemuci)

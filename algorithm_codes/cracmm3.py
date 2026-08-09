@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("CRACMM3")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -31,7 +33,7 @@ print("identifying coproduction columns...")
 coproduction_cols_cracmm3 = create_coproduction(Sr_sparse_cracmm3)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_cracmm3 = create_symbols(coproduction_cols_cracmm3)
+symbol_dict_cracmm3 = create_symbols(coproduction_cols_cracmm3, init_col_del_cracmm3)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_cracmm3, col_del_cracmm3 = merge_coprod(Sr_sparse_cracmm3, Sp_sparse_cracmm3, symbol_dict_cracmm3, coproduction_cols_cracmm3, Svv_sparse_cracmm3)
@@ -45,6 +47,8 @@ rank_list_cracmm3 = linalg_experiment(S_merge_cracmm3, num_experiments)
 
 #%%
 # WITHOUT DELTA_C, DELTA_N, DELTA_SI
+
+print("CRACMM3e")
 
 # Initialize random seed
 SEED = 42
@@ -74,7 +78,7 @@ print("identifying coproduction columns...")
 coproduction_cols_cracmm3e = create_coproduction(Sr_sparse_cracmm3e)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_cracmm3e = create_symbols(coproduction_cols_cracmm3e)
+symbol_dict_cracmm3e = create_symbols(coproduction_cols_cracmm3e, init_col_del_cracmm3e)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_cracmm3e, col_del_cracmm3e = merge_coprod(Sr_sparse_cracmm3e, Sp_sparse_cracmm3e, symbol_dict_cracmm3e, coproduction_cols_cracmm3e, Svv_sparse_cracmm3e)
