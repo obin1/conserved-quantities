@@ -30,7 +30,7 @@ print("identifying coproduction columns...")
 coproduction_cols_mecca = create_coproduction(Sr_sparse_mecca)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_mecca = create_symbols(coproduction_cols_mecca)
+symbol_dict_mecca = create_symbols(coproduction_cols_mecca, init_col_del_mecca)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_mecca, col_del_mecca = merge_coprod(Sr_sparse_mecca, Sp_sparse_mecca, symbol_dict_mecca, coproduction_cols_mecca, Svv_sparse_mecca)

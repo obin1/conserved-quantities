@@ -30,7 +30,7 @@ print("identifying coproduction columns...")
 coproduction_cols_mcm = create_coproduction(Sr_sparse_mcm)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_mcm = create_symbols(coproduction_cols_mcm)
+symbol_dict_mcm = create_symbols(coproduction_cols_mcm, init_col_del_mcm)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_mcm, col_del_mcm = merge_coprod(Sr_sparse_mcm, Sp_sparse_mcm, symbol_dict_mcm, coproduction_cols_mcm, Svv_sparse_mcm)

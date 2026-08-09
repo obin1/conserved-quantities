@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("Mozart")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_mozart = create_coproduction(Sr_sparse_mozart)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_mozart = create_symbols(coproduction_cols_mozart)
+symbol_dict_mozart = create_symbols(coproduction_cols_mozart, init_col_del_mozart)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_mozart, col_del_mozart = merge_coprod(Sr_sparse_mozart, Sp_sparse_mozart, symbol_dict_mozart, coproduction_cols_mozart, Svv_sparse_mozart)

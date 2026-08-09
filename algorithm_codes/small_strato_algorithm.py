@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("Small Strato")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_small_strato = create_coproduction(Sr_sparse_small_strato)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_small_strato = create_symbols(coproduction_cols_small_strato)
+symbol_dict_small_strato = create_symbols(coproduction_cols_small_strato, init_col_del_small_strato)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_small_strato, col_del_small_strato = merge_coprod(Sr_sparse_small_strato, Sp_sparse_small_strato, symbol_dict_small_strato, coproduction_cols_small_strato, Svv_sparse_small_strato)

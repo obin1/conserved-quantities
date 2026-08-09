@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("SAPRC99")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_saprc99 = create_coproduction(Sr_sparse_saprc99)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_saprc99 = create_symbols(coproduction_cols_saprc99)
+symbol_dict_saprc99 = create_symbols(coproduction_cols_saprc99, init_col_del_saprc99)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_saprc99, col_del_saprc99 = merge_coprod(Sr_sparse_saprc99, Sp_sparse_saprc99, symbol_dict_saprc99, coproduction_cols_saprc99, Svv_sparse_saprc99)

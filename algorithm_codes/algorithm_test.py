@@ -136,14 +136,10 @@ def create_symbols(coproduction_cols, col_del):
         for num in set(coproduction_cols):
             # Exclude index 0 since that indicates no coproduction
             if num != 0:
-                # col_del is 0-based indexed, shift by 1 for easy comparison
                 col_del_1 = list(np.array(col_del) + 1)
                 # Identify the array positions of reactions that share coproduction grouping index (1-based counting)
-                indices = np.where(coprod_array == num)[0] + 1
-                # Determine how many values in col_del_1 are less than or equal to each index in indices
-                # This accounts for indices that are shifted due to deletion of all-zero columns
+                indices = np.where(coprod_array == num)[0] + 1 
                 shift = np.searchsorted(col_del_1, indices, side="right")
-                # Shift each value in indices by the respective number
                 indices += shift
                 # Create symbolic variables for each participating reaction
                 symbols = [sp.symbols(f"k{i}") for i in indices]

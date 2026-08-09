@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, get_species_in_null_vector
 
+print("Superfast")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_superfast = create_coproduction(Sr_sparse_superfast)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_superfast = create_symbols(coproduction_cols_superfast)
+symbol_dict_superfast = create_symbols(coproduction_cols_superfast, init_col_del_superfast)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_superfast, col_del_supefast = merge_coprod(Sr_sparse_superfast, Sp_sparse_superfast, symbol_dict_superfast, coproduction_cols_superfast, Svv_sparse_superfast)

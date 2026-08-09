@@ -33,7 +33,7 @@ print("identifying coproduction columns...")
 coproduction_cols_pact1d = create_coproduction(Sr_sparse_pact1d)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_pact1d = create_symbols(coproduction_cols_pact1d)
+symbol_dict_pact1d = create_symbols(coproduction_cols_pact1d, init_col_del_pact1d)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_pact1d, col_del_pact1d = merge_coprod(Sr_sparse_pact1d, Sp_sparse_pact1d, symbol_dict_pact1d, coproduction_cols_pact1d, Svv_sparse_pact1d)
