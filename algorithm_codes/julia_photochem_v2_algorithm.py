@@ -3,6 +3,8 @@ import numpy as np
 import sympy as sp
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
+print("JPM v2")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -89,12 +91,13 @@ rank_Svv_JPM2_np = np.linalg.matrix_rank(Svv_np_JPM2)
 # Compute dimension of left null space by subtracting rank from the number of rows
 dim_leftnull_JPM2 = Svv_sparse_JPM2.shape[0] - rank_Svv_JPM2_np
 
+init_col_del_jpm2 = []
 # Identify sets of coproducing reactions
 print("identifying coproduction columns...")
 # Create the dictionary of symbols for coproducing groups
 coproduction_cols_JPM2 = create_coproduction(Sr_sparse_JPM2)
 print("creating symbolic dictionary...")
-symbol_dict_JPM2 = create_symbols(coproduction_cols_JPM2)
+symbol_dict_JPM2 = create_symbols(coproduction_cols_JPM2, init_col_del_jpm2)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_JPM2, col_del_JPM2 = merge_coprod(Sr_sparse_JPM2, Sp_sparse_JPM2, symbol_dict_JPM2, coproduction_cols_JPM2, Svv_sparse_JPM2)

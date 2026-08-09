@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("JAM")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_jam = create_coproduction(Sr_sparse_jam)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_jam = create_symbols(coproduction_cols_jam)
+symbol_dict_jam = create_symbols(coproduction_cols_jam, init_col_del_jam)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_jam, col_del_jam = merge_coprod(Sr_sparse_jam, Sp_sparse_jam, symbol_dict_jam, coproduction_cols_jam, Svv_sparse_jam)
