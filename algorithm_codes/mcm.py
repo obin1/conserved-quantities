@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, linalg_experiment_fast, numeric_sparse_matrix_fast_combined
 
+print("MCM")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)

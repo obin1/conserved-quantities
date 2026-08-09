@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, numeric_sparse_matrix_fast_combined, linalg_experiment_fast
 
+print("CRI v2.2")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_cri = create_coproduction(Sr_sparse_cri)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_cri = create_symbols(coproduction_cols_cri)
+symbol_dict_cri = create_symbols(coproduction_cols_cri, init_col_del_cri)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_cri, col_del_cri = merge_coprod(Sr_sparse_cri, Sp_sparse_cri, symbol_dict_cri, coproduction_cols_cri, Svv_sparse_cri)

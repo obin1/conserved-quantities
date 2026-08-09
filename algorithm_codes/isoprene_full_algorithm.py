@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment
 
+print("Isoprene Full")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_iso_full = create_coproduction(Sr_sparse_iso_full)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_iso_full = create_symbols(coproduction_cols_iso_full)
+symbol_dict_iso_full = create_symbols(coproduction_cols_iso_full, init_col_del_iso_full)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_iso_full, col_del_iso_full = merge_coprod(Sr_sparse_iso_full, Sp_sparse_iso_full, symbol_dict_iso_full, coproduction_cols_iso_full, Svv_sparse_iso_full)

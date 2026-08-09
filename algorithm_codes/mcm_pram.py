@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from algorithm import create_sparse, del_zero_col, create_coproduction, create_symbols, merge_coprod, s_linalg, linalg_experiment, linalg_experiment_fast, numeric_sparse_matrix_fast_combined
 
+print("MCM Pram")
+
 # Initialize random seed
 SEED = 42
 np.random.seed(SEED)
@@ -30,7 +32,7 @@ print("identifying coproduction columns...")
 coproduction_cols_pram = create_coproduction(Sr_sparse_pram)
 # Create the dictionary of symbols for coproducing groups
 print("creating symbolic dictionary...")
-symbol_dict_pram = create_symbols(coproduction_cols_pram)
+symbol_dict_pram = create_symbols(coproduction_cols_pram, init_col_del_pram)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
 S_merge_pram, col_del_pram = merge_coprod(Sr_sparse_pram, Sp_sparse_pram, symbol_dict_pram, coproduction_cols_pram, Svv_sparse_pram)
