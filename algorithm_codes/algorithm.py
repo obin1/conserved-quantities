@@ -144,9 +144,9 @@ def create_symbols(coproduction_cols, col_del):
                 # This accounts for indices that are shifted due to deletion of all-zero columns
                 shift = np.searchsorted(col_del_1, indices, side="right")
                 # Shift each value in indices by the respective number
-                indices += shift
+                indices_ = indices + shift
                 # Create symbolic variables for each participating reaction
-                symbols = [sp.symbols(f"k{i}") for i in indices]
+                symbols = [sp.symbols(f"k{i}") for i in indices_]
                 # Create a symbolic sum to be the denominator of the fractional kinetic rates
                 total = sum(symbols)
                 # Create symbolic fraction and add it to the dictionary, with reaction index as key

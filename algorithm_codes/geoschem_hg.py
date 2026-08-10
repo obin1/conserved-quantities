@@ -35,7 +35,7 @@ print("creating symbolic dictionary...")
 symbol_dict_gchg= create_symbols(coproduction_cols_gchg, init_col_del_gchg)
 # Perform the column "merging" operation on coproducting groups
 print("merging coproduction columns...")
-S_merge_gchg, col_del_gchg= merge_coprod(Sr_sparse_gchg, Sp_sparse_gchg, symbol_dict_gchg, coproduction_cols_gchg, Svv_sparse_gchg)
+S_merge_gchg, col_del_gchg = merge_coprod(Sr_sparse_gchg, Sp_sparse_gchg, symbol_dict_gchg, coproduction_cols_gchg, Svv_sparse_gchg)
 print("performing linear algebra...")
 # Compute the number of reactions lost due to merging
 del_r_gchg = S_merge_gchg.shape[1] - Svv_sparse_gchg.shape[1]
